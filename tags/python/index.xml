@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on Bit by bit</title>
+    <link>https://shaolang.github.io/tags/python/</link>
+    <description>Recent content in python on Bit by bit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 Jul 2018 23:30:15 +0800</lastBuildDate>
+    
+	<atom:link href="https://shaolang.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Python Code Structure and Distribution</title>
+      <link>https://shaolang.github.io/posts/2018-07-13-python-app-distribution/</link>
+      <pubDate>Fri, 13 Jul 2018 23:30:15 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2018-07-13-python-app-distribution/</guid>
+      <description>Probably it&amp;rsquo;s due to my inexperience in Python&amp;rsquo;s community/ecosystem, I find it amusing that Python community has no agreed standard in code organization. Yeah, The Hitchhiker&amp;rsquo;s Guide to Python! attempts to recommend some structure, but the popular pytest recommends something entirely different.
+By adopting pytest&amp;rsquo;s recommendation&amp;ndash;i.e., putting code in src directory&amp;ndash;I need to make the some changes, changes that are not obvious to a noob like me:
+ As my code modules are no longer on PYTHONPATH, I need to install pytest-pythonpath and add src to in pytest.</description>
+    </item>
+    
+  </channel>
+</rss>

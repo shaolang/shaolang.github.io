@@ -1,0 +1,970 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name="generator" content="Hugo 0.59.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Property-Based Testing: From Erlang/Elixir to Clojure</h1>
+  
+    Aug 12, 2019
+  
+  <article>
+    
+
+<p>Reading <a href="https://pragprog.com/book/fhproper/property-based-testing-with-proper-erlang-and-elixir">Property-Based Testing with PropEr, Erlang, and Elixir</a> and
+following along the examples helped me in learning this exciting testing
+methodology; but it also left me wondering: have I really absorbed and
+internalized <em>just by following along</em>?</p>
+
+<p>So, I reached out to <a href="https://twitter.com/mononcqc">Fred</a>, got his approval, and started translating
+the code from Erlang/Elixir to Clojure with <a href="https://github.com/clojure/test.check">test.check</a>.
+All the code done [so far] are hosted
+at <a href="https://github.com/shaolang/pbtic">https://github.com/shaolang/pbtic</a> I&rsquo;m using <a href="https://github.com/clojure/test.check">test.check</a>
+as the property-based testing tool in Clojure.</p>
+
+<h2 id="birthday-greeting-kata">Birthday Greeting Kata</h2>
+
+<p>The book breaks up the kata into 4 parts: <a href="#csv-parsing">CSV parsing</a>,
+<a href="#records-filtering">records filtering</a>,
+<a href="#employee-module">employee module</a> (bridging CSV parsing and records filtering),
+and <a href="#email-templating">email templating</a>.</p>
+
+<h3 id="csv-parsing">CSV Parsing</h3>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.csv-test
+  (<span style="color:#e6db74">:require</span> [clojure.test <span style="color:#e6db74">:refer</span> [deftest is]]
+            [clojure.test.check.clojure-test <span style="color:#e6db74">:refer</span> [defspec]]
+            [clojure.test.check.generators <span style="color:#e6db74">:as</span> gen]
+            [clojure.test.check.properties <span style="color:#e6db74">:refer</span> [for-all]]
+            [pbtic.birthday.csv <span style="color:#e6db74">:as</span> csv]))
+
+<span style="color:#75715e">;;;;;;;</span>
+<span style="color:#75715e">;; defs</span>
+
+(<span style="color:#66d9ef">def </span><span style="color:#f92672">^</span><span style="color:#e6db74">:private</span> text-data
+  (str <span style="color:#e6db74">&#34;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&#34;</span>
+       <span style="color:#e6db74">&#34;:;&lt;=&gt;?@ !#$%&amp;&#39;()*+-./[\\]^_`{|}~&#34;</span>))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; generators</span>
+
+(<span style="color:#66d9ef">defn- </span>text [cs]
+  (<span style="color:#a6e22e">gen/let</span> [xs (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/elements</span> cs))]
+    (apply str xs)))
+
+(<span style="color:#66d9ef">def </span>unquoted-text (<span style="color:#a6e22e">text</span> text-data))
+(<span style="color:#66d9ef">def </span>quotable-text (<span style="color:#a6e22e">text</span> (str text-data <span style="color:#e6db74">&#34;\r\n\&#34;,&#34;</span>)))
+
+
+(<span style="color:#66d9ef">def </span>field (<span style="color:#a6e22e">gen/one-of</span> [unquoted-text, quotable-text]))
+
+
+(<span style="color:#66d9ef">def </span>header (partial gen/vector field))
+(<span style="color:#66d9ef">def </span>record (partial gen/vector field))
+
+
+(<span style="color:#66d9ef">defn </span>entry [size ks]
+  (<span style="color:#a6e22e">gen/let</span> [vs  (<span style="color:#a6e22e">record</span> size)]
+    (zipmap ks vs)))
+
+
+(<span style="color:#66d9ef">def </span>csv-source
+  (<span style="color:#a6e22e">gen/let</span> [size    gen/pos-int
+            ks      (<span style="color:#a6e22e">header</span> (inc size))]
+    (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">entry</span> (inc size) ks))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Unlike <code>?LET</code>/<code>let</code> in <a href="https://github.com/proper-testing/proper">PropEr</a>/<a href="https://github.com/alfert/propcheck">PropCheck</a>,
+<a href="http://clojure.github.io/test.check/clojure.test.check.generators.html#var-let"><code>clojure.test.check.generators/let</code></a> can have
+multiple bindings where the binding after can reference the
+value of the one before, as shown at lines 39 and 40.</p>
+
+<p><code>csv-source</code> generates a list of maps, where each map is one record from the
+CSV source, and the keys of each map the header record. While it&rsquo;s idiomatic
+for Clojure maps to use keywords as keys to maps, the book recommends keeping
+the CSV parsing focused on encoding/decoding and not bring in any business
+requirements to keep the module/namespace maintainable.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; properties</span>
+
+(<span style="color:#a6e22e">defspec</span> roundtrip-encoding-decoding
+  (<span style="color:#a6e22e">for-all</span> [maps  csv-source]
+    (= maps (<span style="color:#a6e22e">csv/decode</span> (<span style="color:#a6e22e">csv/encode</span> maps)))))
+
+<span style="color:#75715e">;;;;;;;;</span>
+<span style="color:#75715e">;; tests</span>
+
+(<span style="color:#a6e22e">deftest</span> one-column-csv-files-are-inherently-ambiguous
+  (<span style="color:#a6e22e">is</span> (= <span style="color:#e6db74">&#34;\r\n\r\n\r\n&#34;</span>
+         (<span style="color:#a6e22e">csv/encode</span> [{<span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>}, {<span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>}])))
+
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;\r\n\r\n&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> one-record-per-line
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#e6db74">&#34;zzz&#34;</span>, <span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#e6db74">&#34;yyy&#34;</span>, <span style="color:#e6db74">&#34;ccc&#34;</span> <span style="color:#e6db74">&#34;xxx&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;aaa,bbb,ccc\r\nzzz,yyy,xxx\r\n&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> optional-trailing-crlf
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#e6db74">&#34;zzz&#34;</span>, <span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#e6db74">&#34;yyy&#34;</span>, <span style="color:#e6db74">&#34;ccc&#34;</span> <span style="color:#e6db74">&#34;xxx&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;aaa,bbb,ccc\r\nzzz,yyy,xxx&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> double-quotes
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#e6db74">&#34;zzz&#34;</span>, <span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#e6db74">&#34;yyy&#34;</span>, <span style="color:#e6db74">&#34;ccc&#34;</span> <span style="color:#e6db74">&#34;xxx&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;\&#34;aaa\&#34;,\&#34;bbb\&#34;,\&#34;ccc\&#34;\r\n\&#34;zzz\&#34;,\&#34;yyy\&#34;,\&#34;xxx\&#34;&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> escape-crlf
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#e6db74">&#34;zzz&#34;</span>, <span style="color:#e6db74">&#34;b\r\nbb&#34;</span> <span style="color:#e6db74">&#34;yyy&#34;</span>, <span style="color:#e6db74">&#34;ccc&#34;</span> <span style="color:#e6db74">&#34;xxx&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;\&#34;aaa\&#34;,\&#34;b\r\nbb\&#34;,\&#34;ccc\&#34;\r\nzzz,yyy,xxx&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> double-quotes-escaping
+  (<span style="color:#a6e22e">is</span> (= [{<span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;b\&#34;bb&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;ccc&#34;</span> <span style="color:#e6db74">&#34;&#34;</span>}]
+         (<span style="color:#a6e22e">csv/decode</span> <span style="color:#e6db74">&#34;\&#34;aaa\&#34;,\&#34;b\&#34;\&#34;bb\&#34;,\&#34;ccc\&#34;\r\n,,&#34;</span>))))
+
+
+(<span style="color:#a6e22e">deftest</span> dupe-keys-unsupported
+  (<span style="color:#66d9ef">let </span>[csv     (str <span style="color:#e6db74">&#34;field_name,field_name,field_name\r\n&#34;</span>
+                     <span style="color:#e6db74">&#34;aaa,bbb,ccc\r\n&#34;</span>
+                     <span style="color:#e6db74">&#34;zzz,yyy,xxx\r\n&#34;</span>)
+        [m1 m2] (<span style="color:#a6e22e">csv/decode</span> csv)]
+    (<span style="color:#a6e22e">is</span> (= [<span style="color:#e6db74">&#34;field_name&#34;</span>] (keys m1)))
+    (<span style="color:#a6e22e">is</span> (= [<span style="color:#e6db74">&#34;field_name&#34;</span>] (keys m2)))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The property and tests straight-up mirror the original code in the book.
+But the implementation? LOL, I took the shortcut by using <a href="https://github.com/clojure/data.csv">data.csv</a>
+instead, as my main intention is to learn how to write property tests, not
+implementing a CSV parser.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.csv
+  (<span style="color:#e6db74">:require</span> [clojure.data.csv <span style="color:#e6db74">:as</span> csv]
+            [clojure.string <span style="color:#e6db74">:as</span> str]))
+
+(<span style="color:#66d9ef">defn </span>encode [ms]
+  (<span style="color:#66d9ef">let </span>[ks    (-&gt; ms first keys)
+        vs    (map vals ms)
+        out   (<span style="color:#a6e22e">java.io.StringWriter.</span>)]
+    (<span style="color:#a6e22e">csv/write-csv</span> out (conj vs ks) <span style="color:#e6db74">:newline</span> <span style="color:#e6db74">:cr+lf</span>)
+    (<span style="color:#a6e22e">.toString</span> out)))
+
+
+(<span style="color:#66d9ef">defn </span>decode [s]
+  (<span style="color:#66d9ef">let </span>[[header <span style="color:#f92672">&amp;</span> body] (<span style="color:#a6e22e">csv/read-csv</span> (<span style="color:#a6e22e">java.io.StringReader.</span> s))]
+    (map (partial zipmap header) body)))</code></pre></td></tr></table>
+</div>
+</div>
+
+<h2 id="records-filtering">Records Filtering</h2>
+
+<p>Records filtering module/namespace filters the employees whose birthdays fall
+on the given date. Although properties are the new-found power, employing them
+for this instance might not be suitable, as property tests are probabilistic
+at their core. &ldquo;Traditional&rdquo; unit tests can explore this problem space much
+better. Even so, Fred suggests running an exhaustive search to cover all
+possible cases, using generators in property-based tests as inspiration in
+&ldquo;generating&rdquo; the cases.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.bday-filter-test
+  (<span style="color:#e6db74">:require</span> [pbtic.birthday.bday-filter <span style="color:#e6db74">:as</span> filter <span style="color:#e6db74">:refer</span> [month-day]]
+            [clojure.set <span style="color:#e6db74">:as</span> set]
+            [clojure.test <span style="color:#e6db74">:refer</span> [deftest is]])
+  (<span style="color:#e6db74">:import</span> [java.time DateTimeException LocalDate]))
+
+<span style="color:#75715e">;;;;;;;;;;</span>
+<span style="color:#75715e">;; helpers</span>
+
+(<span style="color:#66d9ef">defn </span>find-birthdays-for-year [people yeardata]
+  (when (seq yeardata)
+    (<span style="color:#66d9ef">let </span>[[day <span style="color:#f92672">&amp;</span> year]  yeardata
+          found         (<span style="color:#a6e22e">filter/birthday</span> people day)]   <span style="color:#75715e">;; &lt;- function being tested</span>
+      (assoc (<span style="color:#a6e22e">find-birthdays-for-year</span> people year) day found))))
+
+
+(<span style="color:#66d9ef">defn </span>generate-year-data [start]
+  (<span style="color:#66d9ef">let </span>[start-date  (<span style="color:#a6e22e">LocalDate/of</span> start <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>)
+        end-date    (<span style="color:#a6e22e">LocalDate/of</span> (inc start) <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>)]
+    (into [] (.. start-date (<span style="color:#a6e22e">datesUntil</span> end-date) toArray))))
+
+
+(<span style="color:#66d9ef">defn </span>generate-years-data [start end]
+  (<span style="color:#a6e22e">mapv</span> generate-year-data (range start (inc end))))
+
+
+(<span style="color:#66d9ef">defn </span>rand-name []
+  (apply str (<span style="color:#a6e22e">repeatedly</span> <span style="color:#ae81ff">30</span> <span style="color:#f92672">#</span>(<span style="color:#a6e22e">rand-nth</span> <span style="color:#e6db74">&#34;abcdefghijklmnopqrstuvwxyz&#34;</span>))))
+
+
+(<span style="color:#66d9ef">defn </span>people-for-date [date]
+  (<span style="color:#a6e22e">try</span>
+    (<span style="color:#66d9ef">let </span>[[month day] (<span style="color:#a6e22e">month-day</span> date)
+          rand-year   (+ <span style="color:#ae81ff">1900</span> (rand-int <span style="color:#ae81ff">100</span>))]
+      {<span style="color:#e6db74">:name</span>          (<span style="color:#a6e22e">rand-name</span>)
+       <span style="color:#e6db74">:date-of-birth</span> (<span style="color:#a6e22e">LocalDate/of</span> rand-year month day)})
+    (<span style="color:#a6e22e">catch</span> Exception _ (<span style="color:#a6e22e">people-for-date</span> date))))
+
+
+(<span style="color:#66d9ef">defn </span>people-for-year [year]
+  (map people-for-date year))
+
+
+(<span style="color:#66d9ef">defn </span>generate-people-for-year [n]
+  (<span style="color:#66d9ef">let </span>[year-seed (<span style="color:#a6e22e">generate-year-data</span> <span style="color:#ae81ff">2016</span>)]  <span style="color:#75715e">;; leap year so all days are covered</span>
+    (mapcat (<span style="color:#66d9ef">fn </span>[_] (<span style="color:#a6e22e">people-for-year</span> year-seed)) (range n))))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; assertions</span>
+
+(<span style="color:#66d9ef">defn </span>every-birthday-once [people birthdays]
+  (<span style="color:#66d9ef">let </span>[found       (mapcat second birthdays)
+        not-found   (<span style="color:#a6e22e">set/difference</span> (set people) (set found))]
+    (<span style="color:#a6e22e">is</span> (<span style="color:#a6e22e">empty?</span> not-found))
+    (<span style="color:#a6e22e">is</span> (zero? (- (count found) (count (set found)))))))
+
+
+(<span style="color:#66d9ef">defn </span>on-right-date [people birthdays]
+  (doseq [[date found]            birthdays
+          {<span style="color:#e6db74">:keys</span> [date-of-birth]} found]
+    (<span style="color:#66d9ef">let </span>[[dob-month dob-day] (<span style="color:#a6e22e">month-day</span> date-of-birth)]
+      (<span style="color:#a6e22e">try</span>
+        (<span style="color:#a6e22e">LocalDate/of</span> (<span style="color:#a6e22e">.getYear</span> date) dob-month dob-day)
+        (<span style="color:#a6e22e">is</span> (= (<span style="color:#a6e22e">month-day</span> date)
+               (<span style="color:#a6e22e">month-day</span> date-of-birth)))
+        (<span style="color:#a6e22e">catch</span> DateTimeException _ true)))))
+
+<span style="color:#75715e">;;;;;;;</span>
+<span style="color:#75715e">;; test</span>
+
+(<span style="color:#a6e22e">deftest</span> property-style-filtering
+  (<span style="color:#66d9ef">let </span>[years   (<span style="color:#a6e22e">generate-years-data</span> <span style="color:#ae81ff">2018</span> <span style="color:#ae81ff">2038</span>)
+        people  (<span style="color:#a6e22e">generate-people-for-year</span> <span style="color:#ae81ff">3</span>)]
+    (doseq [yeardata years]
+      (<span style="color:#66d9ef">let </span>[birthdays (<span style="color:#a6e22e">find-birthdays-for-year</span> people yeardata)]
+        (<span style="color:#a6e22e">every-birthday-once</span> people birthdays)
+        (<span style="color:#a6e22e">on-right-date</span> people birthdays)))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The differences between this and the original are:</p>
+
+<ul>
+<li><code>generate-year-data</code> (lines 17-20) is significantly shorter than the original,
+as it uses <a href="https://docs.oracle.com/javase/9/docs/api/java/time/LocalDate.html#datesUntil-java.time.LocalDate-"><code>java.time.LocalDate#datesUntil</code></a> method to generate
+the dates. The Elixir version in the book is long probably because Fred
+wanted to align it with the Erlang version; if he were to use Elixir&rsquo;s
+<a href="https://hexdocs.pm/elixir/Date.html#range/2">Date.range/2</a> function (no equivalent available in
+Erlang :sob:), the code would be much shorter, as shown below:</li>
+</ul>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">defp generate_year_data(year) do
+  {<span style="color:#e6db74">:ok</span>, start_date} <span style="color:#f92672">=</span> <span style="color:#a6e22e">Date</span><span style="color:#f92672">.</span>new(year, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)
+  {<span style="color:#e6db74">:ok</span>, end_date} <span style="color:#f92672">=</span> <span style="color:#a6e22e">Date</span><span style="color:#f92672">.</span>new(year, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">31</span>)
+
+  <span style="color:#a6e22e">Date</span><span style="color:#f92672">.</span>range(start_date, end_date)
+  <span style="color:#f92672">|&gt;</span> <span style="color:#a6e22e">Enum</span><span style="color:#f92672">.</span>into([])
+end</code></pre></td></tr></table>
+</div>
+</div>
+
+<ul>
+<li><code>rand-name</code> (lines 27-28) is a simple stand-in for Erlang&rsquo;s <code>make-ref/0</code>.</li>
+<li><code>every-birthday-once</code> (line 51-55) uses the set data structure to determine
+the set of people not found.</li>
+<li><code>on-right-date</code> (lines 58-66) catches invalid dates and returns <code>true</code> in
+the catch clause to signify &ldquo;skipping,&rdquo; as Clojure does not use
+pattern-matching as much as Erlang/Elixir do.</li>
+</ul>
+
+<p>The implementation of <code>pbtic.birthday.bday-filter</code> is as follows:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.bday-filter)
+
+
+(<span style="color:#66d9ef">def </span>month-day (<span style="color:#a6e22e">juxt</span> <span style="color:#f92672">#</span>(<span style="color:#a6e22e">.getMonthValue</span> %) <span style="color:#f92672">#</span>(<span style="color:#a6e22e">.getDayOfMonth</span> %)))
+
+
+(<span style="color:#66d9ef">defn </span>birthday-no-leap-year-handling [people date]
+  (<span style="color:#66d9ef">let </span>[md (<span style="color:#a6e22e">month-day</span> date)]
+    (filter <span style="color:#f92672">#</span>(= (<span style="color:#a6e22e">month-day</span> (<span style="color:#e6db74">:date-of-birth</span> %)) md) people)))
+
+
+(<span style="color:#66d9ef">defn </span> filter-dob [people month day]
+  (filter <span style="color:#f92672">#</span>(= (<span style="color:#a6e22e">month-day</span> (<span style="color:#e6db74">:date-of-birth</span> %)) [month day]) people))
+
+
+(<span style="color:#66d9ef">defn </span>birthday [people date]
+  (<span style="color:#66d9ef">let </span>[[month day] (<span style="color:#a6e22e">month-day</span> date)]
+    (<span style="color:#66d9ef">if </span>(and (= [month day] [<span style="color:#ae81ff">2</span> <span style="color:#ae81ff">28</span>]) (not (<span style="color:#a6e22e">.isLeapYear</span> date)))
+      (concat (<span style="color:#a6e22e">filter-dob</span> people <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">28</span>) (<span style="color:#a6e22e">filter-dob</span> people <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">29</span>))
+      (<span style="color:#a6e22e">filter-dob</span> people month day))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p><code>birthday-no-leap-year-handling</code> (lines 7-9) shows how the code looks
+like prior to handling of 29 Feb birthdays on non-leap year (the company
+shouldn&rsquo;t only wish them happy birthday once every four years, should they?).</p>
+
+<h3 id="employee-module">Employee Module</h3>
+
+<p>The namespace to rule them all :ring:; it brings <code>pbtic.birthday.csv</code> and
+<code>pbtic.birthday.bday-filter</code> together. Functions in this namespace
+implement business requirements that other namespace may not have already,
+e.g., the CSV parser in <code>pbtic.birthday.csv</code>.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.employee-test
+  (<span style="color:#e6db74">:require</span> [clojure.string <span style="color:#e6db74">:as</span> str]
+            [clojure.test.check.clojure-test <span style="color:#e6db74">:refer</span> [defspec]]
+            [clojure.test.check.generators <span style="color:#e6db74">:as</span> gen]
+            [clojure.test.check.properties <span style="color:#e6db74">:refer</span> [for-all]]
+            [pbtic.birthday.csv-test <span style="color:#e6db74">:as</span> csv-test]
+            [pbtic.birthday.employee <span style="color:#e6db74">:as</span> employee])
+  (<span style="color:#e6db74">:import</span> [java.time LocalDate]))
+
+<span style="color:#75715e">;;;;;;;</span>
+<span style="color:#75715e">;; defs</span>
+
+(<span style="color:#66d9ef">def </span>start-date (<span style="color:#a6e22e">LocalDate/of</span> <span style="color:#ae81ff">1900</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>))
+
+(<span style="color:#66d9ef">def </span>max-days (.. start-date
+                  (<span style="color:#a6e22e">until</span> (<span style="color:#a6e22e">LocalDate/of</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>))
+                  getDays))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; generators</span>
+
+(<span style="color:#66d9ef">def </span>text-date
+  (<span style="color:#a6e22e">gen/let</span> [days-to-add (<span style="color:#a6e22e">gen/choose</span> <span style="color:#ae81ff">0</span> max-days)]
+    (<span style="color:#66d9ef">let </span>[date (<span style="color:#a6e22e">.plusDays</span> start-date days-to-add)]
+      (<span style="color:#a6e22e">format</span> <span style="color:#e6db74">&#34; %4d/%02d/%02d&#34;</span>
+              (<span style="color:#a6e22e">.getYear</span> date)
+              (<span style="color:#a6e22e">.getMonthValue</span> date)
+              (<span style="color:#a6e22e">.getDayOfMonth</span> date)))))
+
+
+(<span style="color:#66d9ef">def </span>whitespaced-text
+  (<span style="color:#a6e22e">gen/let</span> [txt csv-test/field]
+    (str <span style="color:#e6db74">&#34; &#34;</span> txt)))
+
+
+(<span style="color:#66d9ef">def </span>raw-employee-map
+  (<span style="color:#a6e22e">gen/let</span> [val-list (<span style="color:#a6e22e">gen/tuple</span> csv-test/field
+                                whitespaced-text
+                                text-date
+                                whitespaced-text)]
+    (zipmap [<span style="color:#e6db74">&#34;last_name&#34;</span>, <span style="color:#e6db74">&#34; first_name&#34;</span>, <span style="color:#e6db74">&#34; date_of_birth&#34;</span>, <span style="color:#e6db74">&#34; email&#34;</span>] val-list)))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; properties</span>
+
+(<span style="color:#a6e22e">defspec</span> check-that-leading-space-is-fixed
+  (<span style="color:#a6e22e">for-all</span> [m raw-employee-map]
+    (<span style="color:#66d9ef">let </span>[emp (<span style="color:#a6e22e">employee/adapt-csv-result</span> m)]
+      (every? <span style="color:#f92672">#</span>(not (<span style="color:#a6e22e">str/starts-with?</span> (name %) <span style="color:#e6db74">&#34; &#34;</span>))
+              (concat (keys emp)
+                      (filter string? (vals emp)))))))
+
+
+(<span style="color:#a6e22e">defspec</span> check-that-date-is-formatted-right
+  (<span style="color:#a6e22e">for-all</span> [m raw-employee-map]
+    (<span style="color:#66d9ef">let </span>[m (<span style="color:#a6e22e">employee/adapt-csv-result</span> m)]
+      (= (<span style="color:#a6e22e">type</span> (get m <span style="color:#e6db74">:date-of-birth</span>)) LocalDate))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Taking Fred&rsquo;s advice on reworking a restriction into a transformation when
+creating custom generators (refer to Imposing Restrictions subsection under
+Basic Custom Generators in chapter 4 of the book), <code>text-date</code> (lines 22-28)
+ditches <code>gen/such-that</code> and goes for a transformation that adds days to a
+known start date (1900-01-01). Although this is not a pure code-porting, it
+shows how re-imagining the problem on-hand is not that all difficult.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.employee
+  (<span style="color:#e6db74">:require</span> [clojure.string <span style="color:#e6db74">:as</span> str]
+            [pbtic.birthday.bday-filter <span style="color:#e6db74">:as</span> bday-filter]
+            [pbtic.birthday.csv <span style="color:#e6db74">:as</span> csv])
+  (<span style="color:#e6db74">:import</span> [java.time LocalDate]
+           [java.time.format DateTimeFormatter]))
+
+<span style="color:#75715e">;;;;;;;</span>
+<span style="color:#75715e">;; defs</span>
+
+(<span style="color:#66d9ef">def </span><span style="color:#f92672">^</span><span style="color:#e6db74">:private</span> datetime-formatter (<span style="color:#a6e22e">DateTimeFormatter/ofPattern</span> <span style="color:#e6db74">&#34;yyyy/MM/dd&#34;</span>))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; public API</span>
+
+(<span style="color:#66d9ef">defn </span>adapt-csv-result [m]
+  (<span style="color:#66d9ef">let </span>[ks  (<span style="color:#a6e22e">sequence</span> (comp (map str/triml)
+                            (map <span style="color:#f92672">#</span>(<span style="color:#a6e22e">str/replace</span> % <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;_&#34;</span> <span style="color:#e6db74">&#34;-&#34;</span>))
+<span style="display:block;width:100%;background-color:#3c3d38">                            (map keyword))
+</span>                      (keys m))
+        m   (zipmap ks (map str/triml (vals m)))
+        dob (<span style="color:#e6db74">:date-of-birth</span> m)]
+    (assoc m <span style="color:#e6db74">:date-of-birth</span> (<span style="color:#a6e22e">LocalDate/parse</span> dob datetime-formatter))))
+
+
+(<span style="color:#66d9ef">defn </span>from-csv [s]
+  (map adapt-csv-result (<span style="color:#a6e22e">csv/decode</span> s)))
+
+
+<span style="color:#75715e">;; parameter order is different from the book&#39;s</span>
+(<span style="color:#66d9ef">defn </span>filter-birthday [date employees]
+  (<span style="color:#a6e22e">bday-filter/birthday</span> employees date))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p><code>pbtic.birthday.employee</code> namespace does not implement &ldquo;accessors&rdquo; because
+of the keyword-izing of keys at line 19 because of Clojure&rsquo;s idiom on
+using keywords to retrieve values from maps (line 22 shows one such example).
+The other change is the swapping of the parameters in <code>filter-birthday</code> (lines
+31-32); this makes the function more easily usable with the <a href="https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/-%3E%3E"><code>-&gt;&gt;</code></a>
+threading macro; Elixir <a href="https://hexdocs.pm/elixir/Kernel.html#%7C%3E/2"><code>|&gt;</code></a> expects collections to be the first argument,
+but Clojure <code>-&gt;&gt;</code> expects it to be the last). Such omission makes Clojure&rsquo;s
+implementation/port shorter.</p>
+
+<h3 id="templating">Templating</h3>
+
+<p><code>pbtic.birthday.mail-tpl/body</code> function creates the message for
+inserting into the email. It&rsquo;s relatively easy that could have been
+tested using traditional unit testing method&hellip;</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.mail-tpl-test
+  (<span style="color:#e6db74">:require</span> [clojure.string <span style="color:#e6db74">:as</span> str]
+            [clojure.test.check.clojure-test <span style="color:#e6db74">:refer</span> [defspec]]
+            [clojure.test.check.generators <span style="color:#e6db74">:as</span> gen]
+            [clojure.test.check.properties <span style="color:#e6db74">:refer</span> [for-all]]
+            [pbtic.birthday.csv-test <span style="color:#e6db74">:as</span> csv-test]
+            [pbtic.birthday.mail-tpl <span style="color:#e6db74">:as</span> mail-tpl])
+  (<span style="color:#e6db74">:import</span> [java.time LocalDate]))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; generators</span>
+
+(<span style="color:#66d9ef">def </span>date
+  (<span style="color:#a6e22e">gen/let</span> [days-to-add gen/nat]
+   (<span style="color:#a6e22e">.plusDays</span> (<span style="color:#a6e22e">LocalDate/of</span> <span style="color:#ae81ff">1900</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>) days-to-add)))
+
+
+(<span style="color:#66d9ef">def </span>employee-map
+  (<span style="color:#a6e22e">gen/let</span> [vs (<span style="color:#a6e22e">gen/tuple</span> (<span style="color:#a6e22e">gen/not-empty</span> csv-test/field)
+                          (<span style="color:#a6e22e">gen/not-empty</span> csv-test/field)
+                          date
+                          (<span style="color:#a6e22e">gen/not-empty</span> csv-test/field))]
+    (zipmap [<span style="color:#e6db74">:last-name</span> <span style="color:#e6db74">:first-name</span> <span style="color:#e6db74">:date-of-birth</span> <span style="color:#e6db74">:email</span>] vs)))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; properties</span>
+
+(<span style="color:#a6e22e">defspec</span> email-template-has-first-name
+  (<span style="color:#a6e22e">for-all</span> [employee employee-map]
+    (<span style="color:#a6e22e">str/includes?</span> (<span style="color:#a6e22e">mail-tpl/body</span> employee)
+                   (<span style="color:#e6db74">:first-name</span> employee))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The implementation is trivial:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday.mail-tpl)
+
+(<span style="color:#66d9ef">defn </span>body [{<span style="color:#e6db74">:keys</span> [first-name]}]
+  (<span style="color:#a6e22e">format</span> <span style="color:#e6db74">&#34;Happy birthday, dear %s!&#34;</span> first-name))
+
+
+(<span style="color:#66d9ef">defn </span>full [{<span style="color:#e6db74">:keys</span> [email] <span style="color:#e6db74">:as</span> employee}]
+  [email, <span style="color:#e6db74">&#34;Happy birthday!&#34;</span>, (<span style="color:#a6e22e">body</span> employee)])</code></pre></td></tr></table>
+</div>
+</div>
+
+<h3 id="plumbing-it-all-together">Plumbing It All Together</h3>
+
+<p><code>pbtic.birthday/run</code> function ties all these up (without any integration tests
+written).</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.birthday
+  (<span style="color:#e6db74">:require</span> [pbtic.birthday.csv <span style="color:#e6db74">:as</span> csv]
+            [pbtic.birthday.employee <span style="color:#e6db74">:as</span> employee]
+            [pbtic.birthday.mail-tpl <span style="color:#e6db74">:as</span> mail-tpl])
+  (<span style="color:#e6db74">:import</span> [java.time LocalDate]))
+
+<span style="color:#75715e">;;;;;;;;;</span>
+<span style="color:#75715e">;; helper</span>
+
+(<span style="color:#66d9ef">defn- </span>send-email [[to, _topic, _body]]
+  (println <span style="color:#e6db74">&#34;sent birthday email to&#34;</span> to))
+
+<span style="color:#75715e">;;;;;;;;;;;;;</span>
+<span style="color:#75715e">;; public api</span>
+
+(<span style="color:#66d9ef">defn </span>run [path <span style="color:#f92672">&amp;</span> {<span style="color:#e6db74">:keys</span> [curr-date] <span style="color:#e6db74">:or</span> {curr-date (<span style="color:#a6e22e">LocalDate/now</span>)}}]
+  (doseq [employee (<span style="color:#a6e22e">-&gt;&gt;</span> (slurp path)
+                        employee/from-csv
+                        (<span style="color:#a6e22e">employee/filter-birthday</span> curr-date))]
+    (<span style="color:#a6e22e">send-email</span> (<span style="color:#a6e22e">mail-tpl/full</span> employee))))</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>To test it, pass the file name of the employee record CSV and
+optionally the &ldquo;current date&rdquo; (defaults to today). For example, run the
+following at Clojure REPL:</p>
+
+<pre><code class="language-clojure-repl">user=&gt; (require '[pbtic.birthday :as bday])
+user=&gt; (import '[java.time LocalDate])
+user=&gt; (bday/run &quot;resources/birthday/employees.csv&quot; :curr-date (LocalDate/of 2019 8 10))
+sent birthday email to john.doe@foobar.com
+nil
+</code></pre>
+
+<h2 id="summary">Summary</h2>
+
+<p>It&rsquo;s quite a blast in porting the code from Erlang/Elixir to Clojure. In the
+next post, I&rsquo;ll cover the code ported from chapter 6
+&ldquo;Properties-Driven Development.&rdquo;</p>
+
+  </article>
+
+    </main>
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.59.1</a></div>
+      
+    </footer>
+  </body>
+</html>

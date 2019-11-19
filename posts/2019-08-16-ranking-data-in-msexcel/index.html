@@ -1,0 +1,577 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name="generator" content="Hugo 0.59.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Ranking Data in MSExcel</h1>
+  
+    Aug 16, 2019
+  
+  <article>
+    
+
+<p>MSExcel, despite its <a href="https://www.google.com/search?hl=en&amp;q=excel%20bad%20for%20data%20analysis">bad name</a> for
+<a href="https://en.wikipedia.org/wiki/Data_analysis">data analysis</a>, can still be a very good tool to reach out
+to for one-off analysis jobs, especially when the output needs to be
+interactive. After all, nothing comes close to the reactivity &ndash; as in
+<a href="https://en.wikipedia.org/wiki/Reactive_programming">reactive programming</a> &ndash; simple MSExcel formulae provide
+that do not require hardcore development skills.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
+
+<h2 id="getting-our-hands-dirty">Getting our hands dirty</h2>
+
+<p>Let&rsquo;s say the requirement is to rank the customers&rsquo;  <em>YTD Trade Count</em>
+and <em>MTD Trade Count</em>. One method is to do that by hand:</p>
+
+<table>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>A</th>
+<th align="center">B</th>
+<th align="center">C</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>Customer</strong></td>
+<td align="center"><strong>YTD Trade Count</strong></td>
+<td align="center"><strong>MTD Trade Count</strong></td>
+</tr>
+
+<tr>
+<td><strong>2</strong></td>
+<td>ABC</td>
+<td align="center">190</td>
+<td align="center">7</td>
+</tr>
+
+<tr>
+<td><strong>3</strong></td>
+<td>DEF</td>
+<td align="center">288</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>4</strong></td>
+<td>GHI</td>
+<td align="center">69</td>
+<td align="center">32</td>
+</tr>
+
+<tr>
+<td><strong>5</strong></td>
+<td>JKL</td>
+<td align="center">168</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>6</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>7</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>8</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>9</strong></td>
+<td><strong>Customer</strong></td>
+<td align="center"><strong>YTD Rank</strong></td>
+<td align="center"><strong>MTD Rank</strong></td>
+</tr>
+
+<tr>
+<td><strong>10</strong></td>
+<td>ABC</td>
+<td align="center">2nd</td>
+<td align="center">4th</td>
+</tr>
+
+<tr>
+<td><strong>10</strong></td>
+<td>DEF</td>
+<td align="center">1st</td>
+<td align="center">1st</td>
+</tr>
+
+<tr>
+<td><strong>11</strong></td>
+<td>GHI</td>
+<td align="center">4th</td>
+<td align="center">3rd</td>
+</tr>
+
+<tr>
+<td><strong>12</strong></td>
+<td>JKL</td>
+<td align="center">3rd</td>
+<td align="center">1st</td>
+</tr>
+</tbody>
+</table>
+
+<p>Yeah, it works! But if the number of customers is in the hundreds, doing it
+by hand is a huge waste of time. We can do better than that.</p>
+
+<p>MSExcel has one handy function <code>LARGE</code><sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup> which the
+<a href="https://support.office.com/en-us/article/LARGE-function-3AF0AF19-1190-42BB-BB8B-01672EC00A64">official documentation</a> says:</p>
+
+<blockquote>
+<blockquote>
+<p>Returns the k-th largest value in a data set.
+You can use this function to select a value based on its relative standing.
+For example, you can use LARGE to return the highest, runner-up, or
+third-place score.</p>
+</blockquote>
+</blockquote>
+
+<p>and its syntax:</p>
+
+<blockquote>
+<blockquote>
+<p>LARGE(array, k)</p>
+
+<p>The LARGE function syntax has the following arguments:</p>
+
+<ul>
+<li>Array    Required. The array or range of data for which you want to determine the k-th largest value.</li>
+<li>K    Required. The position (from the largest) in the array or cell range of data to return.</li>
+</ul>
+</blockquote>
+</blockquote>
+
+<p>Great! Type out the formula <code>=LARGE(B$2:B$5,ROW()-9)</code>, copy and paste it
+across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
+
+<table>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>A</th>
+<th align="center">B</th>
+<th align="center">C</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>Customer</strong></td>
+<td align="center"><strong>YTD Trade Count</strong></td>
+<td align="center"><strong>MTD Trade Count</strong></td>
+</tr>
+
+<tr>
+<td><strong>2</strong></td>
+<td>ABC</td>
+<td align="center">190</td>
+<td align="center">7</td>
+</tr>
+
+<tr>
+<td><strong>3</strong></td>
+<td>DEF</td>
+<td align="center">288</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>4</strong></td>
+<td>GHI</td>
+<td align="center">69</td>
+<td align="center">32</td>
+</tr>
+
+<tr>
+<td><strong>5</strong></td>
+<td>JKL</td>
+<td align="center">168</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>6</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>7</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>8</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>9</strong></td>
+<td><strong>Customer</strong></td>
+<td align="center"><strong>YTD Rank</strong></td>
+<td align="center"><strong>MTD Rank</strong></td>
+</tr>
+
+<tr>
+<td><strong>10</strong></td>
+<td>ABC</td>
+<td align="center">2nd</td>
+<td align="center">4th</td>
+</tr>
+
+<tr>
+<td><strong>10</strong></td>
+<td>DEF</td>
+<td align="center">1st</td>
+<td align="center">1st</td>
+</tr>
+
+<tr>
+<td><strong>11</strong></td>
+<td>GHI</td>
+<td align="center">4th</td>
+<td align="center">3rd</td>
+</tr>
+
+<tr>
+<td><strong>12</strong></td>
+<td>JKL</td>
+<td align="center">3rd</td>
+<td align="center">1st</td>
+</tr>
+
+<tr>
+<td><strong>13</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>14</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>15</strong></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>16</strong></td>
+<td></td>
+<td align="center"><strong>YTD Ordered</strong></td>
+<td align="center"><strong>MTD Ordered</strong></td>
+</tr>
+
+<tr>
+<td><strong>17</strong></td>
+<td></td>
+<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+</tr>
+
+<tr>
+<td><strong>18</strong></td>
+<td></td>
+<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+</tr>
+
+<tr>
+<td><strong>19</strong></td>
+<td></td>
+<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+</tr>
+
+<tr>
+<td><strong>20</strong></td>
+<td></td>
+<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+</tr>
+</tbody>
+</table>
+
+<p>And that yields the following:</p>
+
+<table>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>A</th>
+<th align="center">B</th>
+<th align="center">C</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td><strong>Customer</strong></td>
+<td align="center"><strong>YTD Trade Count</strong></td>
+<td align="center"><strong>MTD Trade Count</strong></td>
+</tr>
+
+<tr>
+<td><strong>2</strong></td>
+<td>ABC</td>
+<td align="center">190</td>
+<td align="center">7</td>
+</tr>
+
+<tr>
+<td><strong>3</strong></td>
+<td>DEF</td>
+<td align="center">288</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>4</strong></td>
+<td>GHI</td>
+<td align="center">69</td>
+<td align="center">32</td>
+</tr>
+
+<tr>
+<td><strong>5</strong></td>
+<td>JKL</td>
+<td align="center">168</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td>&hellip;</td>
+<td align="center">&hellip;</td>
+<td align="center">&hellip;</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td><strong>16</strong></td>
+<td></td>
+<td align="center"><strong>YTD Ordered</strong></td>
+<td align="center"><strong>MTD Ordered</strong></td>
+</tr>
+
+<tr>
+<td><strong>17</strong></td>
+<td></td>
+<td align="center">288</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>18</strong></td>
+<td></td>
+<td align="center">190</td>
+<td align="center">38</td>
+</tr>
+
+<tr>
+<td><strong>19</strong></td>
+<td></td>
+<td align="center">168</td>
+<td align="center">32</td>
+</tr>
+
+<tr>
+<td><strong>20</strong></td>
+<td></td>
+<td align="center">69</td>
+<td align="center">7</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>ROW()</code> returns the row number of the cell the function is applied to,
+thus <code>ROW()-16</code> at <code>B17</code> signals to <code>LARGE</code> to return the first largest value;
+at <code>B18</code> to return second largest&hellip;</p>
+
+<p>Although that simply sorts the two columns in descending order, it beats
+the manual steps in the following ways:</p>
+
+<ol>
+<li>Typing out the formula, copy and paste takes only 2 steps, but manual
+sorting takes 4:
+
+<ol>
+<li>Copy values from <code>B2:B5</code> and paste them at <code>B17:B20</code></li>
+<li>Sort values in <code>B17:B20</code></li>
+<li>Copy values from <code>C2:C5</code> and paste them at <code>C17:C20</code></li>
+<li>Sort values in <code>C17:C20</code></li>
+</ol></li>
+<li>MSExcel automatically apply the ordering when any values in <code>B2:C5</code> change</li>
+</ol>
+
+<p>Type out the rank at column D (actually, for ranks 4th and beyond, using
+the formula <code>=ROW()-15&amp;&quot;th&quot;</code> can save some typing with some copy &amp; paste
+laziness):</p>
+
+<table>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>A</th>
+<th align="center">B</th>
+<th align="center">C</th>
+<th align="center">D</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>16</strong></td>
+<td></td>
+<td align="center"><strong>YTD Ordered</strong></td>
+<td align="center"><strong>MTD Ordered</strong></td>
+<td align="center"><strong>Rank</strong></td>
+</tr>
+
+<tr>
+<td><strong>17</strong></td>
+<td></td>
+<td align="center">288</td>
+<td align="center">38</td>
+<td align="center">1st</td>
+</tr>
+
+<tr>
+<td><strong>18</strong></td>
+<td></td>
+<td align="center">190</td>
+<td align="center">38</td>
+<td align="center">2nd</td>
+</tr>
+
+<tr>
+<td><strong>19</strong></td>
+<td></td>
+<td align="center">168</td>
+<td align="center">32</td>
+<td align="center">3rd</td>
+</tr>
+
+<tr>
+<td><strong>20</strong></td>
+<td></td>
+<td align="center">69</td>
+<td align="center">7</td>
+<td align="center">4th</td>
+</tr>
+</tbody>
+</table>
+
+<p>Replace the hand-coded rank at cell <code>B10</code> with the formula
+<code>=VLOOKUP(B2,B$17:$D$17,5-COLUMN(),FALSE)</code>, then copy and paste the cell across
+<code>B10:C12</code> yields the same result to the do-by-hand version but with an
+important advantage: any changes to the values in <code>B2:C5</code> automatically
+refresh the ranks.</p>
+
+<p><code>COLUMN</code> returns the column number the function is applied to.
+The <code>5-COLUMN()</code> fragment in the <code>VLOOKUP</code> formula
+is to determine automatically the lookup index. For example, at cell <code>B10</code>,
+<code>5-COLUMN()</code> resolves to 3, at cell C10 resolves to 2.</p>
+
+<p><img src="/images/2019-08-16-ranking-demo.apng" alt="auto-updated-rankings" title="Auto-updated Ranking" /></p>
+
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>With no coding, some creative use of MSExcel functions, and lots of
+copy-and-paste, MSExcel&rsquo;s efficiency is unbeatable. Yes, using <a href="https://pandas.pydata.org">pandas</a> or
+<a href="https://www.r-project.org">R</a> makes the work reproducible, but sometimes not everything is a nail.
+MSExcel has its place in data analysis; knowing what tool to use appropriately
+is far more important and flexing the scripting muscles.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">How many data analysts understand reactive programming? My unscientific survey says &ldquo;not many.&rdquo;
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+<li id="fn:2">The counterpart to <code>LARGE</code> is <a href="https://support.office.com/en-us/article/SMALL-function-17DA8222-7C82-42B2-961B-14C45384DF07"><code>SMALL</code></a>
+ <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+  </article>
+
+    </main>
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.59.1</a></div>
+      
+    </footer>
+  </body>
+</html>

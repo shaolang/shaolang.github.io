@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>elixir on Bit by bit</title>
+    <link>https://shaolang.github.io/tags/elixir/</link>
+    <description>Recent content in elixir on Bit by bit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 Aug 2018 08:57:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://shaolang.github.io/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Custom ExUnit.CaseTemplate</title>
+      <link>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</link>
+      <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
+      <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
+$ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
+    </item>
+    
+  </channel>
+</rss>

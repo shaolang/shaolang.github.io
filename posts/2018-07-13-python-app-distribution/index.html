@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name="generator" content="Hugo 0.59.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Python Code Structure and Distribution</h1>
+  
+    Jul 13, 2018
+  
+  <article>
+    <p>Probably it&rsquo;s due to my inexperience in Python&rsquo;s community/ecosystem, I find
+it amusing that Python community has no agreed standard in code organization.
+Yeah, <a href="http://docs.python-guide.org/en/latest/">The Hitchhiker&rsquo;s Guide to Python!</a> attempts to recommend
+some <a href="http://docs.python-guide.org/en/latest/writing/structure/">structure</a>, but the popular <a href="https://pytest.org">pytest</a>
+recommends <a href="https://docs.pytest.org/en/latest/goodpractices.html#tests-outside-application-code">something entirely different</a>.</p>
+
+<p>By adopting pytest&rsquo;s recommendation&ndash;i.e., putting code in <code>src</code> directory&ndash;I
+need to make the some changes, changes that are not obvious to a noob like me:</p>
+
+<ul>
+<li>As my code modules are no longer on <code>PYTHONPATH</code>, I need to install
+<a href="https://github.com/bigsassy/pytest-pythonpath">pytest-pythonpath</a> and add <code>src</code> to in <code>pytest.ini</code> to
+inject my code into <code>PYTHONPATH</code> for pytest to function.</li>
+<li>Similarly, I need to update my cx_Freeze <code>setup.py</code> to point to the entry
+file in <code>src</code> (highlighted):</li>
+</ul>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span style="color:#75715e"># Assuming the filename is setup.py</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span style="color:#f92672">import</span> os.path
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span style="color:#f92672">import</span> sys
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span style="color:#f92672">from</span> cx_Freeze <span style="color:#f92672">import</span> setup, Executable
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span>PYTHON_INSTALL_DIR <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(os<span style="color:#f92672">.</span>__file__))
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#39;TCL_LIBRARY&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74">&#39;tcl&#39;</span>, <span style="color:#e6db74">&#39;tcl8.6&#39;</span>)
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#39;TK_LIBRARY&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74">&#39;tcl&#39;</span>, <span style="color:#e6db74">&#39;tk8.6&#39;</span>)
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span>base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Win32GUI&#39;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span>options<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;build_exe&#39;</span>: {
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span>   <span style="color:#e6db74">&#39;includes&#39;</span>: [<span style="color:#e6db74">&#39;tkinter&#39;</span>],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span>   <span style="color:#e6db74">&#39;include_files&#39;</span>: [
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span>       <span style="color:#e6db74">&#39;./resources/tcl86t.dll&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span>       <span style="color:#e6db74">&#39;./resources/tk86t.dll&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span>       <span style="color:#e6db74">&#39;./resources/vcruntime140.dll&#39;</span>],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span>    <span style="color:#e6db74">&#39;path&#39;</span>: sys<span style="color:#f92672">.</span>path <span style="color:#f92672">+</span> [os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(<span style="color:#e6db74">&#39;./src&#39;</span>)]}}
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span>setup(  name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;my_awesome_app&#39;</span>,
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span>       version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0.1.0&#39;</span>,
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span>       description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Super, Duper Awesome App&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span>       executables <span style="color:#f92672">=</span> [Executable(script<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;./src/main.py&#39;</span>, base<span style="color:#f92672">=</span>base,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span>           targetName<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;awesome.exe&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span>           copyright<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Copyright © 2018 Shaolang Ai&#39;</span>)],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span>       options <span style="color:#f92672">=</span> options)</code></pre></div>
+
+<p><em>Yes, I develop apps to run in Windows.</em> The code above also shows the things
+I need to include to ensure that the packaged app can run TkInter without
+issues. With these in place, running <code>python setup.py build</code> will
+create my redistributable standalone app correctly.</p>
+
+  </article>
+
+    </main>
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.59.1</a></div>
+      
+    </footer>
+  </body>
+</html>

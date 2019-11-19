@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bit by bit</title>
+    <link>https://shaolang.github.io/</link>
+    <description>Recent content on Bit by bit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 16 Aug 2019 21:25:48 +0800</lastBuildDate>
+    
+	<atom:link href="https://shaolang.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ranking Data in MSExcel</title>
+      <link>https://shaolang.github.io/posts/2019-08-16-ranking-data-in-msexcel/</link>
+      <pubDate>Fri, 16 Aug 2019 21:25:48 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2019-08-16-ranking-data-in-msexcel/</guid>
+      <description>MSExcel, despite its bad name for data analysis, can still be a very good tool to reach out to for one-off analysis jobs, especially when the output needs to be interactive. After all, nothing comes close to the reactivity &amp;ndash; as in reactive programming &amp;ndash; simple MSExcel formulae provide that do not require hardcore development skills.1
+Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the customers&amp;rsquo; YTD Trade Count and MTD Trade Count.</description>
+    </item>
+    
+    <item>
+      <title>Property-Based Testing: From Erlang/Elixir to Clojure</title>
+      <link>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</link>
+      <pubDate>Mon, 12 Aug 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</guid>
+      <description>Reading Property-Based Testing with PropEr, Erlang, and Elixir and following along the examples helped me in learning this exciting testing methodology; but it also left me wondering: have I really absorbed and internalized just by following along?
+So, I reached out to Fred, got his approval, and started translating the code from Erlang/Elixir to Clojure with test.check. All the code done [so far] are hosted at https://github.com/shaolang/pbtic I&amp;rsquo;m using test.</description>
+    </item>
+    
+    <item>
+      <title>SQLite: show UTC timestamp as local time</title>
+      <link>https://shaolang.github.io/posts/2019-06-24-sqlite-show-utc-timestamp-as-local-time/</link>
+      <pubDate>Mon, 24 Jun 2019 21:12:03 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2019-06-24-sqlite-show-utc-timestamp-as-local-time/</guid>
+      <description>A business unit asked me to compile some trading volume stats by trading hour. The good thing is that I have the following in SQLite database; the bad thing is the database stores the timestamp as follows:
+  trade idamount donetimestamp   11002019-06-01 01:01:01.111111 22002019-06-01 02:02:02.222222 33002019-06-01 03:03:03.333333 ... 1000100002019-06-24 23:59:59.999999   timestamp column is stored as a string1, so rather than doing timezone arithmetic, I used SQLite&amp;rsquo;s built-in date/time functions instead:</description>
+    </item>
+    
+    <item>
+      <title>Custom ExUnit.CaseTemplate</title>
+      <link>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</link>
+      <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
+      <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
+$ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
+    </item>
+    
+    <item>
+      <title>Python Code Structure and Distribution</title>
+      <link>https://shaolang.github.io/posts/2018-07-13-python-app-distribution/</link>
+      <pubDate>Fri, 13 Jul 2018 23:30:15 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2018-07-13-python-app-distribution/</guid>
+      <description>Probably it&amp;rsquo;s due to my inexperience in Python&amp;rsquo;s community/ecosystem, I find it amusing that Python community has no agreed standard in code organization. Yeah, The Hitchhiker&amp;rsquo;s Guide to Python! attempts to recommend some structure, but the popular pytest recommends something entirely different.
+By adopting pytest&amp;rsquo;s recommendation&amp;ndash;i.e., putting code in src directory&amp;ndash;I need to make the some changes, changes that are not obvious to a noob like me:
+ As my code modules are no longer on PYTHONPATH, I need to install pytest-pythonpath and add src to in pytest.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://shaolang.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shaolang.github.io/about/</guid>
+      <description>I like learning things, especially in how things work. My current weapons-of-choice are Clojure, JavaScript, Python, and Ruby (in alphabetical order). On the language front, I&amp;rsquo;m learning Elixir, Erlang, Haskell, and Rust; on the application front, I&amp;rsquo;m learning pandas, scikit-learn, and Tensorflow. Why? &amp;lsquo;cos curiosity and fascination.
+As the word goes, teaching is the best way to learn, hence this blog, even if the audience is only myself.</description>
+    </item>
+    
+  </channel>
+</rss>
