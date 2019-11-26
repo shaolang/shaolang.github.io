@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Aug 2019 21:25:48 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 26 Nov 2019 10:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://shaolang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Genetic Algorithms Basics</title>
+      <link>https://shaolang.github.io/posts/2019-11-22-genetic-algorithms-basics/</link>
+      <pubDate>Tue, 26 Nov 2019 10:00:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2019-11-22-genetic-algorithms-basics/</guid>
+      <description>Genetic algorithm is another branch of artificial intelligence that takes inspirations from Darwin&amp;rsquo;s theory of evolution. Genetic algorithm is useful in solving optimization problems where a good-enough solution is acceptable as opposed to best solution. Good-enough because getting the best solution can take a long time or a lot of resources to compute. For example, genetic algorithm is useful for solving timetable scheduling and bin packing problems. Not to be confused with the similarly named Genetic programming, genetic algorithm uses lists/arrays extensively; genetic programming uses trees instead.</description>
+    </item>
     
     <item>
       <title>Ranking Data in MSExcel</title>

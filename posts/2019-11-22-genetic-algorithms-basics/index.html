@@ -1,0 +1,1483 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.59.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Genetic Algorithms Basics</h1>
+  
+    Nov 26, 2019
+  
+  <article>
+    
+
+<p><a href="https://en.wikipedia.org/wiki/Genetic_algorithm">Genetic algorithm</a> is another branch of artificial intelligence
+that takes inspirations from Darwin&rsquo;s theory of evolution. Genetic algorithm
+is useful in solving optimization problems where a good-enough solution
+is acceptable as opposed to best solution. Good-enough because getting
+the best solution can take a long time or a lot of resources to compute.
+For example, genetic algorithm is useful for solving
+<a href="https://medium.com/@vijinimallawaarachchi/time-table-scheduling-2207ca593b4d">timetable scheduling</a> and <a href="https://www.researchgate.net/publication/273121476_A_genetic_algorithm_for_the_three-dimensional_bin_packing_problem_with_heterogeneous_bins">bin packing</a> problems.
+Not to be confused with the similarly named <a href="https://en.wikipedia.org/wiki/Genetic_programming">Genetic programming</a>,
+genetic algorithm uses lists/arrays extensively; genetic programming uses
+trees instead.</p>
+
+<h1 id="building-blocks">Building blocks</h1>
+
+<p>Candidate solutions are encoded as chromosomes (also known as individuals);
+each chromosome is made up of multiple genes that encode the solution-space.
+Genetic algorithm &ldquo;evolves&rdquo; a population of individuals by crossing over and
+mutating them towards an acceptable solution, much like the natural,
+biological world. The pseudocode for a basic algorithm is as follows:</p>
+
+<pre><code>population = create_random_population
+while continue_evolution?(population)
+  population_crossed = crossover(population)
+  population_mutated = mutate(population_crossed)
+  evaluate(population_mutated)
+  population = population_mutated
+end
+</code></pre>
+
+<p>The pseudocode shows two genetic operators in use: crossover and
+mutation. Crossover is the process of producing a child solution from two
+or more parent solutions (think breeding/mating). By combining portions of good
+solutions, the algorithm is likely able to produce better and better
+child solutions as generations pass (genetic-algorithm-speak for iterations).
+Mutation randomly changes some genes within the chromosome, thus creating
+genetic diversity in the population. However, when crossover and mutation
+rates are too high, fitter individuals might be lost during evolution; when
+rates are too low, potentially strong individuals might never enter the
+gene pool. Introducing elitism mitigates some effects of crossover and
+mutations. Elitism keeps a handful of the fittest individuals in the
+current generation untouched for interacting with individuals in the
+next generation.</p>
+
+<h2 id="crossover">Crossover</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)">Crossover</a>, also known as recombination, can be implemented in
+several ways:</p>
+
+<ol>
+<li>Uniform crossover: each gene in selected parents has equal probability in
+being inherited by the offspring, e.g., when there are two parents, each
+gene in the offspring has a <sup>50</sup>&frasl;<sub>50</sub> chance of coming from either parents.</li>
+<li>Single-point crossover: a common point on both parents is picked randomly
+and the offspring will inherit the first parent&rsquo;s genes up till that point
+and the second&rsquo;s genes from that point onwards as its genes, e.g., if
+the chromosome length is 10, and the common point randomly chosen is 7,
+the offspring will inherit the first 7 genes from the first parent
+and the last 3 genes from the second.</li>
+<li>Two-point crossover: two common points on both parents are picked
+randomly and the offspring will inherit the genes within the two points
+from the first parent and the rest from the second, e.g., if the
+chromosome length is 10, and the common points are 3 and 6, the offspring
+will inherit the first 2 genes from the second parent, the next 4 genes
+from the first, and the remainder from the second parent.</li>
+</ol>
+
+<h2 id="mutation">Mutation</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)">Mutation</a> can be implemented in one of the following ways:</p>
+
+<ol>
+<li>Flip bit: invert the gene&rsquo;s value, if it is encoded as ones and zeroes</li>
+<li>Boundary: replace the gene with a random value between the specified
+upper and lower bound</li>
+<li>Swap: swap the gene selected for mutation with another in the
+same chromosome; this implementation is useful when the chromosome
+cannot allow duplicate values/genes</li>
+<li>Uniform: create a new (valid) individual with randomly initialized
+chromosome, and mutate (randomly) selected genes of the individual (not
+the newly created one) by taking genes from the newly created individual,
+e.g., if genes 1, 3, and 5 from an individual (ID1) are to be mutated,
+uniform mutation will take genes from 1, 3, and 5 from the newly created
+individual and substitute them at genes 1, 3, and 5 of the mutated ID1;
+it feels a little uniform crossover, except that the offspring will
+take genes from the randomly-created individual when <code>mutation_rate &gt; rand</code></li>
+</ol>
+
+<h2 id="genes-and-chromosomes">Genes and chromosomes</h2>
+
+<p>Genes can be encoded in any way that makes sense for the problem on hand,
+although they commonly are encoded numerically. For example, a binary-encoded
+chromosome could be created as follows:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+chromosome <span style="color:#f92672">=</span> chromosome_length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> }</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The Ruby code above creates an array of length 100 with randomly generated
+numbers between 0s and 1s.</p>
+
+<p>Based on the chromosome, the genetic algorithm will calculate the fitness
+of the individual, usually normalized to values between 0 and 1.
+The higher the fittness score, the better the individual
+is/the closer the program is to solving the problem. Survival of the fittest,
+if you&rsquo;d like.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
+
+<h2 id="selection">Selection</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)">Selection</a> is the process of choosing individuals from the
+population for crossover. Although elites are favored, they shouldn&rsquo;t be
+the only ones make available; sometimes, genes of two seemingly weak
+individuals can create surprisingly fit offsprings.</p>
+
+<p>Selection can be implemented in one of the following ways:</p>
+
+<ol>
+<li>Fitness proportionate: individuals with higher fitness scores are more
+likely to be selected, e.g., a population of 4 individuals with fitness
+scores as <code>[1, 2, 3, 4, 5]</code>, the first individual will only have <sup>1</sup>&frasl;<sub>15</sub> of
+a chance in getting chosen, but the last will have a <sup>1</sup>&frasl;<sub>3</sub> chance. This
+method is also known as roulette wheel selection.</li>
+<li>Tournament: <em>k</em> individuals are selected randomly from the population,
+and they compete with one another in several &ldquo;tournaments;&rdquo; in
+deterministic tournament, the best/fittest among the selected is always
+chosen.</li>
+</ol>
+
+<h1 id="first-toy-example-all-ones">First toy example: All-ones</h1>
+
+<p>This toy example is taken from the book
+<a href="https://www.apress.com/us/book/9781484203293">Genetic Algorithms in Java Basics</a>, but implemented in Ruby.<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup>
+This example shows how the basic blocks can be put together to solve
+problems with genetic algorithm; its goal is to evolve the individuals and
+stop when one of them whose chromosome contains genes that are all ones.
+Such trivial example do not require any other support classes/functions
+to work; those support classes/functions will distract the goal of
+understanding genetic algorithm implementations unnecessarily.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Individual</span><span style="color:#f92672">.</span><span style="color:#a6e22e">of_length</span>(length)
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> })
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">attr_reader</span> <span style="color:#e6db74">:chromosome</span>, <span style="color:#e6db74">:fitness</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(chromosome)
+    @chromosome <span style="color:#f92672">=</span> chromosome
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calc_fitness!</span>
+    @fitness <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> @chromosome<span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>to_f
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+    offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(spouse<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>   <span style="color:#75715e"># pair up parents&#39; genes</span>
+      map { <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span> genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span> }                   <span style="color:#75715e"># randomly choose either one</span>
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate</span>(mutation_rate)
+    mutated <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gene<span style="color:#f92672">|</span>
+      <span style="color:#75715e"># when mutation should happen, then</span>
+      <span style="color:#75715e">#   when gene = 1, (1 - 1).abs =&gt; 0; when 0, (0 - 1).abs =&gt; 1</span>
+      mutation_rate <span style="color:#f92672">&gt;</span> rand ? (gene <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>abs : gene
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new mutated
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">&lt;=&gt;</span>(other)
+    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;=&gt;</span> other<span style="color:#f92672">.</span>fitness)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_s</span>
+    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>@chromosome<span style="color:#f92672">.</span>join <span style="color:#e6db74">&#39;&#39;</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> (fitness: </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p><code>Individual</code> largely keeps track of the chromosome and its fitness. Specific
+to genetic algorithms are <code>calc_fitness</code>, <code>mate</code>, and <code>mutate</code> functions.
+<code>calc_fitness</code> simply 1 divide the sum of the chromosome, so nothing really
+to see here.</p>
+
+<p><code>mate</code> is the method used in crossovers; it accepts another <code>Individual</code>
+instance:</p>
+
+<ol>
+<li>Pairs up the parents&rsquo; genes (e.g., if parents&rsquo; genes were <code>[1, 2]</code>, and
+<code>[3, 4]</code>, <code>[1, 2].zip [3, 4]</code> returns <code>[[1, 3], [2, 4]]</code></li>
+<li>Chooses randomly from the pairs of genes in the block given to <code>map</code></li>
+<li>Creates and returns the offspring with the new genes</li>
+</ol>
+
+<p><code>mutate</code> is given the mutation rate, and it simply run through the entire
+chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
+
+<p><code>&lt;=&gt;</code> overrides the comparison to allow sorting fitnesses in descending order.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Population</span><span style="color:#f92672">.</span><span style="color:#a6e22e">of_size</span>(size, chromosome_length)
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>of_length chromosome_length})
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(individuals)
+    @individuals <span style="color:#f92672">=</span> individuals
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eval_individuals!</span>
+    @individuals<span style="color:#f92672">.</span>each { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>calc_fitness! }
+    @individuals<span style="color:#f92672">.</span>sort!
+    @population_fitness <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>fitness }<span style="color:#f92672">.</span>sum
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crossover_individuals</span>(crossover_rate, elitism_count)
+    elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count                      <span style="color:#75715e"># keep elites for next gen</span>
+    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>   <span style="color:#75715e"># cross the rest</span>
+      <span style="color:#66d9ef">if</span> crossover_rate <span style="color:#f92672">&gt;</span> rand
+        spouse <span style="color:#f92672">=</span> select_parent    <span style="color:#75715e"># helper method</span>
+        individual<span style="color:#f92672">.</span>mate spouse
+      <span style="color:#66d9ef">else</span>
+        individual
+      <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(elites <span style="color:#f92672">+</span> crossed)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate_individuals</span>(mutation_rate, elitism_count)
+    elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
+    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>
+      individual<span style="color:#f92672">.</span>mutate mutation_rate
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(elites <span style="color:#f92672">+</span> mutated)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fittest</span>
+    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">private</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">select_parent</span>
+    roulette_wheel_pos <span style="color:#f92672">=</span> rand <span style="color:#f92672">*</span> @population_fitness
+    spin_wheel_pos <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+    <span style="color:#66d9ef">for</span> individual <span style="color:#66d9ef">in</span> @individuals
+      spin_wheel_pos <span style="color:#f92672">+=</span> individual<span style="color:#f92672">.</span>fitness
+
+      <span style="color:#66d9ef">return</span> individual <span style="color:#66d9ef">if</span> spin_wheel_pos <span style="color:#f92672">&gt;=</span> roulette_wheel_pos
+    <span style="color:#66d9ef">end</span>
+
+    @individuals<span style="color:#f92672">[-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># return last individual if for-loop completes its run</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Population is the &ldquo;container&rdquo; for individuals, that has a class method
+to create a population with randomly initialized individuals (delegating to
+<code>Individual.of_length</code>). Both <code>crossover_individuals</code> and <code>mutate_individuals</code>
+methods are given the <code>elitism_count</code> parameter, so as to ensure the
+preservation of elites for the next generation (refer back to
+<a href="#building-blocks">Building blocks</a> for info).</p>
+
+<p><code>crossover_individuals</code> calls the private <code>select_parent</code> when it needs
+to select a parent for crossover with the current individual it is looping
+over. <code>select_parent</code> uses the fitness proportionate selection method to
+select the parent. Notice that the individuals available for selection
+include the elites (as evident on line 100 <code>for individual in @individuals</code>
+in <code>select_parent</code> method).</p>
+
+<p><code>mutate_individuals</code> simply loops through <code>@individuals</code> and delegates
+the mutation to the individual&rsquo;s <code>mutate</code> method.</p>
+
+<p><code>eval_individuals</code> makes all individuals to calculate their own fitness,
+and it also calculates the population&rsquo;s overall fitness (tracked by
+<code>@population_fitness</code> instance variable). Normally, there isn&rsquo;t a
+need to keep track of the population&rsquo;s fitness; the need arises because
+fitness proportionate selection method used in <code>select_parent</code> needs
+to know the population&rsquo;s overall fitness to function.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
+  mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
+  crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">95</span>
+  elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+  population_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+  chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
+
+  population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>of_size population_size, chromosome_length
+  population<span style="color:#f92672">.</span>eval_individuals!
+
+  curr_generation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+  <span style="color:#66d9ef">while</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
+    puts <span style="color:#e6db74">&#34;Generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+    next_gen <span style="color:#f92672">=</span> population<span style="color:#f92672">.</span>crossover_individuals crossover_rate, elitism_count
+    next_gen <span style="color:#f92672">=</span> next_gen<span style="color:#f92672">.</span>mutate_individuals mutation_rate, elitism_count
+    next_gen<span style="color:#f92672">.</span>eval_individuals!
+
+    population <span style="color:#f92672">=</span> next_gen
+    curr_generation <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">end</span>
+
+  puts <span style="color:#e6db74">&#34;Solution found in generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  puts population<span style="color:#f92672">.</span>fittest
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The main program ties both <code>Population</code> and <code>Individual</code> up by implementing
+the pseudocode as outlined in <a href="#building-blocks">Building blocks</a> (except
+the addition of outputting the current fittest in the loop, and the
+fittest at the end of the program). With the given values to
+<code>mutation_rate</code>, <code>crossover_rate</code> and <code>elisitm_count</code>, the program should
+arrive at the solution within 400 to 600 generations most of the time.</p>
+
+<h1 id="real-world-example-class-scheduling">Real-world example: Class scheduling</h1>
+
+<p>Another example borrowed from the book but with a much simpler implementation:
+the algorithm attempts to generate a class schedule that meets the following
+hard criteria:</p>
+
+<ol>
+<li>Room must be able to fit in all students from the student group (assuming
+full-attendance)</li>
+<li>No room is double-booked for each timeslot</li>
+<li>No professor is teaching in any two sessions at the same time</li>
+</ol>
+
+<p>Soft criteria such as ensuring the professor should not teach more than 2
+consecutive sessions a day are not covered to simplify the discussion. By
+not catering for soft criteria, the algorithm does not account for the
+quality of the solutions found.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">ROOMS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;A1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">15</span>},
+         <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;B1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">30</span>},
+         <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;D1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">20</span>},
+         <span style="color:#ae81ff">5</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;F1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">25</span>}}
+
+<span style="color:#66d9ef">SLOTS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">2</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">3</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">4</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">5</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">6</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">7</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">8</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">9</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">10</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">11</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">12</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">13</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">14</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">15</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 13:00 - 15:00&#39;</span>}
+
+<span style="color:#66d9ef">PROFESSORS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Dr P Smith&#39;</span>,
+              <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mrs E Mitchell&#39;</span>,
+              <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Dr R Williams&#39;</span>,
+              <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mr A Thompson&#39;</span>}
+
+<span style="color:#66d9ef">MODULES</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Computer Science&#39;</span>,  <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;English&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Maths&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Physics&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">5</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;History&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">6</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Drama&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>}}
+
+<span style="color:#66d9ef">STUDENT_GROUPS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">10</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">2</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">30</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">3</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">4</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">5</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">20</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">6</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">22</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">7</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">16</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">8</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">9</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">24</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">10</span> <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>}}
+
+<span style="color:#66d9ef">SESSIONS</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">STUDENT_GROUPS</span><span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>kv<span style="color:#f92672">|</span>
+  sg_id <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+  size <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">][</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
+  kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">][</span><span style="color:#e6db74">:modules</span><span style="color:#f92672">].</span>map { <span style="color:#f92672">|</span>m<span style="color:#f92672">|</span> {<span style="color:#e6db74">sg_id</span>: sg_id, <span style="color:#e6db74">size</span>: size, <span style="color:#e6db74">module</span>: m} }
+<span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>reduce(<span style="color:#e6db74">:+</span>)</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>To keep things really simple, the data are hard-coded as maps. The last line
+calculates the total number of sessions the algorithm needs to work out.
+<code>professors</code> key in <code>MODULES</code> lists the professors (by ID) that can
+teach that module; similarly, <code>modules</code> key in <code>STUDENT_GROUPS</code> lists
+the modules that group is taking.</p>
+
+<p><code>SESSIONS</code> translates <code>STUDENT_GROUPS</code> into (class) sessions that needed to
+be conducted, e.g., the algorithm needs to schedule 3 sessions for student
+group 1: one for Computer Science, one for Maths, and one for Physics.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_room</span>
+  <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>keys<span style="color:#f92672">[</span>rand <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
+<span style="color:#66d9ef">end</span>
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_slot</span>
+  <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">.</span>keys<span style="color:#f92672">[</span>rand <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
+<span style="color:#66d9ef">end</span>
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_professor</span>(sess_id)
+  mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
+  professors <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span>mod_id<span style="color:#f92672">][</span><span style="color:#e6db74">:professors</span><span style="color:#f92672">]</span>
+  professors<span style="color:#f92672">[</span>rand professors<span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The above are helper functions for randomly choosing timeslot, and professor.
+When choosing a professor randomly, the function needs to know for which
+module&rsquo;s list of professors it need to look at.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
+  <span style="color:#66d9ef">GENE_GROUP_SIZE</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+  <span style="color:#66d9ef">ROOM_IX</span>, <span style="color:#66d9ef">SLOT_IX</span>, <span style="color:#66d9ef">PROF_IX</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span><span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Individual</span><span style="color:#f92672">.</span><span style="color:#a6e22e">random_schedule</span>
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(<span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>sess_id<span style="color:#f92672">|</span>
+      mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
+      <span style="color:#f92672">[</span>random_room, random_slot, random_professor(mod_id)<span style="color:#f92672">]</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>reduce(<span style="color:#e6db74">:+</span>))
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">attr_reader</span> <span style="color:#e6db74">:chromosome</span>, <span style="color:#e6db74">:fitness</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(chromosome)
+    @chromosome <span style="color:#f92672">=</span> chromosome
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calc_fitness</span>
+    gene_groups <span style="color:#f92672">=</span> to_gene_groups(@chromosome)
+    clashes <span style="color:#f92672">=</span> from_room_capacity_vs_group_size gene_groups
+    clashes <span style="color:#f92672">+=</span> from_room_availability gene_groups
+    clashes <span style="color:#f92672">+=</span> from_professor_availability gene_groups
+
+    @fitness <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">/</span> (clashes <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+    offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(spouse<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span>
+      genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate</span>(mutation_rate)
+    other <span style="color:#f92672">=</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>random_schedule
+    mutated <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(other<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span>
+      genes<span style="color:#f92672">[</span>mutation_rate <span style="color:#f92672">&gt;</span> rand ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new mutated
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_s</span>
+    schedule <span style="color:#f92672">=</span> to_gene_groups(@chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>v<span style="color:#f92672">|</span>
+      sess, i <span style="color:#f92672">=</span> v
+      room <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Room </span><span style="color:#e6db74">#{</span><span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+      slot <span style="color:#f92672">=</span> <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
+      professor <span style="color:#f92672">=</span> <span style="color:#66d9ef">PROFESSORS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]]</span>
+      mod <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span><span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span>
+      sg_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:sg_id</span><span style="color:#f92672">]</span>
+
+      <span style="color:#f92672">[</span>sg_id, slot, mod, room, professor<span style="color:#f92672">]</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sort<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>s<span style="color:#f92672">|</span>
+      s<span style="color:#f92672">.</span>join <span style="color:#e6db74">&#39;,&#39;</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>join <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+
+    <span style="color:#e6db74">&#34;Schedule fitness </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">#{</span>schedule<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">&lt;=&gt;</span>(other)
+    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;=&gt;</span> other<span style="color:#f92672">.</span>fitness)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">private</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_gene_groups</span>(chromosome)
+    chromosome<span style="color:#f92672">.</span>each_slice(<span style="color:#66d9ef">GENE_GROUP_SIZE</span>)<span style="color:#f92672">.</span>zip <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_room_capacity_vs_group_size</span>(gene_groups)
+    gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
+      sess, i <span style="color:#f92672">=</span> gg
+      room_capacity <span style="color:#f92672">=</span> <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:capacity</span><span style="color:#f92672">]</span>
+      group_size <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
+      room_capacity <span style="color:#f92672">&lt;</span> group_size ? <span style="color:#ae81ff">1</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_room_availability</span>(gene_groups)
+    gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
+      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
+
+      <span style="color:#75715e"># must divide by 2, &#39;cos the following will always count itself once</span>
+      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span> }<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_professor_availability</span>(gene_groups)
+    gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
+      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
+
+      <span style="color:#75715e"># must divide by 2, &#39;cos the following will always count itself once</span>
+      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span> }<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Woah! This <code>Individual</code> implementation is huge! Let&rsquo;s break that down.
+The three biggest changes to <code>Individual</code> are how it creates a random
+individual, how it calculates its fitness, and how it mutates. Or put
+another way, only its <code>mate</code> method is identical to the toy example&rsquo;s.</p>
+
+<p>Unlike the toy example, the chromosome cannot be examined in isolation:
+the entire chromosome needs to be examined in groups of 3 (evident at
+lines 70 and 71) where:</p>
+
+<ol>
+<li>First gene in group represents the room ID</li>
+<li>Second gene represents the timeslot ID</li>
+<li>Third represents the professor ID</li>
+</ol>
+
+<p>Each group corresponds to the (class) session in <code>SESSIONS</code>. For simplicity
+in discussion, we&rsquo;ll call each group a gene group.</p>
+
+<p><code>Individual.random_schedule</code> uses the helper functions to generate
+the chromosome, and those helper functions ensure that the genes are
+always correct. <code>Individual.random_schedule</code> can&rsquo;t just do a <code>rand(n) + 1</code>
+for each gene, as IDs in the hard-coded data aren&rsquo;t always in running order,
+e.g., there is no room ID 3. Such rigorous control ensures that all
+chromosomes are valid (even if they contain clashes).</p>
+
+<p>Because of the need to ensure the chromosomes are valid, <code>mutate</code> uses uniform
+mutation (refer to description covered in <a href="#mutation">mutation</a>); it creates
+a valid random individual and uses that individual&rsquo;s genes at place where
+mutation should occur.</p>
+
+<p><code>calc_fitness</code> (seemingly) has the most complicated change: by examining
+all gene groups in the chromosome, it determines the number of clashes (or
+if you&rsquo;d like, breaks in hard constraints) by calling the private helper
+methods <code>from_room_capacity_vs_group_size</code>, <code>from_room_availability</code>, and
+<code>from_professor_availability</code>. As highlighted in the code comments on lines
+165 and 174, clashes counted in the latter two methods must be divided by two,
+as the counts include the (target) session itself. The code makes use of
+Ruby&rsquo;s integral division round-down behavior: Ruby returns <code>0</code> for the
+expression <code>1 / 2</code>, <code>1</code> for <code>2 / 2</code> and <code>3 / 2</code>. When there are 2 or more
+counts of the same constraint, we don&rsquo;t really care whether there are 2 or 3 or
+more breaks, thus Ruby&rsquo;s round-down behavior is good enough to account for the
+breaks.</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">196
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">197
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">198
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">199
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">200
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">201
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">202
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">203
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">204
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">205
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">206
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">207
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">208
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">209
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">210
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">211
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">212
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">213
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">214
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">215
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">216
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">217
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">218
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">219
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">220
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">221
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">222
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">223
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">224
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">225
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">226
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">227
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Population</span><span style="color:#f92672">.</span><span style="color:#a6e22e">random_schedules</span>(pop_size)
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(pop_size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>random_schedule })
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(individuals)
+    @individuals <span style="color:#f92672">=</span> individuals
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eval_individuals!</span>
+    @individuals<span style="color:#f92672">.</span>each { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>calc_fitness }
+    @individuals <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>sort
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crossover_individuals!</span>(crossover_rate, elitism_count, tournament_size)
+    elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
+    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>
+      <span style="color:#66d9ef">if</span> crossover_rate <span style="color:#f92672">&gt;</span> rand
+        i<span style="color:#f92672">.</span>mate select_parent(tournament_size)
+      <span style="color:#66d9ef">else</span>
+        i
+      <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(elites <span style="color:#f92672">+</span> crossed)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate_individuals!</span>(mutation_rate, elitism_count)
+    elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
+    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>mutate mutation_rate }
+
+    <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(elites <span style="color:#f92672">+</span> mutated)
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fittest</span>
+    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+
+
+  <span style="color:#66d9ef">private</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">select_parent</span>(tournament_size)
+    candidates <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>shuffle<span style="color:#f92672">.</span>take tournament_size
+    candidates<span style="color:#f92672">.</span>sort<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The main difference in <code>Population</code> is <code>select_parent</code> employs deterministic
+tournament selection (refer to description in <a href="#selection">Selection</a>).</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">230
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">231
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">232
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">233
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">234
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">235
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">236
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">237
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">238
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">239
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">240
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">241
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">242
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">243
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">244
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">245
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">246
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">247
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">248
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">249
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">250
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">251
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">252
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">253
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">254
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">255
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
+  pop_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+  mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
+  crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">9</span>
+  elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+  tournament_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+  max_generations <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
+  curr_gen <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+  population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>random_schedules pop_size
+  population<span style="color:#f92672">.</span>eval_individuals!
+
+
+  <span style="color:#66d9ef">while</span> curr_gen <span style="color:#f92672">&lt;</span> max_generations <span style="color:#f92672">&amp;&amp;</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
+    puts <span style="color:#e6db74">&#34;Generation </span><span style="color:#e6db74">#{</span>curr_gen<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+    next_gen <span style="color:#f92672">=</span> population<span style="color:#f92672">.</span>crossover_individuals!(crossover_rate, elitism_count,
+                                                 tournament_size)
+    population <span style="color:#f92672">=</span> next_gen<span style="color:#f92672">.</span>mutate_individuals! mutation_rate, elitism_count
+    population<span style="color:#f92672">.</span>eval_individuals!
+
+    curr_gen <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">end</span>
+
+  puts <span style="color:#e6db74">&#34;Best solution found: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>The main program is largely the same, except the introduction of
+<code>tournament_size</code> that is used in selecting parents for crossovers. The
+following shows one possibility of the schedule (reformatted for the web):</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Student Group</th>
+<th align="center">Timeslot</th>
+<th align="center">Module</th>
+<th>Room</th>
+<th>Professor</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">1</td>
+<td align="center">Fri 09:00 - 11:00</td>
+<td align="center">Maths</td>
+<td>Room B1</td>
+<td>Dr R Williams</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">Mon 13:00 - 15:00</td>
+<td align="center">Physics</td>
+<td>Room D1</td>
+<td>Mrs E Mitchell</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">Tue 09:00 - 11:00</td>
+<td align="center">Computer Science</td>
+<td>Room D1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">2</td>
+<td align="center">Fri 09:00 - 11:00</td>
+<td align="center">History</td>
+<td>Room B1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">2</td>
+<td align="center">Mon 11:00 - 13:00</td>
+<td align="center">English</td>
+<td>Room B1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">2</td>
+<td align="center">Mon 13:00 - 15:00</td>
+<td align="center">Drama</td>
+<td>Room B1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">2</td>
+<td align="center">Wed 11:00 - 13:00</td>
+<td align="center">Maths</td>
+<td>Room B1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">3</td>
+<td align="center">Mon 13:00 - 15:00</td>
+<td align="center">History</td>
+<td>Room D1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">3</td>
+<td align="center">Tue 13:00 - 15:00</td>
+<td align="center">Maths</td>
+<td>Room B1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">3</td>
+<td align="center">Wed 09:00 - 11:00</td>
+<td align="center">Physics</td>
+<td>Room D1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">4</td>
+<td align="center">Tue 13:00 - 15:00</td>
+<td align="center">Computer Science</td>
+<td>Room B1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">4</td>
+<td align="center">Wed 09:00 - 11:00</td>
+<td align="center">Physics</td>
+<td>Room F1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">5</td>
+<td align="center">Thu 11:00 - 13:00</td>
+<td align="center">History</td>
+<td>Room D1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">5</td>
+<td align="center">Thu 11:00 - 13:00</td>
+<td align="center">Maths</td>
+<td>Room B1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">5</td>
+<td align="center">Wed 11:00 - 13:00</td>
+<td align="center">English</td>
+<td>Room D1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">6</td>
+<td align="center">Thu 11:00 - 13:00</td>
+<td align="center">Computer Science</td>
+<td>Room B1</td>
+<td>Mrs E Mitchell</td>
+</tr>
+
+<tr>
+<td align="center">6</td>
+<td align="center">Tue 09:00 - 11:00</td>
+<td align="center">History</td>
+<td>Room F1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">6</td>
+<td align="center">Tue 09:00 - 11:00</td>
+<td align="center">Physics</td>
+<td>Room B1</td>
+<td>Mrs E Mitchell</td>
+</tr>
+
+<tr>
+<td align="center">7</td>
+<td align="center">Fri 13:00 - 15:00</td>
+<td align="center">Maths</td>
+<td>Room D1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">7</td>
+<td align="center">Tue 09:00 - 11:00</td>
+<td align="center">Computer Science</td>
+<td>Room D1</td>
+<td>Dr P Smith</td>
+</tr>
+
+<tr>
+<td align="center">8</td>
+<td align="center">Thu 13:00 - 15:00</td>
+<td align="center">English</td>
+<td>Room F1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">8</td>
+<td align="center">Tue 09:00 - 11:00</td>
+<td align="center">Drama</td>
+<td>Room D1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">9</td>
+<td align="center">Mon 13:00 - 15:00</td>
+<td align="center">Drama</td>
+<td>Room B1</td>
+<td>Mr A Thompson</td>
+</tr>
+
+<tr>
+<td align="center">9</td>
+<td align="center">Tue 13:00 - 15:00</td>
+<td align="center">Computer Science</td>
+<td>Room F1</td>
+<td>Mrs E Mitchell</td>
+</tr>
+
+<tr>
+<td align="center">10</td>
+<td align="center">Fri 09:00 - 11:00</td>
+<td align="center">Maths</td>
+<td>Room F1</td>
+<td>Dr R Williams</td>
+</tr>
+
+<tr>
+<td align="center">10</td>
+<td align="center">Thu 09:00 - 11:00</td>
+<td align="center">Physics</td>
+<td>Room B1</td>
+<td>Mrs E Mitchell</td>
+</tr>
+</tbody>
+</table>
+
+<p>As mentioned, soft criteria are not accounted for by this algorithm, but
+implementing requires a slight change in calculating the individual&rsquo;s
+fitness:</p>
+
+<ol>
+<li>Breaks in hard criteria attract large negative scores, e.g., -100
+for each break</li>
+<li>Breaks in soft criteria attract small positive scores, e.g., +1
+for each break</li>
+</ol>
+
+<p>Care must be taken for such scoring method to ensure points from soft
+criteria do not cancel out points from hard ones, e.g., 1 hard break
+(-100 points) is not cancelled out by 100 soft breaks (+100 points).
+When soft criteria are included, the fitness score may not necessarily be 1
+because the (fittest) solution may not meet all soft criteria, but solutions
+that consider soft criteria definitely differ from one other in terms of
+quality: a solution with fitness 0.5 (one soft break) is better than another
+with fitness 0.33 (two soft breaks).</p>
+
+<h1 id="last-note-on-crossovers">Last note on crossovers</h1>
+
+<p>As the two examples above use uniform crossover, let&rsquo;s touch a bit on
+single-point crossover. What follows is equally applicable to two-point
+crossover.</p>
+
+<p>The algorithm cannot simply choose any point in the chromosome for
+single-point crossover, as that may break the chromosome&rsquo;s validity.
+As seen in the class scheduling example, genes should be viewed in groups
+of three. Therefore, the following implementation is wrong:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+<span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand @chromosome<span style="color:#f92672">.</span>size    <span style="color:#75715e"># NO!</span>
+</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
+  <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Assuming <code>rand @chromosome.size</code> returns 1, this implementation of <code>mate</code>
+will likely invalidate the first three genes that should be viewed as a group.</p>
+
+<p>The following shows the correct implementation that crosses over the genes
+in gene groups:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+<span style="display:block;width:100%;background-color:#3c3d38">  groups <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>size <span style="color:#f92672">/</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>     <span style="color:#75715e"># assuming GENE_GROUP_SIZE = 3</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand(groups) <span style="color:#f92672">*</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>
+</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
+  <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
+<span style="color:#66d9ef">end</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<h1 id="closing-thoughts">Closing thoughts</h1>
+
+<p>Genetic algorithms aren&rsquo;t that difficult, considering that the class
+schedule example has only 255 LOC. Adding optimizations such as
+fitness calculation <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a>, [adaptive algorithms]<sup class="footnote-ref" id="fnref:3"><a href="#fn:3">3</a></sup>
+will probably add another 10 - 100 LOC, but even so, it&rsquo;s doing so much
+with so little code.</p>
+
+<p>While genetic algorithm isn&rsquo;t as &ldquo;sexy&rdquo; as machine learning, it&rsquo;s definitely
+one useful tool for solving optimization problems.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1"><p>Herbert Spencer coined this <a href="https://en.wikipedia.org/wiki/Survival_of_the_fittest">phrase</a> after reading Charles
+  Darwin&rsquo;s <em>On the Origin of Species</em>. This phrase is best understood
+  as &ldquo;survival of the form that will leave the most copies of itself
+  in successive generations.&rdquo; On a side note, the other oft-heard
+  phrase &ldquo;[i]t is not the strongest of the species that survives, nor the
+  most intelligent, but the one most adaptable to change&rdquo; did not originate
+  from Charles Darwin. A Louisiana State University business professor,
+  Leon C. Megginson, <a href="https://quoteinvestigator.com/2014/05/04/adapt">first used that phrase</a>&ndash;his idiosyncratic
+  interpretion on Darwin&rsquo;s <em>On the Origin of Species</em>&ndash;at a convention
+  in 1963.</p>
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+
+<li id="fn:2"><p>Because the overly verbose Java syntax masks the otherwise simple
+  concepts of genetic algorithm. Other than the differenece in language
+  choice, the following also reorganizes the code to make it more
+  cohesive and simpler to understand (the book&rsquo;s insistence in create a
+  specific <code>GeneticAlgorithm</code> class hurts cohesiveness big time).</p>
+ <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
+
+<li id="fn:3"><p>Adaptive genetic algorithm tunes various parameters (mutation rate,
+  crossover rate, etc) based on the state of the algorithm, e.g., it
+  increases the mutation rate to encourage increasing the gene pool
+  divserity when it detects very little difference between the individuals.</p>
+ <a class="footnote-return" href="#fnref:3"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+  </article>
+
+    </main>
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.59.1</a></div>
+      
+    </footer>
+  </body>
+</html>
