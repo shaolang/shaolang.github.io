@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.59.1" />
+    <meta name="generator" content="Hugo 0.63.2" />
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
@@ -29,54 +29,49 @@
   
   <article>
     <p>Creating custom <code>ExUnit.Case</code> is done simply by creating a module that
-<a href="https://hexdocs.pm/ex_unit/ExUnit.CaseTemplate.html#content"><code>use ExUnit.CaseTemplate</code></a>. However, doing just that is
+[<code>use ExUnit.CaseTemplate</code>][case-template-doc]. However, doing just that is
 not enough: when I run <code>mix test</code>, the terminal shows the following:</p>
-
-<pre><code class="language-bash">$ mix test
-Compiling 1 file (.ex)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mix test
+Compiling <span style="color:#ae81ff">1</span> file <span style="color:#f92672">(</span>.ex<span style="color:#f92672">)</span>
 Generated dna app
 
-== Compilation error in file test/my_test.exs ==
-** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found
-    (elixir) expanding macro: Kernel.use/1
-    test/my_test.exs:2: MyTest (module)
-    (elixir) lib/code.ex:767: Code.require_file/2
-    (elixir) lib/kernel/parallel_compiler.ex:209: anonymous fn/4 in Kernel.ParallelCompiler.spawn_workers/6
-</code></pre>
-
-<p><em>(Yeah, I know, I admit: I&rsquo;m a noob).</em></p>
-
+<span style="color:#f92672">=</span><span style="color:#f92672">=</span> Compilation error in file test/my_test.exs <span style="color:#f92672">=</span><span style="color:#f92672">=</span>
+** <span style="color:#f92672">(</span>CompileError<span style="color:#f92672">)</span> test/my_test.exs:2: module MyCase is not loaded and could not be found
+    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> expanding macro: Kernel.use/1
+    test/my_test.exs:2: MyTest <span style="color:#f92672">(</span>module<span style="color:#f92672">)</span>
+    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/code.ex:767: Code.require_file/2
+    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/kernel/parallel_compiler.ex:209: anonymous fn/4 in Kernel.ParallelCompiler.spawn_workers/6
+</code></pre></div><p><em>(Yeah, I know, I admit: I&rsquo;m a noob).</em></p>
 <p>The missing piece is configuring Mix. <code>mix test</code> is a task that <em>only</em> runs
 tests; it does not compile <em>and</em> run tests. Because the custom case
-is a module<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup>, Mix needs to know it has to include another directory
+is a module<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, Mix needs to know it has to include another directory
 when compiling tests:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-erlang" data-lang="erlang">defmodule My.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :my,
-      version: <span style="color:#e6db74">&#34;0.1.0&#34;</span>,
+      version: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">0.1.0</span><span style="color:#e6db74">&#34;</span>,
 <span style="display:block;width:100%;background-color:#3c3d38">      elixirc_paths: elixirc_paths(Mix.env())
 </span>    ]
   <span style="color:#66d9ef">end</span>
 
-<span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(:test), do: [<span style="color:#e6db74">&#34;lib&#34;</span>, <span style="color:#e6db74">&#34;test&#34;</span>]
-</span><span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(_),     do: [<span style="color:#e6db74">&#34;lib&#34;</span>]
+<span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(:test), do: [<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">lib</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">test</span><span style="color:#e6db74">&#34;</span>]
+</span><span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(_),     do: [<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">lib</span><span style="color:#e6db74">&#34;</span>]
 </span><span style="color:#66d9ef">end</span></code></pre></div>
-
-<p><a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration"><code>:elixirc_paths</code> defaults to <code>[&quot;lib&quot;]</code></a>, hence, the need
+<p>[<code>:elixirc_paths</code> defaults to <code>[&quot;lib&quot;]</code>][elixirc-paths-default], hence, the need
 to make changes similar to the highlighted lines to make custom cases work.</p>
-<div class="footnotes">
-
-<hr />
-
+<section class="footnotes" role="doc-endnotes">
+<hr>
 <ol>
-<li id="fn:1">The custom case module must end with a <code>.ex</code> extension, not <code>.exs</code>.
- <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+<li id="fn:1" role="doc-endnote">
+<p>The custom case module must end with a <code>.ex</code> extension, not <code>.exs</code>.
+[case-template-doc]: <a href="https://hexdocs.pm/ex_unit/ExUnit.CaseTemplate.html#content">https://hexdocs.pm/ex_unit/ExUnit.CaseTemplate.html#content</a>
+[elixirc-paths-default]: <a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration">https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
 </ol>
-</div>
+</section>
 
   </article>
 
@@ -94,7 +89,7 @@ to make changes similar to the highlighted lines to make custom cases work.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.59.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.63.2</a></div>
       
     </footer>
   </body>

@@ -6,10 +6,22 @@
     <description>Recent content on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 Nov 2019 10:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jan 2020 12:17:59 +0800</lastBuildDate>
     
 	<atom:link href="https://shaolang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pip Behind Corporate Firewalls</title>
+      <link>https://shaolang.github.io/posts/2020-01-28-pip-behind-corporate-firewalls/</link>
+      <pubDate>Tue, 28 Jan 2020 12:17:59 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2020-01-28-pip-behind-corporate-firewalls/</guid>
+      <description>Corporate firewalls&amp;hellip; never mind, that&amp;rsquo;s a rant for another day.
+To appease the corporate firewalls for pip, create %userprofile%\pip\pip.ini with the following content:
+[global] trusted-host = pypi.python.org pypi.org files.pythonhosted.org Set the https_proxy and http_proxy environment settings, and pip install away to your heart&amp;rsquo;s content.
+Note that this solution works since pip 10.0, and yup, works at least within the corporate firewalls that I&amp;rsquo;m behind currently.</description>
+    </item>
     
     <item>
       <title>Genetic Algorithms Basics</title>
@@ -37,7 +49,7 @@ Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the custo
       
       <guid>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</guid>
       <description>Reading Property-Based Testing with PropEr, Erlang, and Elixir and following along the examples helped me in learning this exciting testing methodology; but it also left me wondering: have I really absorbed and internalized just by following along?
-So, I reached out to Fred, got his approval, and started translating the code from Erlang/Elixir to Clojure with test.check. All the code done [so far] are hosted at https://github.com/shaolang/pbtic I&amp;rsquo;m using test.</description>
+So, I reached out to Fred, got his approval, and started translating the code from Erlang/Elixir to Clojure with test.check. All the code done [so far] are hosted at https://github.com/shaolang/pbtic I&amp;rsquo;m using test.check as the property-based testing tool in Clojure.</description>
     </item>
     
     <item>
@@ -47,7 +59,8 @@ So, I reached out to Fred, got his approval, and started translating the code fr
       
       <guid>https://shaolang.github.io/posts/2019-06-24-sqlite-show-utc-timestamp-as-local-time/</guid>
       <description>A business unit asked me to compile some trading volume stats by trading hour. The good thing is that I have the following in SQLite database; the bad thing is the database stores the timestamp as follows:
-  trade idamount donetimestamp   11002019-06-01 01:01:01.111111 22002019-06-01 02:02:02.222222 33002019-06-01 03:03:03.333333 ... 1000100002019-06-24 23:59:59.999999   timestamp column is stored as a string1, so rather than doing timezone arithmetic, I used SQLite&amp;rsquo;s built-in date/time functions instead:</description>
+timestamp column is stored as a string1, so rather than doing timezone arithmetic, I used SQLite&amp;rsquo;s built-in date/time functions instead:
+WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- convert to unix epoch FROM trades), localized AS ( SELECT TIME([epoch], &#39;unixepoch&#39;, &#39;localtime&#39;) -- convert epoch to local time FROM dropped_offsets), SELECT SUBSTR([localtime], 1, 2) AS [trading_hour] -- extract hour FROM localized; The above employs [common table expressions][cte] for clarity; the actual combined them as one instead.</description>
     </item>
     
     <item>
@@ -56,7 +69,7 @@ So, I reached out to Fred, got his approval, and started translating the code fr
       <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
       
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
-      <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
+      <description>Creating custom ExUnit.Case is done simply by creating a module that [use ExUnit.CaseTemplate][case-template-doc]. However, doing just that is not enough: when I run mix test, the terminal shows the following:
 $ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
     </item>
     
