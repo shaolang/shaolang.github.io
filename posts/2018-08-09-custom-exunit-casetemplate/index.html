@@ -58,7 +58,7 @@ when compiling tests:</p>
   <span style="color:#66d9ef">end</span>
 
 <span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(:test), do: [<span style="color:#e6db74">&#34;lib&#34;</span>, <span style="color:#e6db74">&#34;test&#34;</span>]
-</span><span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(<span style="color:#960050;background-color:#1e0010">\</span>_),     do: [<span style="color:#e6db74">&#34;lib&#34;</span>]
+</span><span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(_),     do: [<span style="color:#e6db74">&#34;lib&#34;</span>]
 </span><span style="color:#66d9ef">end</span></code></pre></div>
 <p><a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration"><code>:elixirc_paths</code> defaults to <code>&quot;lib&quot;</code></a>, hence, the need
 to make changes similar to the highlighted lines to make custom cases work.</p>
