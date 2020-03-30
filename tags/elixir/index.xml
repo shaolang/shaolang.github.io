@@ -17,7 +17,7 @@
       <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
       
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
-      <description>Creating custom ExUnit.Case is done simply by creating a module that [use ExUnit.CaseTemplate][case-template-doc]. However, doing just that is not enough: when I run mix test, the terminal shows the following:
+      <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
 $ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
     </item>
     

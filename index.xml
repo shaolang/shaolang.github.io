@@ -69,7 +69,7 @@ WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- con
       <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
       
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
-      <description>Creating custom ExUnit.Case is done simply by creating a module that [use ExUnit.CaseTemplate][case-template-doc]. However, doing just that is not enough: when I run mix test, the terminal shows the following:
+      <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
 $ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
     </item>
     
@@ -92,6 +92,16 @@ By adopting pytest&amp;rsquo;s recommendation&amp;ndash;i.e., putting code in sr
       <guid>https://shaolang.github.io/about/</guid>
       <description>I like learning things, especially in how things work. My current weapons-of-choice are Clojure, JavaScript, Python, and Ruby (in alphabetical order). On the language front, I&amp;rsquo;m learning Elixir, Erlang, Haskell, and Rust; on the application front, I&amp;rsquo;m learning pandas, scikit-learn, and Tensorflow. Why? &amp;lsquo;cos curiosity and fascination.
 As the word goes, teaching is the best way to learn, hence this blog, even if the audience is only myself.</description>
+    </item>
+    
+    <item>
+      <title>Links</title>
+      <link>https://shaolang.github.io/links/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://shaolang.github.io/links/</guid>
+      <description>List of interesting/helpful/queer/etc links:
+ Practical Data Coercion with Prismatic/schema: especially on how to make multiple coercion matchers work together  </description>
     </item>
     
   </channel>

@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.63.2" />
+    <meta name="generator" content="Hugo 0.68.3" />
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
@@ -113,7 +113,7 @@ chromosome could be created as follows:</p>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-<span style="color:#f92672"></span>chromosome <span style="color:#f92672">=</span> chromosome_length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> <span style="color:#f92672"></span>}</code></pre></td></tr></table>
+chromosome <span style="color:#f92672">=</span> chromosome_length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> }</code></pre></td></tr></table>
 </div>
 </div>
 <p>The Ruby code above creates an array of length 100 with randomly generated
@@ -200,47 +200,47 @@ understanding genetic algorithm implementations unnecessarily.</p>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
   <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Individual</span><span style="color:#f92672">.</span><span style="color:#a6e22e">of_length</span>(length)
-    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> <span style="color:#f92672"></span>})
+    <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> })
   <span style="color:#66d9ef">end</span>
 
   <span style="color:#66d9ef">attr_reader</span> <span style="color:#e6db74">:chromosome</span>, <span style="color:#e6db74">:fitness</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">initialize</span>(chromosome)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(chromosome)
     @chromosome <span style="color:#f92672">=</span> chromosome
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">calc_fitness!</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calc_fitness!</span>
     @fitness <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> @chromosome<span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>to_f
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mate</span>(spouse)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
     offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(spouse<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>   <span style="color:#75715e"># pair up parents&#39; genes</span>
-      map { <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span> genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672"></span><span style="color:#f92672">]</span> }                   <span style="color:#75715e"># randomly choose either one</span>
+      map { <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span> genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span> }                   <span style="color:#75715e"># randomly choose either one</span>
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mutate</span>(mutation_rate)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate</span>(mutation_rate)
     mutated <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gene<span style="color:#f92672">|</span>
       <span style="color:#75715e"># when mutation should happen, then</span>
       <span style="color:#75715e">#   when gene = 1, (1 - 1).abs =&gt; 0; when 0, (0 - 1).abs =&gt; 1</span>
-      mutation_rate <span style="color:#f92672">&gt;</span> rand ? (gene <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672"></span>)<span style="color:#f92672">.</span>abs : gene
+      mutation_rate <span style="color:#f92672">&gt;</span> rand ? (gene <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>abs : gene
     <span style="color:#66d9ef">end</span>
 
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new mutated
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">&lt;=&gt;</span>(other)
-    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> other<span style="color:#f92672">.</span>fitness)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">&lt;=&gt;</span>(other)
+    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;=&gt;</span> other<span style="color:#f92672">.</span>fitness)
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">to_s</span>
-    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>@chromosome<span style="color:#f92672">.</span>join <span style="color:#e6db74">&#39;&#39;</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> (fitness: </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">)</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_s</span>
+    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>@chromosome<span style="color:#f92672">.</span>join <span style="color:#e6db74">&#39;&#39;</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> (fitness: </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
   <span style="color:#66d9ef">end</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -332,21 +332,21 @@ chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">initialize</span>(individuals)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(individuals)
     @individuals <span style="color:#f92672">=</span> individuals
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">eval_individuals!</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eval_individuals!</span>
     @individuals<span style="color:#f92672">.</span>each { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>calc_fitness! }
     @individuals<span style="color:#f92672">.</span>sort!
     @population_fitness <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>fitness }<span style="color:#f92672">.</span>sum
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">crossover_individuals</span>(crossover_rate, elitism_count)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crossover_individuals</span>(crossover_rate, elitism_count)
     elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count                      <span style="color:#75715e"># keep elites for next gen</span>
-    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..</span><span style="color:#f92672">]</span><span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>   <span style="color:#75715e"># cross the rest</span>
+    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>   <span style="color:#75715e"># cross the rest</span>
       <span style="color:#66d9ef">if</span> crossover_rate <span style="color:#f92672">&gt;</span> rand
         spouse <span style="color:#f92672">=</span> select_parent    <span style="color:#75715e"># helper method</span>
         individual<span style="color:#f92672">.</span>mate spouse
@@ -359,9 +359,9 @@ chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mutate_individuals</span>(mutation_rate, elitism_count)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate_individuals</span>(mutation_rate, elitism_count)
     elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
-    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..</span><span style="color:#f92672">]</span><span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>
+    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>individual<span style="color:#f92672">|</span>
       individual<span style="color:#f92672">.</span>mutate mutation_rate
     <span style="color:#66d9ef">end</span>
 
@@ -369,23 +369,23 @@ chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">fittest</span>
-    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fittest</span>
+    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
   <span style="color:#66d9ef">end</span>
 
 
   <span style="color:#66d9ef">private</span>
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">select_parent</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">select_parent</span>
     roulette_wheel_pos <span style="color:#f92672">=</span> rand <span style="color:#f92672">*</span> @population_fitness
     spin_wheel_pos <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 
-    <span style="color:#f92672"></span><span style="color:#66d9ef">for</span> individual <span style="color:#66d9ef">in</span> @individuals
+    <span style="color:#66d9ef">for</span> individual <span style="color:#66d9ef">in</span> @individuals
       spin_wheel_pos <span style="color:#f92672">+=</span> individual<span style="color:#f92672">.</span>fitness
 
-      <span style="color:#66d9ef">return</span> individual <span style="color:#66d9ef">if</span> spin_wheel_pos <span style="color:#f92672">&gt;</span><span style="color:#f92672">=</span> roulette_wheel_pos
+      <span style="color:#66d9ef">return</span> individual <span style="color:#66d9ef">if</span> spin_wheel_pos <span style="color:#f92672">&gt;=</span> roulette_wheel_pos
     <span style="color:#66d9ef">end</span>
 
-    @individuals<span style="color:#f92672">[</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>  <span style="color:#75715e"># return last individual if for-loop completes its run</span>
+    @individuals<span style="color:#f92672">[-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># return last individual if for-loop completes its run</span>
   <span style="color:#66d9ef">end</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -441,19 +441,19 @@ to know the population&rsquo;s overall fitness to function.</p>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
-  mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
-  <span style="color:#f92672"></span>crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">95</span>
-  <span style="color:#f92672"></span>elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-  <span style="color:#f92672"></span>population_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-  <span style="color:#f92672"></span>chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
+  mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
+  crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">95</span>
+  elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+  population_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+  chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
 
-  <span style="color:#f92672"></span>population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>of_size population_size, chromosome_length
+  population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>of_size population_size, chromosome_length
   population<span style="color:#f92672">.</span>eval_individuals!
 
   curr_generation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
 
-  <span style="color:#f92672"></span><span style="color:#66d9ef">while</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
-    <span style="color:#f92672"></span>puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#66d9ef">while</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
+    puts <span style="color:#e6db74">&#34;Generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 
     next_gen <span style="color:#f92672">=</span> population<span style="color:#f92672">.</span>crossover_individuals crossover_rate, elitism_count
     next_gen <span style="color:#f92672">=</span> next_gen<span style="color:#f92672">.</span>mutate_individuals mutation_rate, elitism_count
@@ -461,9 +461,9 @@ to know the population&rsquo;s overall fitness to function.</p>
 
     population <span style="color:#f92672">=</span> next_gen
     curr_generation <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672"></span><span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
 
-  puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Solution found in generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  puts <span style="color:#e6db74">&#34;Solution found in generation </span><span style="color:#e6db74">#{</span>curr_generation<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
   puts population<span style="color:#f92672">.</span>fittest
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -541,54 +541,54 @@ quality of the solutions found.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">ROOMS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;A1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">15</span><span style="color:#f92672"></span>},
-         <span style="color:#ae81ff">2</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;B1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">30</span><span style="color:#f92672"></span>},
-         <span style="color:#ae81ff">4</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;D1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">20</span><span style="color:#f92672"></span>},
-         <span style="color:#ae81ff">5</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;F1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">25</span><span style="color:#f92672"></span>}}
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">ROOMS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;A1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">15</span>},
+         <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;B1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">30</span>},
+         <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;D1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">20</span>},
+         <span style="color:#ae81ff">5</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;F1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">25</span>}}
 
-<span style="color:#66d9ef">SLOTS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Mon 09:00 - 11:00&#39;</span>,
-         <span style="color:#ae81ff">2</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Mon 11:00 - 13:00&#39;</span>,
-         <span style="color:#ae81ff">3</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Mon 13:00 - 15:00&#39;</span>,
-         <span style="color:#ae81ff">4</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Tue 09:00 - 11:00&#39;</span>,
-         <span style="color:#ae81ff">5</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Tue 11:00 - 13:00&#39;</span>,
-         <span style="color:#ae81ff">6</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Tue 13:00 - 15:00&#39;</span>,
-         <span style="color:#ae81ff">7</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Wed 09:00 - 11:00&#39;</span>,
-         <span style="color:#ae81ff">8</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Wed 11:00 - 13:00&#39;</span>,
-         <span style="color:#ae81ff">9</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Wed 13:00 - 15:00&#39;</span>,
-         <span style="color:#ae81ff">10</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Thu 09:00 - 11:00&#39;</span>,
-         <span style="color:#ae81ff">11</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Thu 11:00 - 13:00&#39;</span>,
-         <span style="color:#ae81ff">12</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Thu 13:00 - 15:00&#39;</span>,
-         <span style="color:#ae81ff">13</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Fri 09:00 - 11:00&#39;</span>,
-         <span style="color:#ae81ff">14</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Fri 11:00 - 13:00&#39;</span>,
-         <span style="color:#ae81ff">15</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Fri 13:00 - 15:00&#39;</span>}
+<span style="color:#66d9ef">SLOTS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">2</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">3</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mon 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">4</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">5</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">6</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Tue 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">7</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">8</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">9</span>  <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Wed 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">10</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">11</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">12</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Thu 13:00 - 15:00&#39;</span>,
+         <span style="color:#ae81ff">13</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 09:00 - 11:00&#39;</span>,
+         <span style="color:#ae81ff">14</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 11:00 - 13:00&#39;</span>,
+         <span style="color:#ae81ff">15</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Fri 13:00 - 15:00&#39;</span>}
 
-<span style="color:#66d9ef">PROFESSORS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Dr P Smith&#39;</span>,
-              <span style="color:#ae81ff">2</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Mrs E Mitchell&#39;</span>,
-              <span style="color:#ae81ff">3</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Dr R Williams&#39;</span>,
-              <span style="color:#ae81ff">4</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Mr A Thompson&#39;</span>}
+<span style="color:#66d9ef">PROFESSORS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Dr P Smith&#39;</span>,
+              <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mrs E Mitchell&#39;</span>,
+              <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Dr R Williams&#39;</span>,
+              <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;Mr A Thompson&#39;</span>}
 
-<span style="color:#66d9ef">MODULES</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;Computer Science&#39;</span>,  <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">2</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-           <span style="color:#ae81ff">2</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;English&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">3</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-           <span style="color:#ae81ff">3</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;Maths&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">2</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-           <span style="color:#ae81ff">4</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;Physics&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-           <span style="color:#ae81ff">5</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;History&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-           <span style="color:#ae81ff">6</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {name: <span style="color:#e6db74">&#39;Drama&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>}}
+<span style="color:#66d9ef">MODULES</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Computer Science&#39;</span>,  <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;English&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Maths&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Physics&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">5</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;History&#39;</span>,           <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+           <span style="color:#ae81ff">6</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;Drama&#39;</span>,             <span style="color:#e6db74">professors</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>}}
 
-<span style="color:#66d9ef">STUDENT_GROUPS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">10</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">2</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">30</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">5</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">6</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">3</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">5</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">4</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">5</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">20</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">5</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">6</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">22</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">5</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">7</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">16</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">3</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">8</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">6</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">9</span>  <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">24</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">6</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>},
-                  <span style="color:#ae81ff">10</span> <span style="color:#f92672"></span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span><span style="color:#f92672"></span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">4</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>}}
+<span style="color:#66d9ef">STUDENT_GROUPS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">10</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">2</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">30</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">3</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">4</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">5</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">20</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">6</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">22</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">7</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">16</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">8</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">18</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">9</span>  <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">24</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">]</span>},
+                  <span style="color:#ae81ff">10</span> <span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">size</span>: <span style="color:#ae81ff">25</span>, <span style="color:#e6db74">modules</span>: <span style="color:#f92672">[</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">]</span>}}
 
 <span style="color:#66d9ef">SESSIONS</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">STUDENT_GROUPS</span><span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>kv<span style="color:#f92672">|</span>
-  sg_id <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
-  size <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
-  kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:modules</span><span style="color:#f92672">]</span><span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>m<span style="color:#f92672">|</span> {<span style="color:#e6db74">sg_id</span>: sg_id, <span style="color:#e6db74">size</span>: size, <span style="color:#e6db74">module</span>: m} }
+  sg_id <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+  size <span style="color:#f92672">=</span> kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">][</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
+  kv<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">][</span><span style="color:#e6db74">:modules</span><span style="color:#f92672">].</span>map { <span style="color:#f92672">|</span>m<span style="color:#f92672">|</span> {<span style="color:#e6db74">sg_id</span>: sg_id, <span style="color:#e6db74">size</span>: size, <span style="color:#e6db74">module</span>: m} }
 <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>reduce(<span style="color:#e6db74">:+</span>)</code></pre></td></tr></table>
 </div>
 </div>
@@ -619,19 +619,19 @@ group 1: one for Computer Science, one for Maths, and one for Physics.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">random_room</span>
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_room</span>
   <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>keys<span style="color:#f92672">[</span>rand <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
 <span style="color:#66d9ef">end</span>
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">random_slot</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_slot</span>
   <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">.</span>keys<span style="color:#f92672">[</span>rand <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
 <span style="color:#66d9ef">end</span>
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">random_professor</span>(sess_id)
-  mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
-  professors <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span>mod_id<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:professors</span><span style="color:#f92672">]</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_professor</span>(sess_id)
+  mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
+  professors <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span>mod_id<span style="color:#f92672">][</span><span style="color:#e6db74">:professors</span><span style="color:#f92672">]</span>
   professors<span style="color:#f92672">[</span>rand professors<span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -752,11 +752,11 @@ module&rsquo;s list of professors it need to look at.</p>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
   <span style="color:#66d9ef">GENE_GROUP_SIZE</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-  <span style="color:#f92672"></span><span style="color:#66d9ef">ROOM_IX</span>, <span style="color:#66d9ef">SLOT_IX</span>, <span style="color:#66d9ef">PROF_IX</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span><span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
+  <span style="color:#66d9ef">ROOM_IX</span>, <span style="color:#66d9ef">SLOT_IX</span>, <span style="color:#66d9ef">PROF_IX</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span><span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
 
   <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Individual</span><span style="color:#f92672">.</span><span style="color:#a6e22e">random_schedule</span>
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(<span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>sess_id<span style="color:#f92672">|</span>
-      mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
+      mod_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>sess_id<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span>
       <span style="color:#f92672">[</span>random_room, random_slot, random_professor(mod_id)<span style="color:#f92672">]</span>
     <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>reduce(<span style="color:#e6db74">:+</span>))
   <span style="color:#66d9ef">end</span>
@@ -765,96 +765,96 @@ module&rsquo;s list of professors it need to look at.</p>
   <span style="color:#66d9ef">attr_reader</span> <span style="color:#e6db74">:chromosome</span>, <span style="color:#e6db74">:fitness</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">initialize</span>(chromosome)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(chromosome)
     @chromosome <span style="color:#f92672">=</span> chromosome
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">calc_fitness</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calc_fitness</span>
     gene_groups <span style="color:#f92672">=</span> to_gene_groups(@chromosome)
     clashes <span style="color:#f92672">=</span> from_room_capacity_vs_group_size gene_groups
     clashes <span style="color:#f92672">+=</span> from_room_availability gene_groups
     clashes <span style="color:#f92672">+=</span> from_professor_availability gene_groups
 
-    @fitness <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">/</span> (clashes <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672"></span>)
+    @fitness <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">/</span> (clashes <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mate</span>(spouse)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
     offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(spouse<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span>
-      genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+      genes<span style="color:#f92672">[</span>rand <span style="color:#ae81ff">2</span><span style="color:#f92672">]</span>
     <span style="color:#66d9ef">end</span>
 
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mutate</span>(mutation_rate)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate</span>(mutation_rate)
     other <span style="color:#f92672">=</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>random_schedule
     mutated <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>zip(other<span style="color:#f92672">.</span>chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>genes<span style="color:#f92672">|</span>
-      genes<span style="color:#f92672">[</span>mutation_rate <span style="color:#f92672">&gt;</span> rand ? <span style="color:#ae81ff">1</span> <span style="color:#f92672"></span>: <span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+      genes<span style="color:#f92672">[</span>mutation_rate <span style="color:#f92672">&gt;</span> rand ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
     <span style="color:#66d9ef">end</span>
 
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new mutated
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">to_s</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_s</span>
     schedule <span style="color:#f92672">=</span> to_gene_groups(@chromosome)<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>v<span style="color:#f92672">|</span>
       sess, i <span style="color:#f92672">=</span> v
-      room <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Room </span><span style="color:#e6db74">#{</span><span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-      slot <span style="color:#f92672">=</span> <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span>
-      professor <span style="color:#f92672">=</span> <span style="color:#66d9ef">PROFESSORS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span>
-      mod <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span><span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span>
-      sg_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:sg_id</span><span style="color:#f92672">]</span>
+      room <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Room </span><span style="color:#e6db74">#{</span><span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+      slot <span style="color:#f92672">=</span> <span style="color:#66d9ef">SLOTS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
+      professor <span style="color:#f92672">=</span> <span style="color:#66d9ef">PROFESSORS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]]</span>
+      mod <span style="color:#f92672">=</span> <span style="color:#66d9ef">MODULES</span><span style="color:#f92672">[</span><span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:module</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:name</span><span style="color:#f92672">]</span>
+      sg_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:sg_id</span><span style="color:#f92672">]</span>
 
       <span style="color:#f92672">[</span>sg_id, slot, mod, room, professor<span style="color:#f92672">]</span>
     <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sort<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>s<span style="color:#f92672">|</span>
       s<span style="color:#f92672">.</span>join <span style="color:#e6db74">&#39;,&#39;</span>
     <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>join <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
 
-    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Schedule fitness </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">#{</span>schedule<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#e6db74">&#34;Schedule fitness </span><span style="color:#e6db74">#{</span>@fitness<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">#{</span>schedule<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">&lt;=&gt;</span>(other)
-    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> other<span style="color:#f92672">.</span>fitness)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">&lt;=&gt;</span>(other)
+    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> (@fitness <span style="color:#f92672">&lt;=&gt;</span> other<span style="color:#f92672">.</span>fitness)
   <span style="color:#66d9ef">end</span>
 
 
   <span style="color:#66d9ef">private</span>
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">to_gene_groups</span>(chromosome)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_gene_groups</span>(chromosome)
     chromosome<span style="color:#f92672">.</span>each_slice(<span style="color:#66d9ef">GENE_GROUP_SIZE</span>)<span style="color:#f92672">.</span>zip <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">from_room_capacity_vs_group_size</span>(gene_groups)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_room_capacity_vs_group_size</span>(gene_groups)
     gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
       sess, i <span style="color:#f92672">=</span> gg
-      room_capacity <span style="color:#f92672">=</span> <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:capacity</span><span style="color:#f92672">]</span>
-      group_size <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">[</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
-      room_capacity <span style="color:#f92672">&lt;</span> group_size ? <span style="color:#ae81ff">1</span><span style="color:#f92672"></span>: <span style="color:#ae81ff">0</span>
-    <span style="color:#f92672"></span><span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+      room_capacity <span style="color:#f92672">=</span> <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">[</span>sess<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]][</span><span style="color:#e6db74">:capacity</span><span style="color:#f92672">]</span>
+      group_size <span style="color:#f92672">=</span> <span style="color:#66d9ef">SESSIONS</span><span style="color:#f92672">[</span>i<span style="color:#f92672">][</span><span style="color:#e6db74">:size</span><span style="color:#f92672">]</span>
+      room_capacity <span style="color:#f92672">&lt;</span> group_size ? <span style="color:#ae81ff">1</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">from_room_availability</span>(gene_groups)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_room_availability</span>(gene_groups)
     gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
-      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span>
+      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
 
       <span style="color:#75715e"># must divide by 2, &#39;cos the following will always count itself once</span>
-      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> <span style="color:#f92672"></span>: <span style="color:#ae81ff">0</span> <span style="color:#f92672"></span>}<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-    <span style="color:#f92672"></span><span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">ROOM_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span> }<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">from_professor_availability</span>(gene_groups)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">from_professor_availability</span>(gene_groups)
     gene_groups<span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>gg<span style="color:#f92672">|</span>
-      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span>
+      target <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>gg<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, gg<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span>
 
       <span style="color:#75715e"># must divide by 2, &#39;cos the following will always count itself once</span>
-      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> <span style="color:#f92672"></span>: <span style="color:#ae81ff">0</span> <span style="color:#f92672"></span>}<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-    <span style="color:#f92672"></span><span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
+      gene_groups<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> <span style="color:#f92672">[</span>x<span style="color:#f92672">[</span><span style="color:#66d9ef">PROF_IX</span><span style="color:#f92672">]</span>, x<span style="color:#f92672">[</span><span style="color:#66d9ef">SLOT_IX</span><span style="color:#f92672">]]</span> <span style="color:#f92672">==</span> target ? <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">0</span> }<span style="color:#f92672">.</span>sum <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">end</span><span style="color:#f92672">.</span>sum
   <span style="color:#66d9ef">end</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -955,20 +955,20 @@ breaks.</p>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">initialize</span>(individuals)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">initialize</span>(individuals)
     @individuals <span style="color:#f92672">=</span> individuals
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">eval_individuals!</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eval_individuals!</span>
     @individuals<span style="color:#f92672">.</span>each { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>calc_fitness }
     @individuals <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>sort
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">crossover_individuals!</span>(crossover_rate, elitism_count, tournament_size)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crossover_individuals!</span>(crossover_rate, elitism_count, tournament_size)
     elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
-    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..</span><span style="color:#f92672">]</span><span style="color:#f92672">.</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>
+    crossed <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>
       <span style="color:#66d9ef">if</span> crossover_rate <span style="color:#f92672">&gt;</span> rand
         i<span style="color:#f92672">.</span>mate select_parent(tournament_size)
       <span style="color:#66d9ef">else</span>
@@ -980,23 +980,23 @@ breaks.</p>
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mutate_individuals!</span>(mutation_rate, elitism_count)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mutate_individuals!</span>(mutation_rate, elitism_count)
     elites <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>take elitism_count
-    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..</span><span style="color:#f92672">]</span><span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>mutate mutation_rate }
+    mutated <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">[</span>elitism_count<span style="color:#f92672">..].</span>map { <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span> i<span style="color:#f92672">.</span>mutate mutation_rate }
 
     <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(elites <span style="color:#f92672">+</span> mutated)
   <span style="color:#66d9ef">end</span>
 
 
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">fittest</span>
-    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fittest</span>
+    @individuals<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
   <span style="color:#66d9ef">end</span>
 
 
   <span style="color:#66d9ef">private</span>
-  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">select_parent</span>(tournament_size)
+  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">select_parent</span>(tournament_size)
     candidates <span style="color:#f92672">=</span> @individuals<span style="color:#f92672">.</span>shuffle<span style="color:#f92672">.</span>take tournament_size
-    candidates<span style="color:#f92672">.</span>sort<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+    candidates<span style="color:#f92672">.</span>sort<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
   <span style="color:#66d9ef">end</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -1035,19 +1035,19 @@ tournament selection (refer to description in <a href="#selection">Selection</a>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
   pop_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-  <span style="color:#f92672"></span>mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
-  <span style="color:#f92672"></span>crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">9</span>
-  <span style="color:#f92672"></span>elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-  <span style="color:#f92672"></span>tournament_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
-  <span style="color:#f92672"></span>max_generations <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
-  <span style="color:#f92672"></span>curr_gen <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+  mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
+  crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">9</span>
+  elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+  tournament_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+  max_generations <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
+  curr_gen <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
 
-  <span style="color:#f92672"></span>population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>random_schedules pop_size
+  population <span style="color:#f92672">=</span> <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>random_schedules pop_size
   population<span style="color:#f92672">.</span>eval_individuals!
 
 
-  <span style="color:#66d9ef">while</span> curr_gen <span style="color:#f92672">&lt;</span> max_generations <span style="color:#f92672">&amp;&amp;</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
-    <span style="color:#f92672"></span>puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Generation </span><span style="color:#e6db74">#{</span>curr_gen<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#66d9ef">while</span> curr_gen <span style="color:#f92672">&lt;</span> max_generations <span style="color:#f92672">&amp;&amp;</span> population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0</span>
+    puts <span style="color:#e6db74">&#34;Generation </span><span style="color:#e6db74">#{</span>curr_gen<span style="color:#e6db74">}</span><span style="color:#e6db74"> fittest: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#f92672">.</span>fitness<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 
     next_gen <span style="color:#f92672">=</span> population<span style="color:#f92672">.</span>crossover_individuals!(crossover_rate, elitism_count,
                                                  tournament_size)
@@ -1055,9 +1055,9 @@ tournament selection (refer to description in <a href="#selection">Selection</a>
     population<span style="color:#f92672">.</span>eval_individuals!
 
     curr_gen <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672"></span><span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
 
-  puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Best solution found: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  puts <span style="color:#e6db74">&#34;Best solution found: </span><span style="color:#e6db74">#{</span>population<span style="color:#f92672">.</span>fittest<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
 </div>
@@ -1124,9 +1124,9 @@ of three. Therefore, the following implementation is wrong:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mate</span>(spouse)
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
 <span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand @chromosome<span style="color:#f92672">.</span>size    <span style="color:#75715e"># NO!</span>
-</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..</span><span style="color:#f92672">]</span>
+</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
   <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -1145,10 +1145,10 @@ in gene groups:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">mate</span>(spouse)
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
 <span style="display:block;width:100%;background-color:#3c3d38">  groups <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>size <span style="color:#f92672">/</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>     <span style="color:#75715e"># assuming GENE_GROUP_SIZE = 3</span>
 </span><span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand(groups) <span style="color:#f92672">*</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>
-</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..</span><span style="color:#f92672">]</span>
+</span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
   <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
 <span style="color:#66d9ef">end</span></code></pre></td></tr></table>
 </div>
@@ -1208,7 +1208,7 @@ diversity when it detects very little difference between the individuals. <a hre
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.63.2</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.68.3</a></div>
       
     </footer>
   </body>

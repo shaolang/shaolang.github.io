@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.63.2" />
+    <meta name="generator" content="Hugo 0.68.3" />
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
@@ -48,25 +48,25 @@ file in <code>src</code> (highlighted):</li>
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span style="color:#f92672">from</span> cx_Freeze <span style="color:#f92672">import</span> setup, Executable
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span>
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span>PYTHON_INSTALL_DIR <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(os<span style="color:#f92672">.</span>__file__))
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">TCL_LIBRARY</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tcl</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tcl8.6</span><span style="color:#e6db74">&#39;</span>)
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">TK_LIBRARY</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tcl</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tk8.6</span><span style="color:#e6db74">&#39;</span>)
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#39;TCL_LIBRARY&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74">&#39;tcl&#39;</span>, <span style="color:#e6db74">&#39;tcl8.6&#39;</span>)
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#39;TK_LIBRARY&#39;</span>] <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(PYTHON_INSTALL_DIR, <span style="color:#e6db74">&#39;tcl&#39;</span>, <span style="color:#e6db74">&#39;tk8.6&#39;</span>)
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span>
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span>base <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Win32GUI</span><span style="color:#e6db74">&#39;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span>base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Win32GUI&#39;</span>
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span>
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span>options<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">build_exe</span><span style="color:#e6db74">&#39;</span>: {
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span>   <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">includes</span><span style="color:#e6db74">&#39;</span>: [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tkinter</span><span style="color:#e6db74">&#39;</span>],
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span>   <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">include_files</span><span style="color:#e6db74">&#39;</span>: [
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span>       <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">./resources/tcl86t.dll</span><span style="color:#e6db74">&#39;</span>,
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span>       <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">./resources/tk86t.dll</span><span style="color:#e6db74">&#39;</span>,
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span>       <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">./resources/vcruntime140.dll</span><span style="color:#e6db74">&#39;</span>],
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span>    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">path</span><span style="color:#e6db74">&#39;</span>: sys<span style="color:#f92672">.</span>path <span style="color:#f92672">+</span> [os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">./src</span><span style="color:#e6db74">&#39;</span>)]}}
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span>options<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;build_exe&#39;</span>: {
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span>   <span style="color:#e6db74">&#39;includes&#39;</span>: [<span style="color:#e6db74">&#39;tkinter&#39;</span>],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span>   <span style="color:#e6db74">&#39;include_files&#39;</span>: [
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span>       <span style="color:#e6db74">&#39;./resources/tcl86t.dll&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span>       <span style="color:#e6db74">&#39;./resources/tk86t.dll&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span>       <span style="color:#e6db74">&#39;./resources/vcruntime140.dll&#39;</span>],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span>    <span style="color:#e6db74">&#39;path&#39;</span>: sys<span style="color:#f92672">.</span>path <span style="color:#f92672">+</span> [os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>abspath(<span style="color:#e6db74">&#39;./src&#39;</span>)]}}
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span>
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span>setup(  name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">my_awesome_app</span><span style="color:#e6db74">&#39;</span>,
-<span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span>       version <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">0.1.0</span><span style="color:#e6db74">&#39;</span>,
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span>       description <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">My Super, Duper Awesome App</span><span style="color:#e6db74">&#39;</span>,
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span>       executables <span style="color:#f92672">=</span> [Executable(script<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">./src/main.py</span><span style="color:#e6db74">&#39;</span>, base<span style="color:#f92672">=</span>base,
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span>           targetName<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">awesome.exe</span><span style="color:#e6db74">&#39;</span>,
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span>           copyright<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Copyright © 2018 Shaolang Ai</span><span style="color:#e6db74">&#39;</span>)],
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span>setup(  name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;my_awesome_app&#39;</span>,
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span>       version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0.1.0&#39;</span>,
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span>       description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Super, Duper Awesome App&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span>       executables <span style="color:#f92672">=</span> [Executable(script<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;./src/main.py&#39;</span>, base<span style="color:#f92672">=</span>base,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span>           targetName<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;awesome.exe&#39;</span>,
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span>           copyright<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Copyright © 2018 Shaolang Ai&#39;</span>)],
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span>       options <span style="color:#f92672">=</span> options)</code></pre></div>
 <p><em>Yes, I develop apps to run in Windows.</em> The code above also shows the things
 I need to include to ensure that the packaged app can run TkInter without
@@ -89,7 +89,7 @@ create my redistributable standalone app correctly.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.63.2</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.68.3</a></div>
       
     </footer>
   </body>
