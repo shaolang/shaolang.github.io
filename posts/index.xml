@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 Jan 2020 12:17:59 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 26 Apr 2020 16:30:00 +0800</lastBuildDate>
     
 	<atom:link href="https://shaolang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting Started With Chronicle Queue</title>
+      <link>https://shaolang.github.io/posts/2020-04-26-getting-started-with-chronicle-queue/</link>
+      <pubDate>Sun, 26 Apr 2020 16:30:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2020-04-26-getting-started-with-chronicle-queue/</guid>
+      <description>Chronicle Queue is low-latency, broker-less, durable message queue. Its closest cousin is probably 0MQ, except that 0MQ doesn&amp;rsquo;t store the messages published and the open-source version of Chronicle Queue doesn&amp;rsquo;t support cross-machine communication1. Chronicle Queue&amp;rsquo;s biggest claim to fame is that it generates no garbage as it uses RandomAccessFiles as off-heap storage.
+Chronicle Queue is producer-centric, i.e., applications built on Chronicle Queue cannot tell the producer to slow down in putting messages onto the queue (no back-pressure mechanics).</description>
+    </item>
     
     <item>
       <title>pip Behind Corporate Firewalls</title>
@@ -60,7 +70,7 @@ So, I reached out to Fred, got his approval, and started translating the code fr
       <guid>https://shaolang.github.io/posts/2019-06-24-sqlite-show-utc-timestamp-as-local-time/</guid>
       <description>A business unit asked me to compile some trading volume stats by trading hour. The good thing is that I have the following in SQLite database; the bad thing is the database stores the timestamp as follows:
 timestamp column is stored as a string1, so rather than doing timezone arithmetic, I used SQLite&amp;rsquo;s built-in date/time functions instead:
-WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- convert to unix epoch FROM trades), localized AS ( SELECT TIME([epoch], &#39;unixepoch&#39;, &#39;localtime&#39;) -- convert epoch to local time FROM dropped_offsets), SELECT SUBSTR([localtime], 1, 2) AS [trading_hour] -- extract hour FROM localized; The above employs [common table expressions][cte] for clarity; the actual combined them as one instead.</description>
+WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- convert to unix epoch FROM trades), localized AS ( SELECT TIME([epoch], &#39;unixepoch&#39;, &#39;localtime&#39;) -- convert epoch to local time FROM dropped_offsets), SELECT SUBSTR([localtime], 1, 2) AS [trading_hour] -- extract hour FROM localized; The above employs common table expressions for clarity; the actual combined them as one instead.</description>
     </item>
     
     <item>

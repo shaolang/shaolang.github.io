@@ -1,0 +1,833 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.69.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Getting Started With Chronicle Queue</h1>
+  
+    Apr 26, 2020
+  
+  <article>
+    <p><a href="https://github.com/OpenHFT/Chronicle-Queue">Chronicle Queue</a> is low-latency, broker-less, durable message queue.
+Its closest cousin is probably <a href="https://zeromq.org">0MQ</a>, except that 0MQ doesn&rsquo;t store
+the messages published and the open-source version of Chronicle Queue doesn&rsquo;t
+support cross-machine communication<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Chronicle Queue&rsquo;s biggest claim to fame
+is that it generates no garbage as it uses <code>RandomAccessFile</code>s as off-heap
+storage.</p>
+<p>Chronicle Queue is producer-centric, i.e., applications built on Chronicle
+Queue cannot tell the producer to slow down in putting messages onto
+the queue (no back-pressure mechanics). Such design is useful in cases
+where there is little to no control on the producer&rsquo;s throughput, e.g.,
+FX price updates.</p>
+<h2 id="terminology">Terminology</h2>
+<p>Where most message queues use the terms Producer and Consumer, Chronicle
+Queue uses Appender and Tailer instead to make the distinction that it
+always appends messages to the queue and it never &ldquo;destroys/drops&rdquo; any
+message after the tailer (read: receiver) reads the message from the queue.
+And instead of Message, Chronicle Queue prefers the term Excerpt because
+the blob written to Chronicle Queue can range from byte arrays to strings
+to domain models.</p>
+<h2 id="hello-world">Hello, World!</h2>
+<p>Let&rsquo;s use the traditional &ldquo;Hello, World!&rdquo; to demonstrate basic usage. Add
+the following to <code>build.gradle.kts</code> if you are using Gradle:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#66d9ef">import</span> org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+</span>
+plugins {
+    id(<span style="color:#e6db74">&#34;org.jetbrains.kotlin.jvm&#34;</span>) version <span style="color:#e6db74">&#34;1.3.71&#34;</span>
+    application
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation(<span style="color:#e6db74">&#34;org.jetbrains.kotlin:kotlin-bom&#34;</span>)
+    implementation(<span style="color:#e6db74">&#34;org.jetbrains.kotlin:kotlin-stdlib-jdk8&#34;</span>)
+
+<span style="display:block;width:100%;background-color:#3c3d38">    implementation(<span style="color:#e6db74">&#34;net.openhft.chronicle:chronicle-queue:5.19.8&#34;</span>)
+</span><span style="display:block;width:100%;background-color:#3c3d38">    implementation(<span style="color:#e6db74">&#34;org.apache.logging.log4j:log4j-sl4fj18-impl:2.13.1&#34;</span>)
+</span>}
+
+application {
+    mainClass = <span style="color:#e6db74">&#34;hello.AppKt&#34;</span>
+}
+
+<span style="display:block;width:100%;background-color:#3c3d38">tasks.withType&lt;KotlinCompile&gt; {
+</span><span style="display:block;width:100%;background-color:#3c3d38">    kotlinOptions.jvmTarget = <span style="color:#e6db74">&#34;1.8&#34;</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Importing <code>KotlinCompile</code> (line 1) allows specifying Java 1.8 as the
+compilation target (lines 25-27)<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. Lines 17-18 shows the additional
+dependencies you&rsquo;d need to get started with Chronicle Queue. Note that
+<code>build.gradle.kts</code> assumes the package to use is <code>hello</code>. Let&rsquo;s turn to
+the code demonstrating Chronicle Queue usage:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> hello
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    <span style="color:#66d9ef">val</span> q: ChronicleQueue = ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/hello-world&#34;</span>)
+
+    <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">val</span> appender: ExcerptAppender = q.acquireAppender()
+        appender.writeText(<span style="color:#e6db74">&#34;Hello, World!&#34;</span>)
+
+        <span style="color:#66d9ef">val</span> tailer: ExcerptTailer = q.createTailer()
+        println(tailer.readText())
+    } <span style="color:#66d9ef">finally</span> {
+      q.close()
+    }
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p><code>ChronicleQueue.single(&lt;path&gt;)</code> returns a new <code>ChronicleQueue</code>
+that uses the given path for storing the excerpts. The rest of the code
+are pretty much self-explanatory: the acquired appender appends
+the excerpt <code>&quot;Hello, World!&quot;</code> to the queue; the tailer reads from the
+queue and prints the excerpt to standard output. The queue must always be
+closed at the end of the program.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>Remember that Chronicle Queues are durable? Comment out two appender lines
+and run the code again with <code>gradle run</code>. You&rsquo;ll see that the program
+outputs <code>Hello, World!</code> again in standard output: the tailer is reading
+from the queue that was written in the previous run. Such durability
+allows replaying incoming excerpts when tailers crash.</p>
+<h2 id="detour-excerpt-types">Detour: Excerpt types</h2>
+<p>Chronicle Queue only accepts the following types as excerpts:</p>
+<ol>
+<li><code>Serializable</code> objects: note that serializing such objects are
+inefficient due to reliance on reflection</li>
+<li><code>Externalizable</code> objects: if compatibility with Java is important but
+at the expense of handwritten logic</li>
+<li><code>byte[]</code></li>
+<li><code>String</code></li>
+<li><code>net.openhft.chronicle.wire.Marshallable</code> objects: high performance data
+exchange using binary formats</li>
+<li><code>net.openhft.chronicle.bytes.BytesMarshallable</code> objects: low-level binary
+or text encoding</li>
+</ol>
+<p>As &ldquo;Hello, World!&rdquo; has already demonstrated strings, we detour a little
+and look at an example using <code>Marshallable</code> offered in <a href="https://github.com/OpenHFT/Chronicle-Wire">Chronicle Wire</a>
+library.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> types
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.Marshallable
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.SelfDescribingMarshallable
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>(<span style="color:#66d9ef">val</span> name: String, <span style="color:#66d9ef">val</span> age: Int): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    <span style="color:#66d9ef">val</span> person = Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>)
+    <span style="color:#66d9ef">val</span> outputString = <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    !types.Person {
+</span><span style="color:#e6db74">      name: Shaolang
+</span><span style="color:#e6db74">      age: 3
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>.trimIndent()
+
+    println(person.toString() == outputString)
+
+    <span style="color:#66d9ef">val</span> p = Marshallable.fromString&lt;Person&gt;(outputString)
+
+    println(person == p)
+    println(person.hashCode() == p.hashCode())
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>You&rsquo;ll see three <code>true</code> printed to standard output when you run the
+snippet above. <code>SelfDescribingMarshallable</code> makes it effortless to
+make a class <code>Marshallable</code> for persistence in Chronicle Queue.</p>
+<h2 id="writing-and-reading-domain-objects">Writing and Reading Domain Objects</h2>
+<p>With the knowledge from the small detour tucked under our belt, the
+following demonstrates the writing and reading of <code>Marshallable</code>
+objects to and from Chronicle Queue<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> docs
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.SelfDescribingMarshallable
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">var</span> age: Int? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Food</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/documents&#34;</span>).use { q -&gt;
+        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
+
+        appender.writeDocument(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
+        appender.writeText(<span style="color:#e6db74">&#34;Hello, World!&#34;</span>)
+        appender.writeDocument(Food(<span style="color:#e6db74">&#34;Burger&#34;</span>))
+
+        <span style="color:#66d9ef">val</span> tailer = q.createTailer()
+
+        <span style="color:#66d9ef">val</span> person = Person()
+        tailer.readDocument(person)
+        println(person)
+
+        println(<span style="color:#e6db74">&#34;${tailer.readText()}\n&#34;</span>)
+
+        <span style="color:#66d9ef">val</span> food = Food()
+        tailer.readDocument(food)
+        println(food)
+    }
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>After running the above, you should see the following printed out:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">!docs.Person <span style="color:#f92672">{</span>
+  name: Shaolang,
+  age: <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">}</span>
+
+Hello, World!
+
+!docs.Food <span style="color:#f92672">{</span>
+  name: Burger,
+<span style="color:#f92672">}</span>
+</code></pre></div><p>There&rsquo;s a few things to note:</p>
+<ol>
+<li>Because Chronicle Queue aims to generate no garbage, it requires
+the domain model to be a mutable object; this is why the two classes
+uses <code>var</code> instead of <code>val</code> in their constructors.</li>
+<li>Chronicle Queue allows appenders to write different things to the
+same queue.</li>
+<li>Tailers need to know what it should be reading to get the proper
+result back.</li>
+</ol>
+<p>If we were to change the last <code>tailer.readDocument(food)</code> to
+<code>tailer.readDocument(person)</code> and print out <code>person</code> instead, we&rsquo;ll see
+the following printed<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">!docs.Person <span style="color:#f92672">{</span>
+  name: Burger,
+  age: !!null <span style="color:#e6db74">&#34;&#34;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Because both <code>Person</code> and <code>Food</code> have an attribute with the same name,
+Chronicle Queue hydrates <code>Person</code> with whatever it could and leave the
+others blank.</p>
+<p>That last point on tailers needing to know what they&rsquo;re reading is
+troubling: they are now ladened with the burden of filtering things
+they want to be notified from the avalanche of data the producer keep
+throwing at them. To keep our codebases sane, we need to use the
+<a href="https://en.wikipedia.org/wiki/Observer_pattern">observer pattern</a>.</p>
+<h2 id="kinda-listening-only-to-things-youre-interested-in">(Kinda) Listening Only to Things You&rsquo;re Interested in</h2>
+<p>Other than using the excerpt appender directly, another way is to make it
+reify the first class given to its <code>methodWriter</code>. The following snippet
+focuses on this reifying of the given listener:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> listener
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleReaderMain
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.SelfDescribingMarshallable
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">var</span> age: Int? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PersonListener</span> {
+    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person)
+}
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    <span style="color:#66d9ef">val</span> directory = <span style="color:#e6db74">&#34;./build/listener&#34;</span>
+
+    ChronicleQueue.single(directory).use { q -&gt;
+<span style="display:block;width:100%;background-color:#3c3d38">        <span style="color:#66d9ef">val</span> observable: PersonListener = q.acquireAppender()
+</span><span style="display:block;width:100%;background-color:#3c3d38">              .methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
+</span>        observable.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
+        observable.onPerson(Person(<span style="color:#e6db74">&#34;Elliot&#34;</span>, <span style="color:#ae81ff">4</span>))
+    }
+
+    ChronicleReaderMain.main(arrayOf(<span style="color:#e6db74">&#34;-d&#34;</span>, directory))
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>Lines 17-18 invoke <code>methodWriter</code> with the given <code>PersonListener</code> on the
+acquired appender. Notice that the type assigned to <code>observable</code> is
+<code>PersonListener</code>, not <code>ExcerptAppender</code>. Now, any calls to the
+methods in <code>PersonListener</code> writes the given argument to the queue.
+However, there&rsquo;s a difference in writing to the queue using the appender
+directly and using a reified class. To see the difference, we&rsquo;ll use
+<code>ChronicleReaderMain</code> to examine the queue:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">0x47c900000000:
+onPerson <span style="color:#f92672">{</span>
+  name: Shaolang,
+  age: <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">}</span>
+
+0x47c900000001:
+onPerson <span style="color:#f92672">{</span>
+  name: Elliot,
+  age: <span style="color:#ae81ff">4</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Notice that instead of <code>!listener.Person { ... }</code>, reified classes
+write excerpts using <code>onPerson {...}</code> to the queue. This difference
+allows tailers that implement <code>PersonListener</code> to be notified of
+new <code>Person</code> objects written to the queue and ignore others that they
+aren&rsquo;t interested in.</p>
+<p>Yup, you&rsquo;ve read that right: tailers that implement <code>PersonListener</code>.
+Unfortunately, Chronicle Queue (kinda) conflates observables and observers,
+thus making it a little hard in distinguishing observables from
+observers. I think the easiest way to tell the difference is to use
+the heuristics as shown in the following snippet&rsquo;s comments:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PersonListener</span> {
+    onPerson(person: Person)
+}
+
+<span style="color:#75715e">// this is an observer because it implements the listener interface
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonRegistry</span>: PersonListener {
+    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person) {
+        <span style="color:#75715e">// code omitted for brevity
+</span><span style="color:#75715e"></span>    }
+}
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    <span style="color:#75715e">// code omitted for brevity
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">val</span> observable: PersonListener = q.acquireAppender()    <span style="color:#75715e">// this is an
+</span><span style="color:#75715e"></span>            .methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)       <span style="color:#75715e">// observable
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// another way to differentiate: the observer will never call the
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// listener method, only observables do.
+</span><span style="color:#75715e"></span>    observable.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
+
+    <span style="color:#75715e">// code omitted for brevity
+</span><span style="color:#75715e"></span>}</code></pre></div>
+<p>Let&rsquo;s turn our focus to tailers. Even though Chronicle Queue ensures that
+<a href="https://github.com/OpenHFT/Chronicle-Queue#every-tailer-sees-every-message">every tailer sees every excerpt</a>, tailers can filter only
+excerpts that they want to see by implementing the listener class/interface
+and creating a <code>net.openhft.chronicle.bytes.MethodReader</code> with the
+implemented listener:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> listener
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.bytes.MethodReader
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.SelfDescribingMarshallable
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">var</span> age: Int? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Food</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PersonListener</span> {
+    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person)
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonRegistry</span>: PersonListener {
+    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person) {
+        println(<span style="color:#e6db74">&#34;in registry: ${person.name}&#34;</span>)
+    }
+}
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/listener2&#34;</span>).use { q -&gt;
+        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
+        <span style="color:#66d9ef">val</span> writer: PersonListener = appender.methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
+
+        writer.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
+        appender.writeDocument(Food(<span style="color:#e6db74">&#34;Burger&#34;</span>))
+        writer.onPerson(Person(<span style="color:#e6db74">&#34;Elliot&#34;</span>, <span style="color:#ae81ff">4</span>))
+
+        <span style="color:#66d9ef">val</span> registry: PersonRegistry = PersonRegistry()
+<span style="display:block;width:100%;background-color:#3c3d38">        <span style="color:#66d9ef">val</span> reader: MethodReader = q.createTailer().methodReader(registry)
+</span>
+        reader.readOne()
+        reader.readOne()
+        reader.readOne()
+    }
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>What&rsquo;s largely new to this is the implementation of <code>PersonRegistry</code> that
+simply prints the name of the person it is given. Instead of reading off
+the queue using an <code>ExcerptTailer</code> directly, the snippet creates a
+<code>MethodReader</code> from the tailer with the given instantiated <code>PersonRegistry</code>.
+Unlike <code>.methodWriter</code> that accepts <code>Class</code>, <code>.methodReader</code> expects objects.
+The appender writes three excerpts to the queue: person (via call
+to <code>onPerson</code>), food (via <code>.writeDocument</code>), and person.
+Because tailers see every excerpts, the reader also make three calls
+to &ldquo;read&rdquo; all excerpts, but you&rsquo;ll see only two outputs:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">in registry: Shaolang
+in registry: Elliot
+</code></pre></div><p>If only there were only two <code>.readOne()</code> calls instead of three, the output
+will not include <code>in registry: Elliot</code>.</p>
+<h3 id="methodreader-uses-duck-typing"><code>MethodReader</code> Uses Duck Typing</h3>
+<p>Remember the outputs from <code>ChronicleReaderMain</code> when we examined the
+queue that&rsquo;s populated by the reified <code>PersonListener</code>? Instead of
+a class name, the outputs are similar to <code>onPerson { ... }</code>. That
+suggests <code>MethodReader</code> filters excerpts that matches the method signature,
+i.e., it doesn&rsquo;t care about the interface/class that contains
+the method signature; or simply put, <a href="https://en.wikipedia.org/wiki/Duck_typing">duck typing</a>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> duck
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.wire.SelfDescribingMarshallable
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">var</span> age: Int? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallabl()
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PersonListener</span> {
+    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person)
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">VIPListener</span> {
+    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person)
+}
+
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">VIPClub</span>: VIPListener {
+</span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person) {
+        println(<span style="color:#e6db74">&#34;Welcome to the club, ${person.name}!&#34;</span>)
+    }
+}
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/duck&#34;</span>).use { q -&gt;
+        <span style="color:#66d9ef">val</span> writer = q.acquireAppender().methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
+        writer.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
+
+        <span style="color:#66d9ef">val</span> club = VIPClub()
+        <span style="color:#66d9ef">val</span> reader = q.createTailer().methodReader(club)
+
+        reader.readOne()
+    }
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>Notice that <code>VIPClub</code> implements <code>VIPListener</code> that happens to have the
+same <code>onPerson</code> method signature as <code>PersonListener</code>. When you run the
+above, you&rsquo;ll see <code>Welcome to the club, Shaolang!</code> printed.</p>
+<h2 id="named-tailers">Named Tailers</h2>
+<p>In all demonstrations so far, we&rsquo;ve been creating anonymous tailers.
+Because they are anonymous, every (re-)run results in reading all
+excerpts in the queue. Sometimes, such behavior is acceptable, or
+even desirable, but there are times it doesn&rsquo;t. To pick up reading
+where it last stopped is done simply by naming the tailer:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> restartable
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ExcerptTailer
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">readQueue</span>(tailerName: String, times: Int) {
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q -&gt;
+<span style="display:block;width:100%;background-color:#3c3d38">        <span style="color:#66d9ef">val</span> tailer = q.createTailer(tailerName)       <span style="color:#75715e">// tailer name given
+</span></span><span style="color:#75715e"></span>
+        <span style="color:#66d9ef">for</span> (_n <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1.</span>.times) {
+          println(<span style="color:#e6db74">&#34;$tailerName: ${tailer.readText()}&#34;</span>)
+        }
+
+        println()       <span style="color:#75715e">// to separate outputs for easier visualization
+</span><span style="color:#75715e"></span>    }
+}
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q -&gt;
+        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
+        appender.writeText(<span style="color:#e6db74">&#34;Test Message 1&#34;</span>)
+        appender.writeText(<span style="color:#e6db74">&#34;Test Message 2&#34;</span>)
+        appender.writeText(<span style="color:#e6db74">&#34;Test Message 3&#34;</span>)
+        appender.writeText(<span style="color:#e6db74">&#34;Test Message 4&#34;</span>)
+    }
+
+    readQueue(<span style="color:#e6db74">&#34;foo&#34;</span>, <span style="color:#ae81ff">1</span>)
+    readQueue(<span style="color:#e6db74">&#34;bar&#34;</span>, <span style="color:#ae81ff">2</span>)
+    readQueue(<span style="color:#e6db74">&#34;foo&#34;</span>, <span style="color:#ae81ff">3</span>)
+    readQueue(<span style="color:#e6db74">&#34;bar&#34;</span>, <span style="color:#ae81ff">1</span>)
+}</code></pre></td></tr></table>
+</div>
+</div>
+<p>Notice that the tailer&rsquo;s name is given to <code>createTailer</code> method. The code
+above has two tailers&ndash;unimaginatively named <code>foo</code> and <code>bar</code>&ndash;reading
+off the queue and outputs the following when run:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">foo: Test Message <span style="color:#ae81ff">1</span>
+
+bar: Test Message <span style="color:#ae81ff">1</span>
+bar: Test Message <span style="color:#ae81ff">2</span>
+
+foo: Test Message <span style="color:#ae81ff">2</span>
+foo: Test Message <span style="color:#ae81ff">3</span>
+foo: Test Message <span style="color:#ae81ff">4</span>
+
+bar: Test Message <span style="color:#ae81ff">3</span>
+</code></pre></div><p>Notice that the second time foo and bar read from the queue, they
+pick up from where they&rsquo;ve left previously.</p>
+<h2 id="roll-em">Roll &lsquo;Em</h2>
+<p>Chronicle Queue rolls the file it uses based on the roll cycle defined
+when the queue is created; by default, it rolls the file daily. To
+change the roll cycle, we cannot use the simple <code>ChronicleQueue.single</code>
+method anymore:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">package</span> roll
+
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.RollCycles
+<span style="color:#66d9ef">import</span> net.openhft.chronicle.impl.single.SingleChronicleQueueBuilder
+
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">var</span> qbuilder: SingleChronicleQueueBuilder = ChronicleQueue.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
+</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    qbuilder.rollCycle(RollCycles.HOURLY)
+</span><span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">val</span> q: ChronicleQueue = qbuilder.build()
+</span>
+    <span style="color:#75715e">// code omitted for brevity
+</span><span style="color:#75715e"></span>}</code></pre></td></tr></table>
+</div>
+</div>
+<p>First, we get an instance of <code>SingleChronicleQueueBuilder</code> and set the roll
+cycle with <code>.rollCycle</code> method. The snippet above configures the queue to
+roll the file hourly. When we are happy with the configuration, call <code>.build()</code>
+on the builder to get an instantiated <code>ChronicleQueue</code>. Note that both
+appender and tailer(s) must use the same roll cycle when accessing the same
+queue.</p>
+<p>As <code>SingleChronicleQueueBuilder</code> supports fluent interface, the code could
+also be simplified as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> q: ChronicleQueue = ChronicleQueue.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
+                                      .rollCycle(RollCycles.HOURLY)
+                                      .build()
+</code></pre></div><h2 id="whats-next">What&rsquo;s Next</h2>
+<p>This post covers Chronicle Queue terminology and basics. The following
+sites have more information to dig from:</p>
+<ol>
+<li><a href="https://github.com/OpenHFT/Chronicle-Queue">Chronicle Queue GitHub repository</a></li>
+<li><a href="https://stackoverflow.com/questions/tagged/chronicle-queue">Stack Overflow tagged questions</a></li>
+<li><a href="https://vanilla-java.github.io">Peter Lawrey&rsquo;s Blog</a></li>
+</ol>
+<p>Have fun!</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>I wonder whether it&rsquo;s possible and make sense to combine the two to
+get the best of both worlds. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>As of this writing, Kotlin JVM compiler produces Java 6 compatible
+bytecode, as stated in
+<a href="https://kotlinlang.org/docs/reference/faq.html#what-does-kotlin-compile-down-to">https://kotlinlang.org/docs/reference/faq.html#what-does-kotlin-compile-down-to</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>The code could be simplified further by replacing try-finally construct
+with Kotlin&rsquo;s equivalent of Java&rsquo;s try-with-resource syntax. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Although it&rsquo;ll make more sense to run the appender and tailer in
+different VM processes, keeping both in the same VM makes it much simpler
+to understand the discussion without having to sieve through non-related
+code. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>At least as of Chronicle Queue version 5.19.x, it doesn&rsquo;t crash/throw
+any exceptions. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+
+    </main>
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.69.1</a></div>
+      
+    </footer>
+  </body>
+</html>
