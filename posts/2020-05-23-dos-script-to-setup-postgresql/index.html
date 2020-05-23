@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>MSDOS Script to Set Up PostgreSQL</h1>
+  
+    May 23, 2020
+  
+  <article>
+    <p>Don&rsquo;t ask &ldquo;Why Windows?&rdquo;</p>
+<p>Not being a database expert and needing to set up PostgreSQL database
+in a Windows machine to do simple development with minimal fuss, the
+following is a simplistic MSDOS script to automate that:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-batchfile" data-lang="batchfile">@<span style="color:#66d9ef">ECHO</span> OFF
+@<span style="color:#66d9ef">BREAK</span> ON
+@<span style="color:#66d9ef">SETLOCAL</span>
+
+<span style="color:#66d9ef">SET</span> PG_HOME=path_to_pg_home
+<span style="color:#66d9ef">SET</span> superuser=postgres
+
+<span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">DEFINED</span> PGDATA <span style="color:#66d9ef">GOTO</span> :MISSINGPGDATA
+<span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXIST</span> %PGDATA% <span style="color:#66d9ef">GOTO</span> :DBEXISTS
+
+<span style="color:#66d9ef">SET</span> PGBIN=%PG_HOME%\bin
+<span style="color:#66d9ef">ECHO</span> Initialzing database with superuser name: %superuser%
+
+%PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% <span style="color:#ae81ff">^
+</span><span style="color:#ae81ff"> </span> --no-locale --encoding=UTF8 <span style="color:#ae81ff">^
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"> </span> --auth-local=trust
+</span><span style="display:block;width:100%;background-color:#3c3d38">  --auth-host=trust
+</span>
+<span style="color:#66d9ef">GOTO</span> :EOF
+
+:MISSINGPGDATA
+<span style="color:#66d9ef">ECHO</span> Please set the environment variable PGDATA before running again.
+<span style="color:#66d9ef">GOTO</span> :EOF
+
+:DBEXISTS
+<span style="color:#66d9ef">ECHO</span> Database already initialized at %PGDATA%. Please specify a different <span style="color:#ae81ff">%%</span>PGDATA<span style="color:#ae81ff">%%</span>.
+</code></pre></td></tr></table>
+</div>
+</div><p>A few things to note:</p>
+<ul>
+<li>Set the PostgreSQL home directory in line 5</li>
+<li>Change the default superuser name in line 6 if necessary</li>
+<li>Change <a href="https://www.postgresql.org/docs/12/auth-methods.html">authentication methods</a> to whatever that&rsquo;s appropriate:
+in this case, it just trusts all connections, so don&rsquo;t use <code>trust</code>
+in production!</li>
+</ul>
+<p>Once the initializing is completed, run <code>pg_ctl start -D %PGDATA% -l logfile</code>
+to start the database daemon. To stop it, run <code>pg_ctl stop</code>.</p>
+
+  </article>
+
+    </main>
+
+    
+<section id='comments'>
+  <script src="https://utteranc.es/client.js"
+          repo="shaolang/shaolang.github.io"
+          issue-term="pathname"
+          label="blogcomment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.70.0</a></div>
+      
+    </footer>
+  </body>
+</html>
