@@ -79,15 +79,11 @@ to grok:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">reps <span style="color:#f92672">=</span> len(df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed]) <span style="color:#f92672">//</span> <span style="color:#ae81ff">3</span>
 df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed, <span style="color:#e6db74">&#39;s_no&#39;</span>] <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">*</span> reps
-
 df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>s_no <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;returned_date&#39;</span>] <span style="color:#f92672">=</span> list(df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>s_no <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;date&#39;</span>])
-
 df<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;s_no&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
 </code></pre></td></tr></table>
 </div>
