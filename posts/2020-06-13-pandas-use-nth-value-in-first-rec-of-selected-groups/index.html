@@ -29,7 +29,7 @@
   
   <article>
     <p>How do you transform the following data frame:</p>
-<pre><code>   | book_id |       date | is_borrowed
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">   | book_id |       date | is_borrowed
  0 |     abc | 2020-01-01 |        True
  1 |     abc | 2020-02-02 |        True
  2 |     abc | 2020-03-03 |        True
@@ -41,8 +41,8 @@
  8 |     jkl | 2020-09-09 |       False
  9 |     jkl | 2020-10-10 |       False
 10 |     jkl | 2020-11-11 |       False
-</code></pre><p>to the following?</p>
-<pre><code>   | book_id |       date | is_borrowed | return_date
+</code></pre></div><p>to the following?</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">   | book_id |       date | is_borrowed | return_date
  0 |     abc | 2020-01-01 |        True | 2020-03-03
  1 |     abc | 2020-02-02 |        True |        NaN
  2 |     abc | 2020-03-03 |        True |        NaN
@@ -54,7 +54,7 @@
  8 |     jkl | 2020-09-09 |       False |        NaN
  9 |     jkl | 2020-10-10 |       False |        NaN
 10 |     jkl | 2020-11-11 |       False |        NaN
-</code></pre><p>First (naive) attempt:</p>
+</code></pre></div><p>First (naive) attempt:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -95,7 +95,7 @@ groups.</p>
 the array by <code>reps</code> because the number of values on the right-hand side of <code>=</code>
 must be the same as the number of &ldquo;selected&rdquo; rows on the left. At this point in
 time, <code>df</code> looks as follows:</p>
-<pre><code>   | book_id |       date | is_borrowed | s_no
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">   | book_id |       date | is_borrowed | s_no
  0 |     abc | 2020-01-01 |        True |  1.0
  1 |     abc | 2020-02-02 |        True |  2.0
  2 |     abc | 2020-03-03 |        True |  3.0
@@ -107,7 +107,7 @@ time, <code>df</code> looks as follows:</p>
  8 |     jkl | 2020-09-09 |       False |  NaN
  9 |     jkl | 2020-10-10 |       False |  NaN
 10 |     jkl | 2020-11-11 |       False |  NaN
-</code></pre><p>Line 3 then &ldquo;selects&rdquo; all first rows in qualified rows and populates
+</code></pre></div><p>Line 3 then &ldquo;selects&rdquo; all first rows in qualified rows and populates
 <code>returned_date</code> with <code>date</code> values from &ldquo;selected&rdquo; third rows. Note that
 we need to convert the values on the left to a list; otherwise, the
 assignment won&rsquo;t work.[^2]</p>
