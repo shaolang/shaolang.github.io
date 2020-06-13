@@ -110,7 +110,7 @@ time, <code>df</code> looks as follows:</p>
 </code></pre></div><p>Line 3 then &ldquo;selects&rdquo; all first rows in qualified rows and populates
 <code>returned_date</code> with <code>date</code> values from &ldquo;selected&rdquo; third rows. Note that
 we need to convert the values on the left to a list; otherwise, the
-assignment won&rsquo;t work.[^2]</p>
+assignment won&rsquo;t work.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
 <p>Line 4 simply drops the temporary <code>s_no</code>, leaving us with the data frame
 we want.</p>
 <p>It works, though probably unorthodox. Until I&rsquo;m more versed with pandas,
@@ -121,6 +121,10 @@ this works for me for now.</p>
 <li id="fn:1" role="doc-endnote">
 <p>At of pandas 1.0.x, it doesn&rsquo;t output any warning/error messages or
 crash when running this snippet. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Don&rsquo;t ask me why; I haven&rsquo;t figured out why the assignment works only
+when the conversion to list occurs. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
