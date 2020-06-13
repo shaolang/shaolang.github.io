@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.72.0" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>pandas: Use Nth Value in First Record of Selected Groups</h1>
+  
+    Jun 13, 2020
+  
+  <article>
+    <p>How do you transform the following data frame:</p>
+<pre><code>   | book_id |       date | is_borrowed
+ 0 |     abc | 2020-01-01 |        True
+ 1 |     abc | 2020-02-02 |        True
+ 2 |     abc | 2020-03-03 |        True
+ 3 |     def | 2020-04-04 |       False
+ 4 |     def | 2020-05-05 |       False
+ 5 |     ghi | 2020-06-06 |        True
+ 6 |     ghi | 2020-07-07 |        True
+ 7 |     ghi | 2020-08-08 |        True
+ 8 |     jkl | 2020-09-09 |       False
+ 9 |     jkl | 2020-10-10 |       False
+10 |     jkl | 2020-11-11 |       False
+</code></pre><p>to the following?</p>
+<pre><code>   | book_id |       date | is_borrowed | return_date
+ 0 |     abc | 2020-01-01 |        True | 2020-03-03
+ 1 |     abc | 2020-02-02 |        True |        NaN
+ 2 |     abc | 2020-03-03 |        True |        NaN
+ 3 |     def | 2020-04-04 |       False |        NaN
+ 4 |     def | 2020-05-05 |       False |        NaN
+ 5 |     ghi | 2020-06-06 |        True | 2020-08-08
+ 6 |     ghi | 2020-07-07 |        True |        NaN
+ 7 |     ghi | 2020-08-08 |        True |        NaN
+ 8 |     jkl | 2020-09-09 |       False |        NaN
+ 9 |     jkl | 2020-10-10 |       False |        NaN
+10 |     jkl | 2020-11-11 |       False |        NaN
+</code></pre><p>First (naive) attempt:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># assume the data is loaded in variable df</span>
+
+df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed]<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;book_id&#39;</span>)<span style="color:#f92672">.</span>first()[<span style="color:#e6db74">&#39;return_date&#39;</span>] <span style="color:#f92672">=</span> \
+    df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed]<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;book_id&#39;</span>)<span style="color:#f92672">.</span>nth(<span style="color:#ae81ff">2</span>)[<span style="color:#e6db74">&#39;date&#39;</span>]
+</code></pre></td></tr></table>
+</div>
+</div><p>But it doesn&rsquo;t work<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>: the new column <code>return_date</code> isn&rsquo;t shown when
+printing <code>df</code>.</p>
+<p>So I did the following which probably is unorthodox but is simple enough
+to grok:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">reps <span style="color:#f92672">=</span> len(df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed]) <span style="color:#f92672">//</span> <span style="color:#ae81ff">3</span>
+df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>is_borrowed, <span style="color:#e6db74">&#39;s_no&#39;</span>] <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">*</span> reps
+
+df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>s_no <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;returned_date&#39;</span>] <span style="color:#f92672">=</span> list(df<span style="color:#f92672">.</span>loc[df<span style="color:#f92672">.</span>s_no <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;date&#39;</span>])
+
+df<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;s_no&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+</code></pre></td></tr></table>
+</div>
+</div><p>Let&rsquo;s walk through the code above.</p>
+<p>Line 1 is simply counting the number of groups that satisfy the condition
+<code>is_borrowed</code>. In this example, <code>reps</code> is 2 &lsquo;cos there are two such
+groups.</p>
+<p>Line 2 populates <code>s_no</code> but only for qualified groups. We need to multiply
+the array by <code>reps</code> because the number of values on the right-hand side of <code>=</code>
+must be the same as the number of &ldquo;selected&rdquo; rows on the left. At this point in
+time, <code>df</code> looks as follows:</p>
+<pre><code>   | book_id |       date | is_borrowed | s_no
+ 0 |     abc | 2020-01-01 |        True |  1.0
+ 1 |     abc | 2020-02-02 |        True |  2.0
+ 2 |     abc | 2020-03-03 |        True |  3.0
+ 3 |     def | 2020-04-04 |       False |  NaN
+ 4 |     def | 2020-05-05 |       False |  NaN
+ 5 |     ghi | 2020-06-06 |        True |  1.0
+ 6 |     ghi | 2020-07-07 |        True |  2.0
+ 7 |     ghi | 2020-08-08 |        True |  3.0
+ 8 |     jkl | 2020-09-09 |       False |  NaN
+ 9 |     jkl | 2020-10-10 |       False |  NaN
+10 |     jkl | 2020-11-11 |       False |  NaN
+</code></pre><p>Line 3 then &ldquo;selects&rdquo; all first rows in qualified rows and populates
+<code>returned_date</code> with <code>date</code> values from &ldquo;selected&rdquo; third rows. Note that
+we need to convert the values on the left to a list; otherwise, the
+assignment won&rsquo;t work.[^2]</p>
+<p>Line 4 simply drops the temporary <code>s_no</code>, leaving us with the data frame
+we want.</p>
+<p>It works, though probably unorthodox. Until I&rsquo;m more versed with pandas,
+this works for me for now.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>At of pandas 1.0.x, it doesn&rsquo;t output any warning/error messages or
+crash when running this snippet. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+
+    </main>
+
+    
+<section id='comments'>
+  <script src="https://utteranc.es/client.js"
+          repo="shaolang/shaolang.github.io"
+          issue-term="pathname"
+          label="blogcomment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.72.0</a></div>
+      
+    </footer>
+  </body>
+</html>
