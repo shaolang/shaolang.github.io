@@ -1,0 +1,764 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.73.0" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Property-Based Testing: From Erlang/Elixir to Clojure Part 2</h1>
+  
+    Jul 10, 2020
+  
+  <article>
+    <p>In the <a href="../2019-08-10-property-based-testing-from-elixir-to-clojure/">previous post</a> that covered chapter 5 of
+<a href="https://pragprog.com/book/fhproper/property-based-testing-with-proper-erlang-and-elixir">Property-Based Testing with PropEr, Erlang, and Elixir</a>, I ported
+most of the code from the book with very few modifications. Code in
+this post that covers chapter 6: Properties-Driven Development are not
+straight ports. All the code done [so far] are hosted
+at <a href="https://github.com/shaolang/pbtic">https://github.com/shaolang/pbtic</a> I&rsquo;m using [test.check][test.check]
+as the property-based testing tool in Clojure.</p>
+<p>In this chapter (of the book), it tackles the <a href="http://codekata.com/kata/kata09-back-to-the-checkout">Back to the Checkout</a>
+code kata: calculate the total price of the items scanned at the checkout
+and handle specials correctly.</p>
+<p>But first the namespace and relevant <code>:require</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.checkout-test
+  (<span style="color:#e6db74">:require</span> [clojure.test.check.clojure-test <span style="color:#e6db74">:refer</span> [defspec]]
+            [clojure.test.check.generators <span style="color:#e6db74">:as</span> gen]
+            [clojure.test.check.properties <span style="color:#e6db74">:refer</span> [for-all]]
+            [pbtic.checkout <span style="color:#e6db74">:as</span> checkout]))
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="nothing-special">Nothing Special</h2>
+<p>The first property the book implements is &ldquo;no specials,&rdquo; specifically the
+special&rsquo;s price list is empty:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> sums-without-specials
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items expected-price prices]} gen-item-price-list]
+    (= expected-price
+       (<span style="color:#a6e22e">checkout/total</span> items prices {}))))
+</code></pre></td></tr></table>
+</div>
+</div><p>Simple enough; <code>gen-item-price-list</code> generates a map with three items: the
+items being checked out, the total expected price, and the price list to use.
+Let&rsquo;s take a look at <code>gen-item-price-list</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>gen-item-price-list
+  (<span style="color:#a6e22e">gen/let</span> [prices                  gen-price-list
+            [items expected-price]  (<span style="color:#a6e22e">gen-item-list</span> prices)]
+    {<span style="color:#e6db74">:items</span>           items
+     <span style="color:#e6db74">:expected-price</span>  expected-price
+     <span style="color:#e6db74">:prices</span>          prices}))
+</code></pre></td></tr></table>
+</div>
+</div><p>The generated price list <code>prices</code> is given to <code>gen-item-list</code> to generate
+the list of checked out items and calculate the total price. Because there&rsquo;re
+no specials, calculating the total price is relatively easier:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>gen-non-empty-string
+  (<span style="color:#66d9ef">let </span>[chars <span style="color:#e6db74">&#34;abcdefghijklmnopqrstuvwxyz0123456789&#34;</span>]
+    (<span style="color:#a6e22e">gen/let</span> [cs (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/elements</span> chars))]
+      (apply str (<span style="color:#a6e22e">rand-nth</span> chars) cs))))
+
+
+(<span style="color:#66d9ef">def </span>gen-price-list <span style="color:#75715e">;; gens {&lt;item&gt; =&gt; &lt;price&gt;}</span>
+  (<span style="color:#a6e22e">gen/let</span> [price-list (<span style="color:#a6e22e">gen/not-empty</span>
+                        (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> gen-non-empty-string gen/int)))]
+    (into {} price-list)))
+
+
+(<span style="color:#66d9ef">defn </span>gen-item-list [price-list]  <span style="color:#75715e">;; gens [[&lt;item&gt;s] {&lt;item&gt; =&gt; &lt;price&gt;}]</span>
+<span style="display:block;width:100%;background-color:#3c3d38">  (<span style="color:#a6e22e">gen/let</span> [items (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/elements</span> (keys price-list)))]
+</span>    [items
+     (<span style="color:#a6e22e">-&gt;&gt;</span> items
+          (map <span style="color:#f92672">#</span>(get price-list %))
+          (reduce + <span style="color:#ae81ff">0</span>))]))
+</code></pre></td></tr></table>
+</div>
+</div><p><code>gen-price-list</code> matches quite closely to book&rsquo;s version <code>price_list</code>
+generator, except that the Clojure version returns a map instead of a list.
+For this instance, returning a map has two benefits: duplicates are
+automatically handled and maps are idiomatic in Clojure (just like <a href="https://elixir-lang.org/getting-started/keywords-and-maps.html#keyword-lists">keyword
+lists</a> are in Erlang<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>). As with the book&rsquo;s version,
+<code>gen-price-list</code> returns a non-empty price list.</p>
+<p><code>gen-non-empty-string</code> is a little controversial: I could have used
+<code>clojure.test.check.generators/string-alphanumeric</code> instead of rolling
+my own. However, <code>clojure.test.check.generators/string-alphanumeric</code> includes
+<code>&quot;&quot;</code> in its generation. While I could put in checks to ensure there&rsquo;re no
+empty string, I ended up coding up one that fits my needs better.</p>
+<p><code>gen-item-list</code> generates a list of items by choosing the keys of the given
+<code>price-list</code> map.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> The function then loops through the items, retrieves
+the price, and sums them up. Because line 14 does not use <code>not-empty</code>
+generator, the generated item list may be empty, thus making it return zero
+as the expected price.</p>
+<p>The simplest working code that satisfies this property looks as follows:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>pbtic.checkout)
+
+
+(<span style="color:#66d9ef">defn </span>total [item-list price-list _specials]
+  (apply + (map <span style="color:#f92672">#</span>(get price-list %) item-list)))
+</code></pre></td></tr></table>
+</div>
+</div><p>The actual implementation is a little anti-climax, after all the effort in
+writing the generators. But the work done so far covered the following
+cases:</p>
+<ul>
+<li>Checkout list is empty</li>
+<li>Order of scanning checkout items are random, i.e., identical items aren&rsquo;t
+necessarily being checked out at the same time</li>
+<li>Specials list is empty</li>
+</ul>
+<p>However, the property also implicitly assumes all items being checked out
+have the corresponding price in the price list. There&rsquo;s also one (small)
+problem with <code>gen-price-list</code> that the book addressed as it goes deeper into
+this example.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<h2 id="handling-specials">Handling Specials</h2>
+<p>Not wanting to upset the property that&rsquo;s already working well in checking
+non-special items, the book advises on creating a new property for handling
+specials so that failures when handling specials are due to specials.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> sums-with-specials
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items expected-price prices specials]} gen-item-price-special]
+    (= expected-price
+       (<span style="color:#a6e22e">checkout/total</span> items prices specials))))
+</code></pre></td></tr></table>
+</div>
+</div><p>The property itself looks simple; it&rsquo;s largely the same as the regular one
+above, except that it uses <code>gen-item-price-special</code> that also generate
+specials:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>gen-item-price-special
+  (<span style="color:#a6e22e">gen/let</span> [prices    gen-price-list
+            specials  (<span style="color:#a6e22e">gen-special-list</span> prices)
+<span style="display:block;width:100%;background-color:#3c3d38">            [spec-items spec-price] (<span style="color:#a6e22e">gen-special</span> prices specials)
+</span><span style="display:block;width:100%;background-color:#3c3d38">            [reg-items reg-price]   (<span style="color:#a6e22e">gen-regular</span> prices specials)]
+</span>    {<span style="color:#e6db74">:items</span>           (<span style="color:#a6e22e">shuffle</span> (concat spec-items reg-items))
+     <span style="color:#e6db74">:expected-price</span>  (+ spec-price reg-price)
+     <span style="color:#e6db74">:prices</span>          prices
+     <span style="color:#e6db74">:specials</span>        specials}))
+</code></pre></td></tr></table>
+</div>
+</div><p>The cleverness of this generator<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> is that it separates the generating of
+the set of items that always gets the special prices (line 4, using
+<code>gen-special</code>) and the generating that never gets the special prices (line 5,
+using <code>gen-regular</code>). The alternative is to generate all the items,
+sieves through the generated list, determines the items that get special
+prices, determines the remaining with regular prices, and sums that total.
+That alternative is actually the &ldquo;production&rdquo; code; we should not &ldquo;replicate&rdquo;
+such code in test code!</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>gen-special-list [prices] <span style="color:#75715e">;; gens {&lt;item&gt; =&gt; {:count &lt;n&gt; :price &lt;n&gt;}}</span>
+  (<span style="color:#a6e22e">gen/let</span> [specials (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> (<span style="color:#a6e22e">gen/elements</span> (keys prices))
+                                          (<span style="color:#a6e22e">gen/choose</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">5</span>)
+                                          gen/int))]
+    (apply merge
+           (map (<span style="color:#66d9ef">fn </span>[[item count price]] {item {<span style="color:#e6db74">:count</span> count <span style="color:#e6db74">:price</span> price}})
+                specials))))
+</code></pre></td></tr></table>
+</div>
+</div><p><code>gen-special-list</code> is simple enough; it generates a list of tuples where
+each tuple contains the item (name), a quantity (item count to qualify for
+special price), and the price. Its body then transforms the generated list of
+tuples into a map of specials. <code>gen-special-list</code> has the same (small) issue
+as <code>gen-price-list</code>, as well as one new issue (which actually isn&rsquo;t that
+important and could be left as such; try thinking about it before
+turning to the footnote<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>).</p>
+<p>What&rsquo;s left from <code>gen-item-price-special</code> are <code>gen-special</code> and <code>gen-regular</code>;
+due to Clojure&rsquo;s lack of pattern matching at the function level, the code
+looks a little different. First, <code>gen-regular</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>gen-regular [prices specials]
+  (<span style="color:#a6e22e">letfn</span> [(<span style="color:#a6e22e">gen-count</span> [item]
+            (<span style="color:#66d9ef">if </span>(contains? specials item)
+              (<span style="color:#a6e22e">gen/choose</span> <span style="color:#ae81ff">0</span> (dec (<span style="color:#a6e22e">get-in</span> specials [item <span style="color:#e6db74">:count</span>])))
+              gen/nat))]
+    (<span style="color:#a6e22e">gen/return</span>
+      (<span style="color:#a6e22e">-&gt;&gt;</span> prices
+           (map (<span style="color:#66d9ef">fn </span>[[item price]]
+                  (<span style="color:#66d9ef">let </span>[counts (<span style="color:#a6e22e">gen/generate</span> (<span style="color:#a6e22e">gen-count</span> item))]
+                    {<span style="color:#e6db74">:items</span>     (repeat counts item)
+                     <span style="color:#e6db74">:sub-total</span> (* counts price)})))
+           (reduce (<span style="color:#66d9ef">fn </span>[{<span style="color:#e6db74">:keys</span> [all-items total] <span style="color:#e6db74">:as</span> result}
+                        {<span style="color:#e6db74">:keys</span> [items sub-total]}]
+                     (assoc result
+                            <span style="color:#e6db74">:total</span> (+ total sub-total)
+                            <span style="color:#e6db74">:all-items</span> (<span style="color:#a6e22e">shuffle</span> (concat all-items items))))
+                   {<span style="color:#e6db74">:total</span> <span style="color:#ae81ff">0</span>
+                    <span style="color:#e6db74">:all-items</span> []})
+           ((<span style="color:#a6e22e">juxt</span> <span style="color:#e6db74">:all-items</span> <span style="color:#e6db74">:total</span>))))))
+</code></pre></td></tr></table>
+</div>
+</div><p><code>gen-regular</code> defines an inline function <code>gen-count</code> that restricts the
+generation of item count depending on whether the item exists in the
+special list or not:</p>
+<ul>
+<li>If it does, it generates a number between zero and one-less than the
+special&rsquo;s count, i.e., it always generates a number that never triggers
+the special price to kick in.</li>
+<li>Otherwise, it generates any number of items, even zero.</li>
+</ul>
+<p>Then, for each item in the price list, it generates the item count using
+the inline <code>gen-count</code> function (<code>map</code> operation from lines 8 to 11),
+calculates the total price and creates the item list (<code>reduce</code> operation
+from lines 12 to 18), and returns the total price and item list (line 19).
+The shuffling of the items at line 16 is to keep to the &ldquo;randomness&rdquo; when
+checking out, i.e., same items aren&rsquo;t always checked out together.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>gen-special [_ specials]
+  (<span style="color:#a6e22e">gen/let</span> [multipliers (<span style="color:#a6e22e">gen/vector</span> gen/nat (count specials))]
+    (<span style="color:#a6e22e">-&gt;&gt;</span> (zipmap specials multipliers)
+         (map (<span style="color:#66d9ef">fn </span>[[[item {<span style="color:#e6db74">:keys</span> [count price]}] multiplier]]
+                {<span style="color:#e6db74">:items</span>     (repeat (* count multiplier) item)
+                 <span style="color:#e6db74">:sub-total</span> (* price multiplier)}))
+         (reduce (<span style="color:#66d9ef">fn </span>[{<span style="color:#e6db74">:keys</span> [all-items total] <span style="color:#e6db74">:as</span> result}
+                      {<span style="color:#e6db74">:keys</span> [items sub-total]}]
+                   (assoc result
+                          <span style="color:#e6db74">:all-items</span> (concat all-items items)
+                          <span style="color:#e6db74">:total</span>     (+ total sub-total)))
+                 {<span style="color:#e6db74">:total</span> <span style="color:#ae81ff">0</span>
+                  <span style="color:#e6db74">:all-items</span> []})
+         ((<span style="color:#a6e22e">juxt</span> <span style="color:#e6db74">:all-items</span> <span style="color:#e6db74">:total</span>)))))
+</code></pre></td></tr></table>
+</div>
+</div><p><code>gen-special</code> is relatively similar in its map-reduce operation; the main
+difference lies in it generating multipliers&ndash;which could be zero&ndash;for each
+special that is used to create the item list based on these multipliers.
+Yeah, the destructuring at line 4 is a little involved, but that makes the
+anonymous function&rsquo;s body cleaner.</p>
+<p>The updated <code>pbtic.checkout/total</code> that handles specials as well looks as
+follows:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>total [item-list price-list specials]
+  (<span style="color:#66d9ef">let </span>[counts (<span style="color:#a6e22e">count-seen</span> item-list)
+        {<span style="color:#e6db74">:keys</span> [counts-left prices]} (<span style="color:#a6e22e">apply-specials</span> counts specials)]
+    (+ prices (<span style="color:#a6e22e">apply-regular</span> counts-left price-list))))
+</code></pre></td></tr></table>
+</div>
+</div><p><code>pbtic.checkout/total</code> uses three helper functions:</p>
+<ul>
+<li><code>count-seen</code>: returns a map of items and the item counts based on the
+given item list; it essentially just aliases to the built-in
+<code>frequencies</code> function</li>
+<li><code>apply-specials</code>: returns a map of remaining items that do not qualify
+for special prices and the total price of items that qualify</li>
+<li><code>apply-regular</code>: returns total prices of remaining items</li>
+</ul>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>count-seen frequencies)
+
+
+(<span style="color:#66d9ef">defn </span>apply-specials [counts specials]
+  (reduce (<span style="color:#66d9ef">fn </span>[{<span style="color:#e6db74">:keys</span> [prices counts-left]} [item seen]]
+            (if-let [{<span style="color:#e6db74">:keys</span> [count price]} (get specials item)]
+              {<span style="color:#e6db74">:counts-left</span> (merge counts-left {item (rem seen count)})
+               <span style="color:#e6db74">:prices</span>      (+ prices (* (quot seen count) price))}
+              {<span style="color:#e6db74">:counts-left</span> (merge counts-left {item seen})
+               <span style="color:#e6db74">:prices</span>      prices}))
+          {<span style="color:#e6db74">:counts-left</span> nil <span style="color:#e6db74">:prices</span> <span style="color:#ae81ff">0</span>}
+          counts))
+
+
+(<span style="color:#66d9ef">defn </span>apply-regular [items prices]
+  (<span style="color:#a6e22e">transduce</span> (map (<span style="color:#66d9ef">fn </span>[[item count]] (* count (get prices item))))
+             +
+             <span style="color:#ae81ff">0</span>
+             items))
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="negative-testing">Negative Testing</h2>
+<p>Code written so far covers the happy path: it works when inputs are correct.
+Negative testing covers the path less travelled. Writing broad properties
+that test the more general properties of the code can help in checking
+whether the happy-path properties are consistent. The broader such properties
+are, the better they are in searching for problems that we expect.<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>
+Think of broad properties as supplements or anchors to the specific ones, they
+aren&rsquo;t too useful on their own.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> negative-testing-for-expected-results
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items prices specials]} gen-lax-lists]
+    (<span style="color:#a6e22e">integer?</span> (<span style="color:#a6e22e">checkout/total</span> items prices specials))))
+</code></pre></td></tr></table>
+</div>
+</div><p>This property is very, very broad: it expects <code>pbtic.checkout/total</code> always
+return an integer. But instead of reusing existing generators, it uses a new
+one <code>gen-lax-lists</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>gen-lax-lists
+  (<span style="color:#a6e22e">gen/hash-map</span>
+   <span style="color:#e6db74">:items</span>     (<span style="color:#a6e22e">gen/list</span> gen/string-alphanumeric)
+   <span style="color:#e6db74">:prices</span>    (<span style="color:#a6e22e">gen/fmap</span> <span style="color:#f92672">#</span>(into {} %)
+                        (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> gen/string-alphanumeric gen/int)))
+   <span style="color:#e6db74">:specials</span>  (<span style="color:#a6e22e">gen/fmap</span> (<span style="color:#66d9ef">fn </span>[vs]
+                          (<span style="color:#a6e22e">-&gt;&gt;</span> vs
+                               (map (<span style="color:#66d9ef">fn </span>[[item count price]]
+                                      {item {<span style="color:#e6db74">:count</span> count <span style="color:#e6db74">:price</span> price}}))
+                               (apply merge)))
+                        (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> gen/string-alphanumeric
+                                             gen/int
+                                             gen/int)))))
+</code></pre></td></tr></table>
+</div>
+</div><p>Unlike <code>gen-item-price-list</code> and <code>gen-item-price-special</code>, <code>gen-lax-lists</code>
+does not generate the checkout items and specials from its generated price list.
+When we run the test, we&rsquo;ll be greeted with a glorious stacktrace caused by
+<code>java.lang.NullPointerException</code>. Let&rsquo;s make the test output friendlier by
+wrapping the body in try-catch:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> negative-testing-for-expected-results
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items prices specials]} gen-lax-lists]
+    (<span style="color:#a6e22e">try</span>
+      (<span style="color:#a6e22e">integer?</span> (<span style="color:#a6e22e">checkout/total</span> items prices specials))
+      (<span style="color:#a6e22e">catch</span> Throwable _ false))))
+</code></pre></td></tr></table>
+</div>
+</div><p>Running the above, you&rsquo;ll see something similar to the following:</p>
+<pre><code>FAIL in (negative-testing-for-expected-results) (checkout_test.clj)
+expected: {:result true}
+  actual: {:shrunk
+           {:total-nodes-visited 29,
+            ;; omitted for brevity
+            :smallest
+            [{:items (&quot;&quot;),
+              :prices {},
+              :specials nil}]},
+             ;; omitted for brevity
+          }
+</code></pre><p>Looking up the price of an unknown item causes the problem. This probably
+is acceptable but instead of throwing a generic <code>NullPointerException</code>,
+throwing one with more information probably is more helpful. Adjusting
+the property:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> negative-testing-for-expected-results
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items prices specials]} gen-lax-lists]
+    (<span style="color:#a6e22e">try</span>
+      (<span style="color:#a6e22e">integer?</span> (<span style="color:#a6e22e">checkout/total</span> items prices specials))
+      (<span style="color:#a6e22e">catch</span> Throwable ex
+        (<span style="color:#a6e22e">contains</span> (<span style="color:#a6e22e">ex-data</span> e) <span style="color:#e6db74">:unknown-item</span>)))))
+</code></pre></td></tr></table>
+</div>
+</div><p>And updating the code in <code>pbtic.checkout</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>cost-of-item [prices item]
+  (if-let [price (get prices item)]
+    price
+    (<span style="color:#a6e22e">throw</span> (<span style="color:#a6e22e">ex-info</span> <span style="color:#e6db74">&#34;unknown-item&#34;</span> {<span style="color:#e6db74">:unknown-item</span> item}))))
+
+
+(<span style="color:#66d9ef">defn </span>apply-regular [items prices]
+<span style="display:block;width:100%;background-color:#3c3d38">  (<span style="color:#a6e22e">transduce</span> (map (<span style="color:#66d9ef">fn </span>[[item count]] (* count (<span style="color:#a6e22e">cost-of-item</span> prices item))))
+</span>             +
+             <span style="color:#ae81ff">0</span>
+             items))
+</code></pre></td></tr></table>
+</div>
+</div><p>The new <code>cost-of-item</code> function throws the exception with more helpful
+information when it can&rsquo;t retrieve the item&rsquo;s prices from the given <code>prices</code>
+map. <code>apply-regular</code> then replaces the original <code>(get prices item)</code> with
+<code>(cost-of-item prices item)</code> to satisfy the property&rsquo;s expected outcome.
+Running the test again, another error comes up<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>:</p>
+<pre><code>FAIL in (negative-testing-for-expected-results) (checkout_test.clj)
+expected: {:result true}
+  actual: {:shrunk
+           {:total-nodes-visited 29,
+            ;; omitted for brevity
+            :smallest
+            [{:items (&quot;C&quot;),
+              :prices {},
+              :specials {&quot;C&quot; {:count 0, :price 1}}}]},
+             ;; omitted for brevity
+          }
+</code></pre><p>A very lax specials; let&rsquo;s adopt the same strategy in throwing a more helpful
+exception:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defspec</span> negative-testing-for-expected-results
+  (<span style="color:#a6e22e">for-all</span> [{<span style="color:#e6db74">:keys</span> [items prices specials]} gen-lax-lists]
+    (<span style="color:#a6e22e">try</span>
+      (<span style="color:#a6e22e">integer?</span> (<span style="color:#a6e22e">checkout/total</span> items prices specials))
+      (<span style="color:#a6e22e">catch</span> Throwable ex
+<span style="display:block;width:100%;background-color:#3c3d38">        (or (<span style="color:#a6e22e">contains</span> (<span style="color:#a6e22e">ex-data</span> e) <span style="color:#e6db74">:unknown-item</span>)
+</span><span style="display:block;width:100%;background-color:#3c3d38">            (<span style="color:#a6e22e">contains</span> (<span style="color:#a6e22e">ex-data</span> e) <span style="color:#e6db74">:invalid-special-list</span>)))))
+</span></code></pre></td></tr></table>
+</div>
+</div><p>And changes in <code>pbtic.checkout</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span>valid-special-list? [specials]
+  (every? <span style="color:#f92672">#</span>(pos? (<span style="color:#e6db74">:count</span> %)) (vals specials)))
+
+
+(<span style="color:#66d9ef">defn </span>total [item-list price-list specials]
+<span style="display:block;width:100%;background-color:#3c3d38">  (when-not (<span style="color:#a6e22e">valid-special-list?</span> specials)
+</span><span style="display:block;width:100%;background-color:#3c3d38">    (<span style="color:#a6e22e">throw</span> (<span style="color:#a6e22e">ex-info</span> <span style="color:#e6db74">&#34;invalid special list&#34;</span> {<span style="color:#e6db74">:invalid-special-list</span> true})))
+</span>  (<span style="color:#66d9ef">let </span>[counts (<span style="color:#a6e22e">count-seen</span> item-list)
+        {<span style="color:#e6db74">:keys</span> [counts-left prices]} (<span style="color:#a6e22e">apply-specials</span> counts specials)]
+    (+ prices (<span style="color:#a6e22e">apply-regular</span> counts-left price-list))))
+</code></pre></td></tr></table>
+</div>
+</div><p>Unfortunately, <code>test.check</code> doesn&rsquo;t have any functions to collect statistics
+on the generated values, so we&rsquo;ll just continue with text in the book and
+make <code>gen-lax-lists</code> a little stricter so that the property is closer
+to the &ldquo;nothing works&rdquo; end of the spectrum<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">def </span>gen-lax-lists
+  (<span style="color:#66d9ef">let </span>[known-items [<span style="color:#e6db74">&#34;A&#34;</span>, <span style="color:#e6db74">&#34;B&#34;</span>, <span style="color:#e6db74">&#34;C&#34;</span>]
+        gen-maybe-known (<span style="color:#a6e22e">gen/bind</span> (<span style="color:#a6e22e">gen/list</span> gen-non-empty-string)
+                                  <span style="color:#f92672">#</span>(<span style="color:#a6e22e">gen/elements</span> (concat known-items %)))]
+    (<span style="color:#a6e22e">gen/hash-map</span>
+     <span style="color:#e6db74">:items</span>   (<span style="color:#a6e22e">gen/list</span> gen-maybe-known)
+     <span style="color:#e6db74">:prices</span>  (<span style="color:#a6e22e">gen/fmap</span> <span style="color:#f92672">#</span>(into {} %) (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> gen-maybe-known
+                                                          gen/nat)))
+     <span style="color:#e6db74">:specials</span> (<span style="color:#a6e22e">gen/fmap</span> (<span style="color:#66d9ef">fn </span>[vs]
+                           (<span style="color:#a6e22e">-&gt;&gt;</span> vs
+                                (map (<span style="color:#66d9ef">fn </span>[[item count price]]
+                                       {item {<span style="color:#e6db74">:count</span> count <span style="color:#e6db74">:price</span> price}}))
+                                (apply merge)))
+                         (<span style="color:#a6e22e">gen/list</span> (<span style="color:#a6e22e">gen/tuple</span> gen-maybe-known
+                                              gen/nat
+                                              gen/nat))))))
+</code></pre></td></tr></table>
+</div>
+</div><p>Unlike the book&rsquo;s code, the above does not cause any new failures in/expose
+any issues with the code written so far. In fact, because we adopted Clojure&rsquo;s
+idiom in using maps, instead of keyword lists, the other issues mentioned
+in the book are not applicable to our code so far.</p>
+<h2 id="summary">Summary</h2>
+<p>This wraps up the porting of Erlang/Elixir code from chapter 6 to Clojure.
+In the next post, I&rsquo;ll cover stateful properties.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Erlang introduced maps only from OTP 17.0 onwards. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>It&rsquo;s a map of items and corresponding price, so calling it a <code>price-list</code>
+problably is not ideal. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>If I remember correctly, I actually hit the issue at this point in
+time (for both PropCheck and test.check) and had to address
+it before proceeding on to the specials property. Nevertheless,
+I&rsquo;m keeping the post as-is to follow the book&rsquo;s flow. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Actually, more appropriately, Fred&rsquo;s wisdom. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>Because the price generated isn&rsquo;t checked against the price list, it&rsquo;s
+possible that the &ldquo;special&rdquo; price is actually more costly 😂 <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p>Finding cases that we didn&rsquo;t think of is exactly the reason why
+we adopt property-based testing. <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p>The book did not hit this problem at this point in time; it hit this
+much later on. <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p>Buy the book to understand what this means. Alternatively,
+you can read the
+<a href="https://propertesting.com/book_case_study_stateless_properties_with_a_checkout.html#_negative_tests">description at the book&rsquo;s old-but-free website</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+
+    </main>
+
+    
+<section id='comments'>
+  <script src="https://utteranc.es/client.js"
+          repo="shaolang/shaolang.github.io"
+          issue-term="pathname"
+          label="blogcomment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='index.xml'><img src='/images/rss.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.73.0</a></div>
+      
+    </footer>
+  </body>
+</html>
