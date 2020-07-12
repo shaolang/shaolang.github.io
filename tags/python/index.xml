@@ -6,10 +6,32 @@
     <description>Recent content in python on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Jul 2018 23:30:15 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2020 08:12:09 +0800</lastBuildDate>
     
 	<atom:link href="https://shaolang.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pandas: Use Nth Value in First Record of Selected Groups</title>
+      <link>https://shaolang.github.io/posts/2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/</link>
+      <pubDate>Sat, 13 Jun 2020 08:12:09 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/</guid>
+      <description>How do you transform the following data frame:
+| book_id | date | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
+    </item>
+    
+    <item>
+      <title>pip Behind Corporate Firewalls</title>
+      <link>https://shaolang.github.io/posts/2020-01-28-pip-behind-corporate-firewalls/</link>
+      <pubDate>Tue, 28 Jan 2020 12:17:59 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2020-01-28-pip-behind-corporate-firewalls/</guid>
+      <description>Corporate firewalls&amp;hellip; never mind, that&amp;rsquo;s a rant for another day.
+To appease the corporate firewalls for pip, create %userprofile%\pip\pip.ini with the following content:
+[global] trusted-host = pypi.python.org pypi.org files.pythonhosted.org Set the https_proxy and http_proxy environment settings, and pip install away to your heart&amp;rsquo;s content.
+Note that this solution works since pip 10.0, and yup, works at least within the corporate firewalls that I&amp;rsquo;m behind currently.</description>
+    </item>
     
     <item>
       <title>Python Code Structure and Distribution</title>
