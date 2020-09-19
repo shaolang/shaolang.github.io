@@ -6,11 +6,7 @@
     <description>Recent content in postgresql on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 May 2020 20:14:32 +0800</lastBuildDate>
-    
-	<atom:link href="https://shaolang.github.io/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 23 May 2020 20:14:32 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MSDOS Script to Set Up PostgreSQL</title>
       <link>https://shaolang.github.io/posts/2020-05-23-dos-script-to-setup-postgresql/</link>

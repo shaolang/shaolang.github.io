@@ -6,11 +6,7 @@
     <description>Recent content in clojure on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Jul 2020 22:00:00 +0800</lastBuildDate>
-    
-	<atom:link href="https://shaolang.github.io/tags/clojure/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 10 Jul 2020 22:00:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/clojure/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Property-Based Testing: From Erlang/Elixir to Clojure Part 2</title>
       <link>https://shaolang.github.io/posts/2020-07-10-property-based-testing-from-elixir-to-clojure-part2/</link>

@@ -6,11 +6,7 @@
     <description>Recent content in ms-excel on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Aug 2019 21:25:48 +0800</lastBuildDate>
-    
-	<atom:link href="https://shaolang.github.io/tags/ms-excel/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 16 Aug 2019 21:25:48 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/ms-excel/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ranking Data in MSExcel</title>
       <link>https://shaolang.github.io/posts/2019-08-16-ranking-data-in-msexcel/</link>
@@ -18,7 +14,7 @@
       
       <guid>https://shaolang.github.io/posts/2019-08-16-ranking-data-in-msexcel/</guid>
       <description>MSExcel, despite its bad name for data analysis, can still be a very good tool to reach out to for one-off analysis jobs, especially when the output needs to be interactive. After all, nothing comes close to the reactivity &amp;ndash; as in reactive programming &amp;ndash; simple MSExcel formulae provide that do not require hardcore development skills.1
-Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the customers&amp;rsquo; YTD Trade Count and MTD Trade Count.</description>
+Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the customers&#39; YTD Trade Count and MTD Trade Count.</description>
     </item>
     
   </channel>

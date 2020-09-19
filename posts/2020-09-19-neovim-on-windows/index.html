@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.75.1" />
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Neovim on Windows</h1>
+  
+    Sep 19, 2020
+  
+  
+  <article>
+    <p>I may be missing something but Neovim requires some additional configuration
+to make it work on Windows; the following are the things I&rsquo;ve done to
+make Neovim work on a Windows machine that also makes it co-exist with
+Vim.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> After <a href="https://github.com/neovim/neovim/releases/latest">downloading Neovim</a> and unzipping that to somewhere,
+the first thing to do is to configure it through <code>init.vim</code>.</p>
+<h2 id="initvim-aka-neovims-vim_vimrc"><code>init.vim</code> aka Neovim&rsquo;s <code>.vim</code>/<code>_vimrc</code></h2>
+<p>Most online articles say <code>init.vim</code> should reside at <code>~/.config/nvim/init.vim</code>
+and, well, we know <code>~</code> translates to <code>%userprofile%</code> (or <code>C:\Users\username</code>)
+in Windows. Nope, in Windows, it should be <code>~/AppData/Local/nvim/init.vim</code>,
+as an <a href="https://stackoverflow.com/a/45219657">answer</a> on Stack Overflow says.</p>
+<p>Add the following to <code>init.vim</code> to make Neovim reuse Vim&rsquo;s configurations,
+thus easing the transition from and making it co-exists with Vim:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-viml" data-lang="viml"><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span>/<span style="color:#a6e22e">after</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>The script above assumes Vim runtime files exist at <code>~/vimfiles</code>; amend that
+accordingly to your setup.</p>
+<p>The last line in the script loads Vim&rsquo;s configuration from <code>~/_vimrc</code> (so
+change that too if yours exists elsewhere).</p>
+<h2 id="runtime-path">Runtime path</h2>
+<p>And within the Stack Overflow answer (and everywhere else), someone mentioned
+that the location is also stated in the help file, &ldquo;With <code>:help init.vim</code>, you
+can get the location&hellip;&rdquo; Trying that, Neovim helpfully tells me &ldquo;Sorry, no
+help for init.vim&rdquo;.</p>
+<p>Similar to vim, Neovim has its own set of runtime files. Although Neovim
+bundles them in its distribution, it puts them at <code>Neovim/share/nvim/runtime</code>
+and doesn&rsquo;t include it in the default <a href="https://medium.com/usevim/vim-101-runtimepath-83194d411b0a">runtimepath</a>. Instead of
+copying the contents in <code>runtime</code> over to <code>Neovim/bin</code>, add that to the
+<code>runtimepath</code> in <code>init.vim</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-viml" data-lang="viml"><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span><span style="color:#e6db74">/after,c:/</span><span style="color:#a6e22e">neovim</span><span style="color:#e6db74">/share/</span><span style="color:#a6e22e">nvim</span>/<span style="color:#a6e22e">runtime</span><span style="color:#960050;background-color:#1e0010">
+</span></span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Notice that Neovim&rsquo;s runtime directory is appended to the first line. Again,
+change that to point to the directory where you&rsquo;ve unzipped Neovim.</p>
+<p>And that completes the setup required to run Neovim on Windows.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://chocolatey.org">Chocolatey</a> and <a href="https://sccop.sh">Scoop</a> might have made these an
+non-issue, but I didn&rsquo;t try them. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+  </article>
+
+    </main>
+
+    
+<section id='comments'>
+  <script src="https://utteranc.es/client.js"
+          repo="shaolang/shaolang.github.io"
+          issue-term="pathname"
+          label="blogcomment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://exercism.io/profiles/shaolang'><img src='/images/exercism.png' /></a>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='index.xml'><img src='/images/rss.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.75.1</a></div>
+      
+    </footer>
+  </body>
+</html>

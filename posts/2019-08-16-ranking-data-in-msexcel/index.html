@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.75.1" />
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
@@ -42,47 +42,47 @@ interactive. After all, nothing comes close to the reactivity &ndash; as in
 <a href="https://en.wikipedia.org/wiki/Reactive_programming">reactive programming</a> &ndash; simple MSExcel formulae provide
 that do not require hardcore development skills.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
 <h2 id="getting-our-hands-dirty">Getting our hands dirty</h2>
-<p>Let&rsquo;s say the requirement is to rank the customers&rsquo;  <em>YTD Trade Count</em>
+<p>Let&rsquo;s say the requirement is to rank the customers'  <em>YTD Trade Count</em>
 and <em>MTD Trade Count</em>. One method is to do that by hand:</p>
 <table>
 <thead>
 <tr>
 <th> </th>
 <th>A</th>
-<th align="center">B</th>
-<th align="center">C</th>
+<th style="text-align:center">B</th>
+<th style="text-align:center">C</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>1</strong></td>
 <td><strong>Customer</strong></td>
-<td align="center"><strong>YTD Trade Count</strong></td>
-<td align="center"><strong>MTD Trade Count</strong></td>
+<td style="text-align:center"><strong>YTD Trade Count</strong></td>
+<td style="text-align:center"><strong>MTD Trade Count</strong></td>
 </tr>
 <tr>
 <td><strong>2</strong></td>
 <td>ABC</td>
-<td align="center">190</td>
-<td align="center">7</td>
+<td style="text-align:center">190</td>
+<td style="text-align:center">7</td>
 </tr>
 <tr>
 <td><strong>3</strong></td>
 <td>DEF</td>
-<td align="center">288</td>
-<td align="center">38</td>
+<td style="text-align:center">288</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>4</strong></td>
 <td>GHI</td>
-<td align="center">69</td>
-<td align="center">32</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">32</td>
 </tr>
 <tr>
 <td><strong>5</strong></td>
 <td>JKL</td>
-<td align="center">168</td>
-<td align="center">38</td>
+<td style="text-align:center">168</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>6</strong></td>
@@ -105,32 +105,32 @@ and <em>MTD Trade Count</em>. One method is to do that by hand:</p>
 <tr>
 <td><strong>9</strong></td>
 <td><strong>Customer</strong></td>
-<td align="center"><strong>YTD Rank</strong></td>
-<td align="center"><strong>MTD Rank</strong></td>
+<td style="text-align:center"><strong>YTD Rank</strong></td>
+<td style="text-align:center"><strong>MTD Rank</strong></td>
 </tr>
 <tr>
 <td><strong>10</strong></td>
 <td>ABC</td>
-<td align="center">2nd</td>
-<td align="center">4th</td>
+<td style="text-align:center">2nd</td>
+<td style="text-align:center">4th</td>
 </tr>
 <tr>
 <td><strong>10</strong></td>
 <td>DEF</td>
-<td align="center">1st</td>
-<td align="center">1st</td>
+<td style="text-align:center">1st</td>
+<td style="text-align:center">1st</td>
 </tr>
 <tr>
 <td><strong>11</strong></td>
 <td>GHI</td>
-<td align="center">4th</td>
-<td align="center">3rd</td>
+<td style="text-align:center">4th</td>
+<td style="text-align:center">3rd</td>
 </tr>
 <tr>
 <td><strong>12</strong></td>
 <td>JKL</td>
-<td align="center">3rd</td>
-<td align="center">1st</td>
+<td style="text-align:center">3rd</td>
+<td style="text-align:center">1st</td>
 </tr>
 </tbody>
 </table>
@@ -164,40 +164,40 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <th> </th>
 <th>A</th>
-<th align="center">B</th>
-<th align="center">C</th>
+<th style="text-align:center">B</th>
+<th style="text-align:center">C</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>1</strong></td>
 <td><strong>Customer</strong></td>
-<td align="center"><strong>YTD Trade Count</strong></td>
-<td align="center"><strong>MTD Trade Count</strong></td>
+<td style="text-align:center"><strong>YTD Trade Count</strong></td>
+<td style="text-align:center"><strong>MTD Trade Count</strong></td>
 </tr>
 <tr>
 <td><strong>2</strong></td>
 <td>ABC</td>
-<td align="center">190</td>
-<td align="center">7</td>
+<td style="text-align:center">190</td>
+<td style="text-align:center">7</td>
 </tr>
 <tr>
 <td><strong>3</strong></td>
 <td>DEF</td>
-<td align="center">288</td>
-<td align="center">38</td>
+<td style="text-align:center">288</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>4</strong></td>
 <td>GHI</td>
-<td align="center">69</td>
-<td align="center">32</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">32</td>
 </tr>
 <tr>
 <td><strong>5</strong></td>
 <td>JKL</td>
-<td align="center">168</td>
-<td align="center">38</td>
+<td style="text-align:center">168</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>6</strong></td>
@@ -220,32 +220,32 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <td><strong>9</strong></td>
 <td><strong>Customer</strong></td>
-<td align="center"><strong>YTD Rank</strong></td>
-<td align="center"><strong>MTD Rank</strong></td>
+<td style="text-align:center"><strong>YTD Rank</strong></td>
+<td style="text-align:center"><strong>MTD Rank</strong></td>
 </tr>
 <tr>
 <td><strong>10</strong></td>
 <td>ABC</td>
-<td align="center">2nd</td>
-<td align="center">4th</td>
+<td style="text-align:center">2nd</td>
+<td style="text-align:center">4th</td>
 </tr>
 <tr>
 <td><strong>10</strong></td>
 <td>DEF</td>
-<td align="center">1st</td>
-<td align="center">1st</td>
+<td style="text-align:center">1st</td>
+<td style="text-align:center">1st</td>
 </tr>
 <tr>
 <td><strong>11</strong></td>
 <td>GHI</td>
-<td align="center">4th</td>
-<td align="center">3rd</td>
+<td style="text-align:center">4th</td>
+<td style="text-align:center">3rd</td>
 </tr>
 <tr>
 <td><strong>12</strong></td>
 <td>JKL</td>
-<td align="center">3rd</td>
-<td align="center">1st</td>
+<td style="text-align:center">3rd</td>
+<td style="text-align:center">1st</td>
 </tr>
 <tr>
 <td><strong>13</strong></td>
@@ -268,32 +268,32 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <td><strong>16</strong></td>
 <td></td>
-<td align="center"><strong>YTD Ordered</strong></td>
-<td align="center"><strong>MTD Ordered</strong></td>
+<td style="text-align:center"><strong>YTD Ordered</strong></td>
+<td style="text-align:center"><strong>MTD Ordered</strong></td>
 </tr>
 <tr>
 <td><strong>17</strong></td>
 <td></td>
-<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
-<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(C$2:C$5,ROW()-16)</td>
 </tr>
 <tr>
 <td><strong>18</strong></td>
 <td></td>
-<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
-<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(C$2:C$5,ROW()-16)</td>
 </tr>
 <tr>
 <td><strong>19</strong></td>
 <td></td>
-<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
-<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(C$2:C$5,ROW()-16)</td>
 </tr>
 <tr>
 <td><strong>20</strong></td>
 <td></td>
-<td align="center">=LARGE(B$2:B$5,ROW()-16)</td>
-<td align="center">=LARGE(C$2:C$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(B$2:B$5,ROW()-16)</td>
+<td style="text-align:center">=LARGE(C$2:C$5,ROW()-16)</td>
 </tr>
 </tbody>
 </table>
@@ -303,40 +303,40 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <th> </th>
 <th>A</th>
-<th align="center">B</th>
-<th align="center">C</th>
+<th style="text-align:center">B</th>
+<th style="text-align:center">C</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>1</strong></td>
 <td><strong>Customer</strong></td>
-<td align="center"><strong>YTD Trade Count</strong></td>
-<td align="center"><strong>MTD Trade Count</strong></td>
+<td style="text-align:center"><strong>YTD Trade Count</strong></td>
+<td style="text-align:center"><strong>MTD Trade Count</strong></td>
 </tr>
 <tr>
 <td><strong>2</strong></td>
 <td>ABC</td>
-<td align="center">190</td>
-<td align="center">7</td>
+<td style="text-align:center">190</td>
+<td style="text-align:center">7</td>
 </tr>
 <tr>
 <td><strong>3</strong></td>
 <td>DEF</td>
-<td align="center">288</td>
-<td align="center">38</td>
+<td style="text-align:center">288</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>4</strong></td>
 <td>GHI</td>
-<td align="center">69</td>
-<td align="center">32</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">32</td>
 </tr>
 <tr>
 <td><strong>5</strong></td>
 <td>JKL</td>
-<td align="center">168</td>
-<td align="center">38</td>
+<td style="text-align:center">168</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td> </td>
@@ -347,8 +347,8 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <td> </td>
 <td>&hellip;</td>
-<td align="center">&hellip;</td>
-<td align="center">&hellip;</td>
+<td style="text-align:center">&hellip;</td>
+<td style="text-align:center">&hellip;</td>
 </tr>
 <tr>
 <td> </td>
@@ -359,32 +359,32 @@ across the range <code>B10:C13</code>, and we&rsquo;ll get:</p>
 <tr>
 <td><strong>16</strong></td>
 <td></td>
-<td align="center"><strong>YTD Ordered</strong></td>
-<td align="center"><strong>MTD Ordered</strong></td>
+<td style="text-align:center"><strong>YTD Ordered</strong></td>
+<td style="text-align:center"><strong>MTD Ordered</strong></td>
 </tr>
 <tr>
 <td><strong>17</strong></td>
 <td></td>
-<td align="center">288</td>
-<td align="center">38</td>
+<td style="text-align:center">288</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>18</strong></td>
 <td></td>
-<td align="center">190</td>
-<td align="center">38</td>
+<td style="text-align:center">190</td>
+<td style="text-align:center">38</td>
 </tr>
 <tr>
 <td><strong>19</strong></td>
 <td></td>
-<td align="center">168</td>
-<td align="center">32</td>
+<td style="text-align:center">168</td>
+<td style="text-align:center">32</td>
 </tr>
 <tr>
 <td><strong>20</strong></td>
 <td></td>
-<td align="center">69</td>
-<td align="center">7</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">7</td>
 </tr>
 </tbody>
 </table>
@@ -413,46 +413,46 @@ laziness):</p>
 <tr>
 <th> </th>
 <th>A</th>
-<th align="center">B</th>
-<th align="center">C</th>
-<th align="center">D</th>
+<th style="text-align:center">B</th>
+<th style="text-align:center">C</th>
+<th style="text-align:center">D</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>16</strong></td>
 <td></td>
-<td align="center"><strong>YTD Ordered</strong></td>
-<td align="center"><strong>MTD Ordered</strong></td>
-<td align="center"><strong>Rank</strong></td>
+<td style="text-align:center"><strong>YTD Ordered</strong></td>
+<td style="text-align:center"><strong>MTD Ordered</strong></td>
+<td style="text-align:center"><strong>Rank</strong></td>
 </tr>
 <tr>
 <td><strong>17</strong></td>
 <td></td>
-<td align="center">288</td>
-<td align="center">38</td>
-<td align="center">1st</td>
+<td style="text-align:center">288</td>
+<td style="text-align:center">38</td>
+<td style="text-align:center">1st</td>
 </tr>
 <tr>
 <td><strong>18</strong></td>
 <td></td>
-<td align="center">190</td>
-<td align="center">38</td>
-<td align="center">2nd</td>
+<td style="text-align:center">190</td>
+<td style="text-align:center">38</td>
+<td style="text-align:center">2nd</td>
 </tr>
 <tr>
 <td><strong>19</strong></td>
 <td></td>
-<td align="center">168</td>
-<td align="center">32</td>
-<td align="center">3rd</td>
+<td style="text-align:center">168</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">3rd</td>
 </tr>
 <tr>
 <td><strong>20</strong></td>
 <td></td>
-<td align="center">69</td>
-<td align="center">7</td>
-<td align="center">4th</td>
+<td style="text-align:center">69</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">4th</td>
 </tr>
 </tbody>
 </table>
@@ -517,7 +517,7 @@ is far more important and flexing the scripting muscles.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.74.3</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.75.1</a></div>
       
     </footer>
   </body>
