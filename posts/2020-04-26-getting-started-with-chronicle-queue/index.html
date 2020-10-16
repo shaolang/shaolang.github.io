@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.75.1" />
+    <meta name="generator" content="Hugo 0.76.5" />
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
@@ -237,12 +237,12 @@ library.</p>
 </span><span style="color:#e6db74">
 </span><span style="color:#e6db74">    &#34;&#34;&#34;</span>.trimIndent()
 
-    println(person.toString() == outputString)
+    println(person.toString() <span style="color:#f92672">==</span> outputString)
 
     <span style="color:#66d9ef">val</span> p = Marshallable.fromString&lt;Person&gt;(outputString)
 
-    println(person == p)
-    println(person.hashCode() == p.hashCode())
+    println(person <span style="color:#f92672">==</span> p)
+    println(person.hashCode() <span style="color:#f92672">==</span> p.hashCode())
 }</code></pre></td></tr></table>
 </div>
 </div>
@@ -297,7 +297,7 @@ objects to and from Chronicle Queue<sup id="fnref:4"><a href="#fn:4" class="foot
 <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Food</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
 
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/documents&#34;</span>).use { q -&gt;
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/documents&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
         <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
 
         appender.writeDocument(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
@@ -310,7 +310,7 @@ objects to and from Chronicle Queue<sup id="fnref:4"><a href="#fn:4" class="foot
         tailer.readDocument(person)
         println(person)
 
-        println(<span style="color:#e6db74">&#34;${tailer.readText()}\n&#34;</span>)
+        println(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${tailer.readText()}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 
         <span style="color:#66d9ef">val</span> food = Food()
         tailer.readDocument(food)
@@ -402,7 +402,7 @@ focuses on this reifying of the given listener:</p>
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
     <span style="color:#66d9ef">val</span> directory = <span style="color:#e6db74">&#34;./build/listener&#34;</span>
 
-    ChronicleQueue.single(directory).use { q -&gt;
+    ChronicleQueue.single(directory).use { q <span style="color:#f92672">-&gt;</span>
 <span style="display:block;width:100%;background-color:#3c3d38">        <span style="color:#66d9ef">val</span> observable: PersonListener = q.acquireAppender()
 </span><span style="display:block;width:100%;background-color:#3c3d38">              .methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
 </span>        observable.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
@@ -526,12 +526,12 @@ implemented listener:</p>
 
 <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonRegistry</span>: PersonListener {
     <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person) {
-        println(<span style="color:#e6db74">&#34;in registry: ${person.name}&#34;</span>)
+        println(<span style="color:#e6db74">&#34;in registry: </span><span style="color:#e6db74">${person.name}</span><span style="color:#e6db74">&#34;</span>)
     }
 }
 
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/listener2&#34;</span>).use { q -&gt;
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/listener2&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
         <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
         <span style="color:#66d9ef">val</span> writer: PersonListener = appender.methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
 
@@ -622,12 +622,12 @@ the method signature; or simply put, <a href="https://en.wikipedia.org/wiki/Duck
 
 <span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">VIPClub</span>: VIPListener {
 </span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPerson</span>(person: Person) {
-        println(<span style="color:#e6db74">&#34;Welcome to the club, ${person.name}!&#34;</span>)
+        println(<span style="color:#e6db74">&#34;Welcome to the club, </span><span style="color:#e6db74">${person.name}</span><span style="color:#e6db74">!&#34;</span>)
     }
 }
 
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/duck&#34;</span>).use { q -&gt;
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/duck&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
         <span style="color:#66d9ef">val</span> writer = q.acquireAppender().methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
         writer.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
 
@@ -689,11 +689,11 @@ where it last stopped is done simply by naming the tailer:</p>
 <span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ExcerptTailer
 
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">readQueue</span>(tailerName: String, times: Int) {
-    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q -&gt;
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 <span style="display:block;width:100%;background-color:#3c3d38">        <span style="color:#66d9ef">val</span> tailer = q.createTailer(tailerName)       <span style="color:#75715e">// tailer name given
 </span></span><span style="color:#75715e"></span>
         <span style="color:#66d9ef">for</span> (_n <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1.</span>.times) {
-          println(<span style="color:#e6db74">&#34;$tailerName: ${tailer.readText()}&#34;</span>)
+          println(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">$tailerName</span><span style="color:#e6db74">: </span><span style="color:#e6db74">${tailer.readText()}</span><span style="color:#e6db74">&#34;</span>)
         }
 
         println()       <span style="color:#75715e">// to separate outputs for easier visualization
@@ -701,7 +701,7 @@ where it last stopped is done simply by naming the tailer:</p>
 }
 
 <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q -&gt;
+    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
         <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
         appender.writeText(<span style="color:#e6db74">&#34;Test Message 1&#34;</span>)
         appender.writeText(<span style="color:#e6db74">&#34;Test Message 2&#34;</span>)
@@ -852,7 +852,7 @@ any exceptions. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.75.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.76.5</a></div>
       
     </footer>
   </body>
