@@ -4,17 +4,37 @@
   
   <url>
     <loc>https://shaolang.github.io/</loc>
-    <lastmod>2020-09-19T18:54:39+08:00</lastmod>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://shaolang.github.io/posts/2020-09-19-neovim-on-windows/</loc>
-    <lastmod>2020-09-19T18:54:39+08:00</lastmod>
+    <loc>https://shaolang.github.io/posts/</loc>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shaolang.github.io/posts/</loc>
+    <loc>https://shaolang.github.io/tags/sql/</loc>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shaolang.github.io/tags/sqlite3/</loc>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shaolang.github.io/posts/2021-01-14-sqlite3-use-nth-value-in-first-record-of-selected-groups/</loc>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shaolang.github.io/tags/</loc>
+    <lastmod>2021-01-14T14:09:53+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shaolang.github.io/posts/2020-09-19-neovim-on-windows/</loc>
     <lastmod>2020-09-19T18:54:39+08:00</lastmod>
   </url>
   
@@ -30,11 +50,6 @@
   
   <url>
     <loc>https://shaolang.github.io/posts/2020-07-10-property-based-testing-from-elixir-to-clojure-part2/</loc>
-    <lastmod>2020-07-10T22:00:00+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shaolang.github.io/tags/</loc>
     <lastmod>2020-07-10T22:00:00+08:00</lastmod>
   </url>
   
@@ -111,11 +126,6 @@
   <url>
     <loc>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</loc>
     <lastmod>2019-08-12T00:00:00+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shaolang.github.io/tags/sqlite3/</loc>
-    <lastmod>2019-06-24T21:12:03+08:00</lastmod>
   </url>
   
   <url>
