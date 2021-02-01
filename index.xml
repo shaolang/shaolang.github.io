@@ -158,7 +158,7 @@ As the word goes, teaching is the best way to learn, hence this blog, even if th
       
       <guid>https://shaolang.github.io/links/</guid>
       <description>List of interesting/helpful/queer/etc links:
-Clojure  Clojure, Faster: optimizing Clojure when it matters Practical Data Coercion with Prismatic/schema: especially on how to make multiple coercion matchers work together Taming Advanced Compilation Bugs in ClojureScript Projects  SQL  How do I insert a row which contains a foreign key?: with concise and smart SQL statement to insert many records SQL Style Guide  Misc  AWS services explained in one line each Git - When to Merge vs.</description>
+Clojure  Clojure, Faster: optimizing Clojure when it matters Practical Data Coercion with Prismatic/schema: especially on how to make multiple coercion matchers work together Taming Advanced Compilation Bugs in ClojureScript Projects  Rust  A Survey of Rust GUI Libraries (as of 21 Aug 2020) Rust GUI: Introduction, a.k.a. the state of Rust GUI libraries (as of Jan 2021)  SQL  How do I insert a row which contains a foreign key?</description>
     </item>
     
   </channel>
