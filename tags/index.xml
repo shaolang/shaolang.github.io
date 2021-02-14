@@ -6,7 +6,25 @@
     <description>Recent content in Tags on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Jan 2021 14:09:53 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Feb 2021 08:45:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>clojure</title>
+      <link>https://shaolang.github.io/tags/clojure/</link>
+      <pubDate>Sun, 14 Feb 2021 08:45:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/tags/clojure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tutorial</title>
+      <link>https://shaolang.github.io/tags/tutorial/</link>
+      <pubDate>Sun, 14 Feb 2021 08:45:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/tags/tutorial/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>sql</title>
       <link>https://shaolang.github.io/tags/sql/</link>
@@ -22,15 +40,6 @@
       <pubDate>Thu, 14 Jan 2021 14:09:53 +0800</pubDate>
       
       <guid>https://shaolang.github.io/tags/sqlite3/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>clojure</title>
-      <link>https://shaolang.github.io/tags/clojure/</link>
-      <pubDate>Fri, 10 Jul 2020 22:00:00 +0800</pubDate>
-      
-      <guid>https://shaolang.github.io/tags/clojure/</guid>
       <description></description>
     </item>
     
