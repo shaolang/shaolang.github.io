@@ -49,8 +49,9 @@ Generated dna app
     <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/code.ex:767: Code.require_file/2
     <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/kernel/parallel_compiler.ex:209: anonymous fn/4 in Kernel.ParallelCompiler.spawn_workers/6
 </code></pre></div><p><em>(Yeah, I know, I admit: I&rsquo;m a noob).</em></p>
-<p>The missing piece is configuring Mix. <code>mix test</code> is a task that <em>only</em> runs
-tests; it does not compile <em>and</em> run tests. Because the custom case
+<p>The missing piece is configuring Mix. <code>mix test</code> is a task that <em>only</em> compiles
+source under <code>lib</code> directory before running tests; it does not compile sources
+in <code>test</code> directory. Because the custom case in <code>tests</code>
 is a module<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, Mix needs to know it has to include another directory
 when compiling tests:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-erlang" data-lang="erlang">defmodule My.MixProject do
@@ -69,6 +70,7 @@ when compiling tests:</p>
 </span><span style="color:#66d9ef">end</span></code></pre></div>
 <p><a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration"><code>:elixirc_paths</code> defaults to <code>&quot;lib&quot;</code></a>, hence, the need
 to make changes similar to the highlighted lines to make custom cases work.</p>
+<p><em>Edit: Update post to reflect new understanding of how Mix works [2021-02-14]</em></p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
