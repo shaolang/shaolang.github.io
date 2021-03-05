@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gradle on Bit by bit</title>
+    <link>https://shaolang.github.io/tags/gradle/</link>
+    <description>Recent content in gradle on Bit by bit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 05 Mar 2021 13:30:43 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/gradle/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gradle in Tight Security Environments</title>
+      <link>https://shaolang.github.io/posts/2021-03-05-gradle-in-tight-security-environments/</link>
+      <pubDate>Fri, 05 Mar 2021 13:30:43 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2021-03-05-gradle-in-tight-security-environments/</guid>
+      <description>In tightly controlled, secured environments *cough, corporate, cough*, using Gradle requires a little bit more setup. The following works if the environment has an artifact repository such as Artifactory in place.
+In settings.gradle.kts, configure pluginManagement as follows:
+pluginManagement { repositories { maven { url = uri(&amp;#34;https://path.to/corporate/artifact/repository&amp;#34;) credentials { username = &amp;#34;approved-corporate-userid-to-access-repository&amp;#34; password = &amp;#34;password-of-the-approved-corporate-userid&amp;#34; } } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.</description>
+    </item>
+    
+  </channel>
+</rss>
