@@ -4,6 +4,11 @@
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
     <meta name="generator" content="Hugo 0.81.0" />
+    
+  <meta name='description' content='In tightly controlled, secured environments *cough, corporate, cough*, using Gradle requires a little bit more setup. The following works if the environment has an artifact repository such as Artifactory in place.
+In settings.gradle.kts, configure pluginManagement as follows:
+pluginManagement { repositories { maven { url = uri(&#34;https://path.to/corporate/artifact/repository&#34;) credentials { username = &#34;approved-corporate-userid-to-access-repository&#34; password = &#34;password-of-the-approved-corporate-userid&#34; } } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.'>
+
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
   </head>
