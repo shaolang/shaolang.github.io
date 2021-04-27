@@ -6,7 +6,16 @@
     <description>Recent content in Tags on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Feb 2021 08:45:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 05 Mar 2021 13:30:43 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>gradle</title>
+      <link>https://shaolang.github.io/tags/gradle/</link>
+      <pubDate>Fri, 05 Mar 2021 13:30:43 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/tags/gradle/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>clojure</title>
       <link>https://shaolang.github.io/tags/clojure/</link>
