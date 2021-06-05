@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <meta name="generator" content="Hugo 0.83.1" />
+    
+  <meta name='description' content='By default, mix test starts the project&rsquo;s applications as part of the task. While this usually is helpful, sometimes not starting your application is necessary, e.g., when your application&rsquo;s supervisor starts up singletons that may interfere testing.
+Luckily, mix test supports the command line option --no-start to skip starting the applications after compilation. To make this the &ldquo;default&rdquo; behavior, create the test alias to &ldquo;override&rdquo; the original in mix.exs:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  defmodule Sample.'>
+
+    <title>Bit by bit</title>
+    <link rel='stylesheet' href='/css/styles.css'>
+  </head>
+  <body>
+    <header>
+      
+  <h3>/ <a href='/'>Bit by bit</a>
+  
+    
+      / <a href='../'>posts</a>
+    
+  
+</a></h3>
+
+
+    </header>
+
+    <main>
+      
+  <h1>Testing Elixir Without Starting Your App</h1>
+  
+    Jun 6, 2021
+  
+  
+    <nav class='tags'>
+      <ul class='tags'>
+        <li><a href='https://shaolang.github.io/tags/elixir/'>elixir</a></li>
+      </ul>
+    </nav>
+  
+  <article>
+    <p>By default, <a href="https://hexdocs.pm/mix/Mix.Tasks.Test.html"><code>mix test</code></a> starts the project&rsquo;s applications as
+part of the task. While this usually is helpful, sometimes not starting
+your application is necessary, e.g., when your application&rsquo;s supervisor
+starts up singletons that may interfere testing.</p>
+<p>Luckily, <code>mix test</code> supports the <a href="https://hexdocs.pm/mix/Mix.Tasks.Test.html#module-command-line-options">command line option <code>--no-start</code></a> to
+skip starting the applications after compilation. To make this the &ldquo;default&rdquo;
+behavior, create the <code>test</code> alias to &ldquo;override&rdquo; the original in <code>mix.exs</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Sample.MixProject</span> <span style="color:#66d9ef">do</span>
+  <span style="color:#f92672">use</span> <span style="color:#a6e22e">Mix.Project</span>
+
+  <span style="color:#66d9ef">def</span> project <span style="color:#66d9ef">do</span>
+    [
+      <span style="color:#e6db74">app</span>: <span style="color:#e6db74">:sample</span>,
+<span style="display:block;width:100%;background-color:#3c3d38">      <span style="color:#e6db74">aliases</span>: aliases(),
+</span>      <span style="color:#75715e"># ... rest omitted for brevity ...</span>
+    ]
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">defp</span> aliases <span style="color:#66d9ef">do</span>
+    [
+<span style="display:block;width:100%;background-color:#3c3d38">      <span style="color:#e6db74">test</span>: <span style="color:#e6db74">&#34;test --no-start&#34;</span>
+</span>    ]
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Doing this alone is not enough: you still need to start the applications that
+yours rely on, e.g., the standard library, Elixir itself. To find out the
+applications yours depends on, retrieve the list with
+<a href="https://hexdocs.pm/elixir/Application.html#spec/2"><code>Application.spec/2</code></a> and start them in <code>test_helper.exs</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#75715e"># in test_helper.exs</span>
+
+<span style="color:#66d9ef">for</span> app <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">Application</span><span style="color:#f92672">.</span>spec(<span style="color:#e6db74">:sample</span>, <span style="color:#e6db74">:applications</span>) <span style="color:#66d9ef">do</span>
+  <span style="color:#a6e22e">Application</span><span style="color:#f92672">.</span>ensure_all_started(app)
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#a6e22e">ExUnit</span><span style="color:#f92672">.</span>start()
+</code></pre></td></tr></table>
+</div>
+</div>
+  </article>
+
+    </main>
+
+    
+<section id='comments'>
+  <script src="https://utteranc.es/client.js"
+          repo="shaolang/shaolang.github.io"
+          issue-term="pathname"
+          label="blogcomment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+
+    <footer>
+      
+        <nav class='social'>
+          
+            <a href='https://exercism.io/profiles/shaolang'><img src='/images/exercism.png' /></a>
+          
+            <a href='https://github.com/shaolang'><img src='/images/github.png' /></a>
+          
+            <a href='https://www.linkedin.com/in/shaolang'><img src='/images/linkedin.png' /></a>
+          
+            <a href='index.xml'><img src='/images/rss.png' /></a>
+          
+            <a href='https://www.twitter.com/shaolang'><img src='/images/twitter.png' /></a>
+          
+        </nav>
+        <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.83.1</a></div>
+      
+    </footer>
+  </body>
+</html>

@@ -6,7 +6,18 @@
     <description>Recent content in elixir on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Jun 2021 22:21:36 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Jun 2021 00:08:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Testing Elixir Without Starting Your App</title>
+      <link>https://shaolang.github.io/posts/2021-06-05-testing-elixir-without-starting-your-app/</link>
+      <pubDate>Sun, 06 Jun 2021 00:08:00 +0800</pubDate>
+      
+      <guid>https://shaolang.github.io/posts/2021-06-05-testing-elixir-without-starting-your-app/</guid>
+      <description>By default, mix test starts the project&amp;rsquo;s applications as part of the task. While this usually is helpful, sometimes not starting your application is necessary, e.g., when your application&amp;rsquo;s supervisor starts up singletons that may interfere testing.
+Luckily, mix test supports the command line option --no-start to skip starting the applications after compilation. To make this the &amp;ldquo;default&amp;rdquo; behavior, create the test alias to &amp;ldquo;override&amp;rdquo; the original in mix.exs:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  defmodule Sample.</description>
+    </item>
+    
     <item>
       <title>Phoenix Pubsub Comms Across Nodes</title>
       <link>https://shaolang.github.io/posts/2021-06-04-phoenix-pubsub-comms-across-nodes/</link>
