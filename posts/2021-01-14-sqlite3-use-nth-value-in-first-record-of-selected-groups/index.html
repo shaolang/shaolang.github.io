@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.85.0" />
+    <meta name="generator" content="Hugo 0.87.0" />
     
   <meta name='description' content='In a previous post where I used pandas to transform the following (with some amendments to the column names):
 id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:'>
@@ -43,7 +43,7 @@ id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02
   <article>
     <p>In a <a href="../2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/">previous post</a> where I used pandas to transform the following
 (with some amendments to the column names):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed
  0 |     abc | 2020-01-01 |        True
  1 |     abc | 2020-02-02 |        True
  2 |     abc | 2020-03-03 |        True
@@ -56,7 +56,7 @@ id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02
  9 |     jkl | 2020-10-10 |       False
 10 |     jkl | 2020-11-11 |       False
 </code></pre></div><p>to:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed | return_date
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed | return_date
  0 |     abc | 2020-01-01 |        True |  2020-03-03
  1 |     abc | 2020-02-02 |        True |        NULL
  2 |     abc | 2020-03-03 |        True |        NULL
@@ -72,7 +72,7 @@ id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02
 <a href="https://www.essentialsql.com/introduction-common-table-expressions-ctes/">Common Table Expression</a> and <a href="https://www.essentialsql.com/sql-window-functions/">SQL window functions</a>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -82,7 +82,7 @@ id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">as</span> (
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">as</span> (
 <span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MIN</span>(id) OVER (PARTITION <span style="color:#66d9ef">BY</span> book_id) <span style="color:#66d9ef">AS</span> bid,
 </span><span style="display:block;width:100%;background-color:#3c3d38">           <span style="color:#66d9ef">MAX</span>(bdate) OVER (PARTITION <span style="color:#66d9ef">by</span> book_id) <span style="color:#66d9ef">AS</span> ldate
 </span>    <span style="color:#66d9ef">FROM</span> books
@@ -145,7 +145,7 @@ certain books only have one record, or ten, etc.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.85.0</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.87.0</a></div>
       
     </footer>
   </body>

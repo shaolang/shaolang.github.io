@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.85.0" />
+    <meta name="generator" content="Hugo 0.87.0" />
     
   <meta name='description' content='Genetic algorithm is another branch of artificial intelligence that takes inspirations from Darwin&rsquo;s theory of evolution. Genetic algorithm is useful in solving optimization problems where a good-enough solution is acceptable as opposed to best solution. Good-enough because getting the best solution can take a long time or a lot of resources to compute. For example, genetic algorithm is useful for solving timetable scheduling and bin packing problems. Not to be confused with the similarly named Genetic programming, genetic algorithm uses lists/arrays extensively; genetic programming uses trees instead.'>
 
@@ -120,11 +120,11 @@ although they commonly are encoded numerically. For example, a binary-encoded
 chromosome could be created as follows:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">chromosome_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
 chromosome <span style="color:#f92672">=</span> chromosome_length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> }</code></pre></td></tr></table>
 </div>
 </div>
@@ -163,7 +163,7 @@ to work; those support classes/functions will distract the goal of
 understanding genetic algorithm implementations unnecessarily.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -210,7 +210,7 @@ understanding genetic algorithm implementations unnecessarily.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
   <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Individual</span><span style="color:#f92672">.</span><span style="color:#a6e22e">of_length</span>(length)
     <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new(length<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> rand <span style="color:#ae81ff">2</span> })
   <span style="color:#66d9ef">end</span>
@@ -274,7 +274,7 @@ chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
 <p><code>&lt;=&gt;</code> overrides the comparison to allow sorting fitness in descending order.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
@@ -338,7 +338,7 @@ chromosome and flip bit the gene when <code>mutation_rate &gt; rand</code>.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
   <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Population</span><span style="color:#f92672">.</span><span style="color:#a6e22e">of_size</span>(size, chromosome_length)
     <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>of_length chromosome_length})
   <span style="color:#66d9ef">end</span>
@@ -424,7 +424,7 @@ fitness proportionate selection method used in <code>select_parent</code> needs
 to know the population&rsquo;s overall fitness to function.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
@@ -452,7 +452,7 @@ to know the population&rsquo;s overall fitness to function.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
   mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
   crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">95</span>
   elitism_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
@@ -502,7 +502,7 @@ not catering for soft criteria, the algorithm does not account for the
 quality of the solutions found.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -553,7 +553,7 @@ quality of the solutions found.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">ROOMS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;A1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">15</span>},
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">ROOMS</span> <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;A1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">15</span>},
          <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;B1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">30</span>},
          <span style="color:#ae81ff">4</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;D1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">20</span>},
          <span style="color:#ae81ff">5</span> <span style="color:#f92672">=&gt;</span> {name: <span style="color:#e6db74">&#39;F1&#39;</span>, <span style="color:#e6db74">capacity</span>: <span style="color:#ae81ff">25</span>}}
@@ -614,7 +614,7 @@ be conducted, e.g., the algorithm needs to schedule 3 sessions for student
 group 1: one for Computer Science, one for Maths, and one for Physics.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
@@ -631,7 +631,7 @@ group 1: one for Computer Science, one for Maths, and one for Physics.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_room</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_room</span>
   <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>keys<span style="color:#f92672">[</span>rand <span style="color:#66d9ef">ROOMS</span><span style="color:#f92672">.</span>size<span style="color:#f92672">]</span>
 <span style="color:#66d9ef">end</span>
 
@@ -653,7 +653,7 @@ When choosing a professor randomly, the function needs to know for which
 module&rsquo;s list of professors it need to look at.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
@@ -762,7 +762,7 @@ module&rsquo;s list of professors it need to look at.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Individual</span>
   <span style="color:#66d9ef">GENE_GROUP_SIZE</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
   <span style="color:#66d9ef">ROOM_IX</span>, <span style="color:#66d9ef">SLOT_IX</span>, <span style="color:#66d9ef">PROF_IX</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span><span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>to_a
 
@@ -909,7 +909,7 @@ more breaks, thus Ruby&rsquo;s round-down behavior is good enough to account for
 breaks.</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
@@ -961,7 +961,7 @@ breaks.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">227
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Population</span>
   <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Population</span><span style="color:#f92672">.</span><span style="color:#a6e22e">random_schedules</span>(pop_size)
     <span style="color:#66d9ef">Population</span><span style="color:#f92672">.</span>new(pop_size<span style="color:#f92672">.</span>times<span style="color:#f92672">.</span>map { <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>random_schedule })
   <span style="color:#66d9ef">end</span>
@@ -1017,7 +1017,7 @@ breaks.</p>
 tournament selection (refer to description in <a href="#selection">Selection</a>).</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">230
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">230
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">231
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">232
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">233
@@ -1045,7 +1045,7 @@ tournament selection (refer to description in <a href="#selection">Selection</a>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">255
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> __FILE__ <span style="color:#f92672">==</span> $PROGRAM_NAME
   pop_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
   mutation_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">01</span>
   crossover_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">9</span>
@@ -1129,14 +1129,14 @@ As seen in the class scheduling example, genes should be viewed in groups
 of three. Therefore, the following implementation is wrong:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
 <span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand @chromosome<span style="color:#f92672">.</span>size    <span style="color:#75715e"># NO!</span>
 </span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
   <span style="color:#66d9ef">Individual</span><span style="color:#f92672">.</span>new offspring
@@ -1149,7 +1149,7 @@ will likely invalidate the first three genes that should be viewed as a group.</
 in gene groups:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -1157,7 +1157,7 @@ in gene groups:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mate</span>(spouse)
 <span style="display:block;width:100%;background-color:#3c3d38">  groups <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>size <span style="color:#f92672">/</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>     <span style="color:#75715e"># assuming GENE_GROUP_SIZE = 3</span>
 </span><span style="display:block;width:100%;background-color:#3c3d38">  common_point <span style="color:#f92672">=</span> rand(groups) <span style="color:#f92672">*</span> <span style="color:#66d9ef">GENE_GROUP_SIZE</span>
 </span>  offspring <span style="color:#f92672">=</span> @chromosome<span style="color:#f92672">.</span>take(common_point) <span style="color:#f92672">+</span> spouse<span style="color:#f92672">.</span>chromosome<span style="color:#f92672">[</span>common_point<span style="color:#f92672">..]</span>
@@ -1237,7 +1237,7 @@ diversity when it detects very little difference between the individuals.&#160;<
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.85.0</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.87.0</a></div>
       
     </footer>
   </body>
