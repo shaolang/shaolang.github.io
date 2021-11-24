@@ -153,8 +153,17 @@ relies on to build the distributable:</p>
 $ python -m build --wheel <span style="color:#75715e"># builds only the wheel distribution</span>
 </code></pre></div><p>All&rsquo;s done. To test this, create another virtual environment, install
 the distributable found in <code>dist/</code> with <code>pip</code>; this generates the executable
-<code>greet</code> in the environment&rsquo;s <code>Scripts/</code> directory.</p>
-<section class="footnotes" role="doc-endnotes">
+<code>greet</code> in the environment&rsquo;s <code>Scripts/</code> directory. Ignoring the generated
+artifacts, the directory should look like the following:</p>
+<pre tabindex="0"><code>hello-world
+├── pyproject.toml
+├── setup.cfg
+└── src
+    └── hello
+        ├── __init__.py
+        └── scripts
+            └── cli.py
+</code></pre><section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
