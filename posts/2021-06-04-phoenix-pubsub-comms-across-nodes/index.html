@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.96.0" />
     
   <meta name='description' content='Phoenix PubSub makes cross-nodes publish-subscribe extremely simple: setting up one for single node is the same as setting up multiple. This post covers the steps in doing so.
 First, run mix new pub_sub --sup to generate a new project. Then add {:phoenix_pubsub, &quot;~&gt; 2.0&quot;} as a dependency in mix.exs. Open lib/pub_sub/application.ex to add Phoenix PubSub to the supervision tree:
@@ -47,82 +47,82 @@ steps in doing so.</p>
 <code>{:phoenix_pubsub, &quot;~&gt; 2.0&quot;}</code> as a dependency in <code>mix.exs</code>.
 Open <code>lib/pub_sub/application.ex</code> to add Phoenix PubSub to the supervision
 tree:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">PubSub.Application</span> <span style="color:#66d9ef">do</span>
-  <span style="color:#a6e22e">@moduledoc</span> <span style="color:#66d9ef">false</span>
-  <span style="color:#f92672">use</span> <span style="color:#a6e22e">Application</span>
-
-  <span style="color:#a6e22e">@impl</span> <span style="color:#66d9ef">true</span>
-  <span style="color:#66d9ef">def</span> start(_type, _args) <span style="color:#66d9ef">do</span>
-    children <span style="color:#f92672">=</span> [
-<span style="display:block;width:100%;background-color:#3c3d38">      {<span style="color:#a6e22e">Phoenix.PubSub</span>, <span style="color:#e6db74">name</span>: <span style="color:#a6e22e">PS</span>}      <span style="color:#75715e"># add this line</span>
-</span>    ]
-
-    opts <span style="color:#f92672">=</span> [
-      <span style="color:#e6db74">strategy</span>: <span style="color:#e6db74">:one_for_one</span>,
-      <span style="color:#e6db74">name</span>: <span style="color:#a6e22e">PubSub.Supervisor</span>
-    ]
-
-    <span style="color:#a6e22e">Supervisor</span><span style="color:#f92672">.</span>start_link(children, opts)
-  <span style="color:#66d9ef">end</span>
-<span style="color:#66d9ef">end</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">PubSub.Application</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@moduledoc</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">use</span> <span style="color:#a6e22e">Application</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@impl</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> start(_type, _args) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    children <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex; background-color:#3c3d38"><span>      {<span style="color:#a6e22e">Phoenix.PubSub</span>, <span style="color:#e6db74">name</span>: <span style="color:#a6e22e">PS</span>}      <span style="color:#75715e"># add this line</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    opts <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">strategy</span>: <span style="color:#e6db74">:one_for_one</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">name</span>: <span style="color:#a6e22e">PubSub.Supervisor</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Supervisor</span><span style="color:#f92672">.</span>start_link(children, opts)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>That&rsquo;s all to it!</p>
 <p>Start the application in one terminal, using <code>node@localhost</code> as the node&rsquo;s
 short name and start interacting with it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ iex --sname node@localhost -S mix
-
-iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>1&gt; alias Phoenix.PubSub
-iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>2&gt; PubSub.subscribe<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span><span style="color:#f92672">)</span>
-iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>3&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
-<span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
-iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>4&gt; PubSub.broadcast<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span>, <span style="color:#f92672">{</span>node<span style="color:#f92672">()</span>, <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">})</span>
-:ok
-iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>5&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
-<span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[</span>node@localhost: <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">]}</span>
-<span style="display:block;width:100%;background-color:#3c3d38">iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>6&gt; flush<span style="color:#f92672">()</span>
-</span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>7&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
-<span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
-</code></pre></div><p>Before proceeding further, flush the process' message box as shown above.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ iex --sname node@localhost -S mix
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>1&gt; alias Phoenix.PubSub
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>2&gt; PubSub.subscribe<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>3&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>4&gt; PubSub.broadcast<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span>, <span style="color:#f92672">{</span>node<span style="color:#f92672">()</span>, <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span>:ok
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>5&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[</span>node@localhost: <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">]}</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>6&gt; flush<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>7&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
+</span></span></code></pre></div><p>Before proceeding further, flush the process&rsquo; message box as shown above.
 Then in a separate terminal, start a node <code>deno@localhost</code> and connect it
 to the previous one:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ iex --sname deno@localhost -S mix
-
-iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>1&gt; Node.connect<span style="color:#f92672">(</span>:node@localhost<span style="color:#f92672">)</span>
-iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>2&gt; alias Phoenix.PubSub
-iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>4&gt; PubSub.broadcast<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span>, <span style="color:#f92672">{</span>node<span style="color:#f92672">()</span>, <span style="color:#e6db74">&#34;goodbye&#34;</span><span style="color:#f92672">})</span>
-:ok
-iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>5&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
-<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
-</span></code></pre></div><p>In this second terminal, notice that its process' message box is empty because
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ iex --sname deno@localhost -S mix
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>1&gt; Node.connect<span style="color:#f92672">(</span>:node@localhost<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>2&gt; alias Phoenix.PubSub
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>4&gt; PubSub.broadcast<span style="color:#f92672">(</span>PS, <span style="color:#e6db74">&#34;user:123&#34;</span>, <span style="color:#f92672">{</span>node<span style="color:#f92672">()</span>, <span style="color:#e6db74">&#34;goodbye&#34;</span><span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span>:ok
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>deno@localhost<span style="color:#f92672">)</span>5&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[]}</span>
+</span></span></code></pre></div><p>In this second terminal, notice that its process&rsquo; message box is empty because
 this node doesn&rsquo;t subscribe to the topic <code>user:123</code>. Switching back to the
-first terminal, query the process' message box to confirm the receipt of
+first terminal, query the process&rsquo; message box to confirm the receipt of
 the message broadcast from the second (<code>deno</code>) node:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>8&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
-<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[</span>deno@localhost: <span style="color:#e6db74">&#34;goodbye&#34;</span><span style="color:#f92672">]}</span>
-</span></code></pre></div><p>Amazing, right?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>node@localhost<span style="color:#f92672">)</span>8&gt; Process.info<span style="color:#f92672">(</span>self<span style="color:#f92672">()</span>, :messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span><span style="color:#f92672">{</span>:messages, <span style="color:#f92672">[</span>deno@localhost: <span style="color:#e6db74">&#34;goodbye&#34;</span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>Amazing, right?</p>
 <p>A few things to note:</p>
 <ul>
 <li>Every node must use the same name when starting the PubSub service. If the
@@ -165,7 +165,7 @@ remove and replace with <code>pg</code> module.</li>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.92.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.96.0</a></div>
       
     </footer>
   </body>

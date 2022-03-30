@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.96.0" />
     
   <meta name='description' content='Storybook.JS is a very interesting development tool from JavaScript ecosystem1. This tutorial shows how we can use it with Shadow-CLJS. The code resides at storybook.js-with-shadow-cljs repo.
 Prerequisites The tutorial uses the following:
@@ -60,47 +60,47 @@ JavaScript ecosystem<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role=
 installed along the way.</p>
 <h2 id="getting-a-simple-react-app-running">Getting a simple React app running</h2>
 <p>Let&rsquo;s create the scaffold to kick-start:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mkdir acme
-$ cd acme
-$ npm init        <span style="color:#75715e"># just keep pressing enter until the prompt ends</span>
-$ npm install --save-dev shadow-cljs
-</code></pre></div><p>In the generated <code>package.json</code>, add a helper script to launch shadow-cljs
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mkdir acme
+</span></span><span style="display:flex;"><span>$ cd acme
+</span></span><span style="display:flex;"><span>$ npm init        <span style="color:#75715e"># just keep pressing enter until the prompt ends</span>
+</span></span><span style="display:flex;"><span>$ npm install --save-dev shadow-cljs
+</span></span></code></pre></div><p>In the generated <code>package.json</code>, add a helper script to launch shadow-cljs
 and automatically compile when it detect changes:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
-  <span style="color:#f92672">&#34;dev&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch frontend&#34;</span>
-}
-</code></pre></div><p>The script uses the <code>:frontend</code> profile defined in <code>shadow-clj.edn</code> for
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;dev&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch frontend&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The script uses the <code>:frontend</code> profile defined in <code>shadow-clj.edn</code> for
 ClojureScript compiler. Run <code>npx shadow-cljs init</code> to generate the skeleton
 <code>shadow-cljs.edn</code> file and edit it as follows:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
 </span></span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="color:#75715e">;; shadow-cljs configuration</span>
-{<span style="color:#e6db74">:source-paths</span>
-  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
-   <span style="color:#e6db74">&#34;src/main&#34;</span>
-   <span style="color:#e6db74">&#34;src/test&#34;</span>]
-
- <span style="color:#e6db74">:dependencies</span>
-<span style="display:block;width:100%;background-color:#3c3d38"> [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
-</span>
- <span style="color:#e6db74">:builds</span>
-<span style="display:block;width:100%;background-color:#3c3d38"> {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}}}
-</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span><span style="color:#75715e">;; shadow-cljs configuration</span>
+</span></span><span style="display:flex;"><span>{<span style="color:#e6db74">:source-paths</span>
+</span></span><span style="display:flex;"><span>  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/main&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/test&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:dependencies</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span> [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:builds</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span> {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span>             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}}}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Line 8 adds <a href="https://reagent-project.github.io">Reagent</a> as a dependency; lines 11 and 12 create the
 profile <code>:frontend</code> (that matches the npm script&rsquo;s <code>shadow-cljs watch</code> command).
@@ -108,205 +108,205 @@ This profile specifies that the build targets the browser and should
 generate the file <code>main.js</code> (&lsquo;cos of the <code>:main</code> key) that will invoke
 <code>acme.core/init</code> function at initialization. Let&rsquo;s implement <code>init</code> that uses
 a simple Reagent component in <code>src/main/acme/core.cljs</code>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>acme.core
-  (<span style="color:#e6db74">:require</span> [reagent.dom <span style="color:#e6db74">:refer</span> [render]]))
-
-(<span style="color:#66d9ef">defn </span>header [text]
-  [<span style="color:#e6db74">:h1</span> text])
-
-(<span style="color:#66d9ef">defn </span>init []
-  (<span style="color:#a6e22e">render</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]
-          (<span style="color:#a6e22e">js/document.getElementById</span> <span style="color:#e6db74">&#34;app&#34;</span>)))
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>acme.core
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:require</span> [reagent.dom <span style="color:#e6db74">:refer</span> [render]]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>header [text]
+</span></span><span style="display:flex;"><span>  [<span style="color:#e6db74">:h1</span> text])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>init []
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">render</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]
+</span></span><span style="display:flex;"><span>          (<span style="color:#a6e22e">js/document.getElementById</span> <span style="color:#e6db74">&#34;app&#34;</span>)))
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Simple enough: a custom <code>header</code> component that outputs the given text in
 an <code>h1</code> element and the <code>init</code> function that renders the header. To see this
 glorious app render, create the <code>public/index.html</code> as follows:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#75715e">&lt;!doctype html&gt;</span>
-&lt;<span style="color:#f92672">html</span>&gt;
-  &lt;<span style="color:#f92672">head</span>&gt;
-    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>&gt;
-    &lt;<span style="color:#f92672">title</span>&gt;Acme&lt;/<span style="color:#f92672">title</span>&gt;
-  &lt;/<span style="color:#f92672">head</span>&gt;
-  &lt;<span style="color:#f92672">body</span>&gt;
-    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;app&#39;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
-<span style="display:block;width:100%;background-color:#3c3d38">    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;js/main.js&#39;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
-</span>  &lt;/<span style="color:#f92672">body</span>&gt;
-&lt;/<span style="color:#f92672">html</span>&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-html" data-lang="html"><span style="display:flex;"><span><span style="color:#75715e">&lt;!doctype html&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">html</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">head</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">title</span>&gt;Acme&lt;/<span style="color:#f92672">title</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">head</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;app&#39;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex; background-color:#3c3d38"><span>    &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;js/main.js&#39;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">html</span>&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>By default, <a href="https://github.com/thheller/shadow-cljs">Shadow-CLJS</a> generates the output to <code>public/js</code>,
 hence the highlighted line (line 9). When the page is ready, <code>init</code> will run and
 renders the header component. Before running <code>npm run dev</code>, add <code>dev-http</code>
 to <code>shadow-cljs.edn</code> to configure the dev-server to listen to port 8080 and
 serve artifacts from <code>public</code> directory:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="color:#75715e">;; shadow-cljs configuration</span>
-{<span style="color:#e6db74">:source-paths</span>
-  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
-   <span style="color:#e6db74">&#34;src/main&#34;</span>
-   <span style="color:#e6db74">&#34;src/test&#34;</span>]
-
-<span style="display:block;width:100%;background-color:#3c3d38"> <span style="color:#e6db74">:dev-http</span> {<span style="color:#ae81ff">8080</span> <span style="color:#e6db74">&#34;public&#34;</span>}
-</span>
- <span style="color:#e6db74">:dependencies</span>
- [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
-
- <span style="color:#e6db74">:builds</span>
- {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
-             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}}}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span><span style="color:#75715e">;; shadow-cljs configuration</span>
+</span></span><span style="display:flex;"><span>{<span style="color:#e6db74">:source-paths</span>
+</span></span><span style="display:flex;"><span>  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/main&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/test&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span> <span style="color:#e6db74">:dev-http</span> {<span style="color:#ae81ff">8080</span> <span style="color:#e6db74">&#34;public&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:dependencies</span>
+</span></span><span style="display:flex;"><span> [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:builds</span>
+</span></span><span style="display:flex;"><span> {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}}}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>With all these set up, run <code>npm run dev</code> and load
 the page <code>localhost:8080</code> in your favorite browser; you should see &ldquo;Hello,
-World!&quot;:</p>
-<p><img src="/images/2021-02-14-hello-world.png" alt="screenshot of &ldquo;Hello, World!&rdquo; rendered in browser"></p>
+World!&rdquo;:</p>
+<p><img src="/images/2021-02-14-hello-world.png" alt="screenshot of &amp;ldquo;Hello, World!&amp;rdquo; rendered in browser"></p>
 <h2 id="some-cleanup">Some cleanup</h2>
 <p>Before integrating with <a href="https://storybook.js.org">Storybook.JS</a>, let&rsquo;s do some cleaning
 up: extract the custom <code>header</code> component to its own namespace and make
 <code>acme.core/init</code> use that extracted one instead. First, the extracted
 component at <code>src/main/acme/components/header.cljs</code>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>acme.components.header)
-
-(<span style="color:#66d9ef">defn </span>header [text]
-  [<span style="color:#e6db74">:h1</span> text])
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>acme.components.header)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>header [text]
+</span></span><span style="display:flex;"><span>  [<span style="color:#e6db74">:h1</span> text])
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Then, in <code>src/main/acme/core.cljs</code>, delete <code>header</code> function and <code>require</code>
 the header component namespace (as shown in line 2 below):</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>acme.core
-<span style="display:block;width:100%;background-color:#3c3d38">  (<span style="color:#e6db74">:require</span> [acme.components.header <span style="color:#e6db74">:refer</span> [header]]
-</span>            [reagent.dom <span style="color:#e6db74">:refer</span> [render]]))
-
-(<span style="color:#66d9ef">defn </span>init []
-  (<span style="color:#a6e22e">render</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]
-          (<span style="color:#a6e22e">js/document.getElementById</span> <span style="color:#e6db74">&#34;app&#34;</span>)))
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>acme.core
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  (<span style="color:#e6db74">:require</span> [acme.components.header <span style="color:#e6db74">:refer</span> [header]]
+</span></span><span style="display:flex;"><span>            [reagent.dom <span style="color:#e6db74">:refer</span> [render]]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>init []
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">render</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]
+</span></span><span style="display:flex;"><span>          (<span style="color:#a6e22e">js/document.getElementById</span> <span style="color:#e6db74">&#34;app&#34;</span>)))
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="adding-storybookjs-to-the-mix">Adding Storybook.JS to the mix</h2>
 <p>Time to add <a href="https://storybook.js.org">Storybook.JS</a> to the project. Install it with
 <code>npm install --save-dev @storybook/react</code>; then create <code>.storybook/main.js</code>
 with the following contents to configure Storybook.JS to look for stories
 in <code>public/js/stories</code> directory:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
-  <span style="color:#a6e22e">stories</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;../public/js/stories/**/*_stories.js&#39;</span>],
-};
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">stories</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;../public/js/stories/**/*_stories.js&#39;</span>],
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Update <code>shadow-cljs.edn</code> to create a new profile specifically for stories
 that outputs the transpiled stories to <code>public/js/stories</code> too:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure"><span style="color:#75715e">;; shadow-cljs configuration</span>
-{<span style="color:#e6db74">:source-paths</span>
-  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
-<span style="display:block;width:100%;background-color:#3c3d38">   <span style="color:#e6db74">&#34;src/main&#34;</span>
-</span>   <span style="color:#e6db74">&#34;src/stories&#34;</span>
-   <span style="color:#e6db74">&#34;src/test&#34;</span>]
-
- <span style="color:#e6db74">:dev-http</span> {<span style="color:#ae81ff">8080</span> <span style="color:#e6db74">&#34;public&#34;</span>}
-
- <span style="color:#e6db74">:dependencies</span>
- [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
-
- <span style="color:#e6db74">:builds</span>
- {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
-             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}
-<span style="display:block;width:100%;background-color:#3c3d38">  <span style="color:#e6db74">:stories</span>  {<span style="color:#e6db74">:target</span>      <span style="color:#e6db74">:npm-module</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">             <span style="color:#e6db74">:entries</span>     [acme.stories.header-stories]
-</span><span style="display:block;width:100%;background-color:#3c3d38">             <span style="color:#e6db74">:output-dir</span>  <span style="color:#e6db74">&#34;public/js/stories&#34;</span>}}}
-</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span><span style="color:#75715e">;; shadow-cljs configuration</span>
+</span></span><span style="display:flex;"><span>{<span style="color:#e6db74">:source-paths</span>
+</span></span><span style="display:flex;"><span>  [<span style="color:#e6db74">&#34;src/dev&#34;</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span>   <span style="color:#e6db74">&#34;src/main&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/stories&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;src/test&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:dev-http</span> {<span style="color:#ae81ff">8080</span> <span style="color:#e6db74">&#34;public&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:dependencies</span>
+</span></span><span style="display:flex;"><span> [[reagent <span style="color:#e6db74">&#34;1.0.0&#34;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">:builds</span>
+</span></span><span style="display:flex;"><span> {<span style="color:#e6db74">:frontend</span> {<span style="color:#e6db74">:target</span>  <span style="color:#e6db74">:browser</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#e6db74">:modules</span> {<span style="color:#e6db74">:main</span> {<span style="color:#e6db74">:init-fn</span> acme.core/init}}}
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  <span style="color:#e6db74">:stories</span>  {<span style="color:#e6db74">:target</span>      <span style="color:#e6db74">:npm-module</span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span>             <span style="color:#e6db74">:entries</span>     [acme.stories.header-stories]
+</span></span><span style="display:flex; background-color:#3c3d38"><span>             <span style="color:#e6db74">:output-dir</span>  <span style="color:#e6db74">&#34;public/js/stories&#34;</span>}}}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>A few notable points on the new <code>:stories</code> profile:</p>
 <ul>
@@ -319,49 +319,49 @@ filename, e.g., <code>acme.stories.header_stories.js</code></li>
 </ul>
 <p>Add two script commands to <code>package.json</code> to ease the auto-compilation of
 stories and to start Storybook.JS:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
-  <span style="color:#f92672">&#34;dev&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch frontend&#34;</span>,
-<span style="display:block;width:100%;background-color:#3c3d38">  <span style="color:#f92672">&#34;dev-stories&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch stories&#34;</span>,
-</span><span style="display:block;width:100%;background-color:#3c3d38">  <span style="color:#f92672">&#34;storybook&#34;</span>: <span style="color:#e6db74">&#34;start-storybook&#34;</span>
-</span>}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;dev&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch frontend&#34;</span>,
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  <span style="color:#f92672">&#34;dev-stories&#34;</span>: <span style="color:#e6db74">&#34;shadow-cljs watch stories&#34;</span>,
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  <span style="color:#f92672">&#34;storybook&#34;</span>: <span style="color:#e6db74">&#34;start-storybook&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>And finally, the story. Let&rsquo; create a very simple story at
-<code>src/stories/acme/stories/header_stories.cljs</code> that says &ldquo;Hello, World!&quot;:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<code>src/stories/acme/stories/header_stories.cljs</code> that says &ldquo;Hello, World!&rdquo;:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">ns </span>acme.stories.header-stories
-  (<span style="color:#e6db74">:require</span> [acme.components.header <span style="color:#e6db74">:refer</span> [header]]
-            [reagent.core <span style="color:#e6db74">:as</span> r]))
-
-(<span style="color:#66d9ef">def </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> default
-  <span style="color:#f92672">#</span>js {<span style="color:#e6db74">:title</span>     <span style="color:#e6db74">&#34;Header Component&#34;</span>
-       <span style="color:#e6db74">:component</span> (<span style="color:#a6e22e">r/reactify-component</span> header)})
-
-(<span style="color:#66d9ef">defn </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> HelloWorldHeader []
-  (<span style="color:#a6e22e">r/as-element</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]))
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>acme.stories.header-stories
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:require</span> [acme.components.header <span style="color:#e6db74">:refer</span> [header]]
+</span></span><span style="display:flex;"><span>            [reagent.core <span style="color:#e6db74">:as</span> r]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">def </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> default
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">#</span>js {<span style="color:#e6db74">:title</span>     <span style="color:#e6db74">&#34;Header Component&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">:component</span> (<span style="color:#a6e22e">r/reactify-component</span> header)})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> HelloWorldHeader []
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">r/as-element</span> [header <span style="color:#e6db74">&#34;Hello, World!&#34;</span>]))
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The snippet above uses <a href="https://storybook.js.org/docs/react/writing-stories/introduction#component-story-format">Component Story Format</a>, hence the need to
 add the metadata <code>^:export</code> to <code>default</code> and <code>HelloWorldHeader</code>. Because
@@ -371,16 +371,16 @@ one.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3<
 and <code>npm run storybook</code> in another. You should see <a href="https://storybook.js.org">Storybook.JS</a>
 render our first story:</p>
 <p><img src="/images/2021-02-14-hello-world-in-storybook.png" alt="Rendering of Header component in Storybook"></p>
-<p>For the fun of it, let' append another story to <code>header-stories</code>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<p>For the fun of it, let&rsquo; append another story to <code>header-stories</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defn </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> GoodbyeSekaiHeader []
-  (<span style="color:#a6e22e">r/as-element</span> [header <span style="color:#e6db74">&#34;Goodbye, Sekai!&#34;</span>]))
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span><span style="color:#f92672">^</span><span style="color:#e6db74">:export</span> GoodbyeSekaiHeader []
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">r/as-element</span> [header <span style="color:#e6db74">&#34;Goodbye, Sekai!&#34;</span>]))
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img src="/images/2021-02-14-goodbye-sekai-in-storybook.png" alt="Another rendering of Header component in Storybook"></p>
 <h2 id="wrapping-up">Wrapping up</h2>
@@ -441,7 +441,7 @@ for more information.&#160;<a href="#fnref:3" class="footnote-backref" role="doc
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.92.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.96.0</a></div>
       
     </footer>
   </body>

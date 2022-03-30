@@ -3,10 +3,10 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.96.0" />
     
   <meta name='description' content='In a previous post where I used pandas to transform the following (with some amendments to the column names):
-id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:'>
+id | book_id | bdate | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:'>
 
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
@@ -43,54 +43,54 @@ id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02
   <article>
     <p>In a <a href="../2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/">previous post</a> where I used pandas to transform the following
 (with some amendments to the column names):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed
- 0 |     abc | 2020-01-01 |        True
- 1 |     abc | 2020-02-02 |        True
- 2 |     abc | 2020-03-03 |        True
- 3 |     def | 2020-04-04 |       False
- 4 |     def | 2020-05-05 |       False
- 5 |     ghi | 2020-06-06 |        True
- 6 |     ghi | 2020-07-07 |        True
- 7 |     ghi | 2020-08-08 |        True
- 8 |     jkl | 2020-09-09 |       False
- 9 |     jkl | 2020-10-10 |       False
-10 |     jkl | 2020-11-11 |       False
-</code></pre></div><p>to:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">id | book_id |      bdate | is_borrowed | return_date
- 0 |     abc | 2020-01-01 |        True |  2020-03-03
- 1 |     abc | 2020-02-02 |        True |        NULL
- 2 |     abc | 2020-03-03 |        True |        NULL
- 3 |     def | 2020-04-04 |       False |        NULL
- 4 |     def | 2020-05-05 |       False |        NULL
- 5 |     ghi | 2020-06-06 |        True |  2020-08-08
- 6 |     ghi | 2020-07-07 |        True |        NULL
- 7 |     ghi | 2020-08-08 |        True |        NULL
- 8 |     jkl | 2020-09-09 |       False |        NULL
- 9 |     jkl | 2020-10-10 |       False |        NULL
-10 |     jkl | 2020-11-11 |       False |        NULL
-</code></pre></div><p>SQL (or at least SQLite3 dialect) can achieve the same using
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>id | book_id |      bdate | is_borrowed
+</span></span><span style="display:flex;"><span> 0 |     abc | 2020-01-01 |        True
+</span></span><span style="display:flex;"><span> 1 |     abc | 2020-02-02 |        True
+</span></span><span style="display:flex;"><span> 2 |     abc | 2020-03-03 |        True
+</span></span><span style="display:flex;"><span> 3 |     def | 2020-04-04 |       False
+</span></span><span style="display:flex;"><span> 4 |     def | 2020-05-05 |       False
+</span></span><span style="display:flex;"><span> 5 |     ghi | 2020-06-06 |        True
+</span></span><span style="display:flex;"><span> 6 |     ghi | 2020-07-07 |        True
+</span></span><span style="display:flex;"><span> 7 |     ghi | 2020-08-08 |        True
+</span></span><span style="display:flex;"><span> 8 |     jkl | 2020-09-09 |       False
+</span></span><span style="display:flex;"><span> 9 |     jkl | 2020-10-10 |       False
+</span></span><span style="display:flex;"><span>10 |     jkl | 2020-11-11 |       False
+</span></span></code></pre></div><p>to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>id | book_id |      bdate | is_borrowed | return_date
+</span></span><span style="display:flex;"><span> 0 |     abc | 2020-01-01 |        True |  2020-03-03
+</span></span><span style="display:flex;"><span> 1 |     abc | 2020-02-02 |        True |        NULL
+</span></span><span style="display:flex;"><span> 2 |     abc | 2020-03-03 |        True |        NULL
+</span></span><span style="display:flex;"><span> 3 |     def | 2020-04-04 |       False |        NULL
+</span></span><span style="display:flex;"><span> 4 |     def | 2020-05-05 |       False |        NULL
+</span></span><span style="display:flex;"><span> 5 |     ghi | 2020-06-06 |        True |  2020-08-08
+</span></span><span style="display:flex;"><span> 6 |     ghi | 2020-07-07 |        True |        NULL
+</span></span><span style="display:flex;"><span> 7 |     ghi | 2020-08-08 |        True |        NULL
+</span></span><span style="display:flex;"><span> 8 |     jkl | 2020-09-09 |       False |        NULL
+</span></span><span style="display:flex;"><span> 9 |     jkl | 2020-10-10 |       False |        NULL
+</span></span><span style="display:flex;"><span>10 |     jkl | 2020-11-11 |       False |        NULL
+</span></span></code></pre></div><p>SQL (or at least SQLite3 dialect) can achieve the same using
 <a href="https://www.essentialsql.com/introduction-common-table-expressions-ctes/">Common Table Expression</a> and <a href="https://www.essentialsql.com/sql-window-functions/">SQL window functions</a>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></span><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">as</span> (
-<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MIN</span>(id) OVER (PARTITION <span style="color:#66d9ef">BY</span> book_id) <span style="color:#66d9ef">AS</span> bid,
-</span><span style="display:block;width:100%;background-color:#3c3d38">           <span style="color:#66d9ef">MAX</span>(bdate) OVER (PARTITION <span style="color:#66d9ef">by</span> book_id) <span style="color:#66d9ef">AS</span> ldate
-</span>    <span style="color:#66d9ef">FROM</span> books
-    <span style="color:#66d9ef">WHERE</span> is_borrowed <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;True&#39;</span>)
-<span style="color:#66d9ef">UPDATE</span> books
-<span style="color:#66d9ef">SET</span> return_date <span style="color:#f92672">=</span> (<span style="color:#66d9ef">SELECT</span> ldate <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">WHERE</span> books.id <span style="color:#f92672">=</span> <span style="color:#66d9ef">data</span>.bid)
-<span style="color:#66d9ef">WHERE</span> id <span style="color:#66d9ef">IN</span> (<span style="color:#66d9ef">SELECT</span> bid <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">data</span>);
-</code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex; background-color:#3c3d38"><span>    <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">MIN</span>(id) OVER (PARTITION <span style="color:#66d9ef">BY</span> book_id) <span style="color:#66d9ef">AS</span> bid,
+</span></span><span style="display:flex; background-color:#3c3d38"><span>           <span style="color:#66d9ef">MAX</span>(bdate) OVER (PARTITION <span style="color:#66d9ef">by</span> book_id) <span style="color:#66d9ef">AS</span> ldate
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">FROM</span> books
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">WHERE</span> is_borrowed <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;True&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> books
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SET</span> return_date <span style="color:#f92672">=</span> (<span style="color:#66d9ef">SELECT</span> ldate <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">WHERE</span> books.id <span style="color:#f92672">=</span> <span style="color:#66d9ef">data</span>.bid)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> id <span style="color:#66d9ef">IN</span> (<span style="color:#66d9ef">SELECT</span> bid <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">data</span>);
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Within the CTE, the two selected columns make use of window functions; in this
 case, the window functions are the familiar aggregate functions <code>MIN</code> and <code>MAX</code>.
@@ -145,7 +145,7 @@ certain books only have one record, or ten, etc.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.92.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.96.0</a></div>
       
     </footer>
   </body>

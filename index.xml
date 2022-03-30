@@ -15,7 +15,7 @@
       <guid>https://shaolang.github.io/posts/2021-11-23-python-distributions-with-cli-scripts/</guid>
       <description>Let&amp;rsquo;s create a &amp;ldquo;hello, world&amp;rdquo; distributable that creates a CLI executable, greet: first, some preparation:
 $ mkdir hello-world $ cd hello-world $ python -m venv hello-world # create a virtual environment, hello-world $ hello-world/Scripts/activate # activate the virtual environment $ mkdir -p src/hello/scripts $ touch src/hello/__init__.py Create the greet function in src/hello/__init__.py:
-1 2  def greet(name): print(f&amp;#39;Hello, {name}&amp;#39;)   Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
+1 2  def greet(name):  print(f&amp;#39;Hello, {name}&amp;#39;)   Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
     </item>
     
     <item>
@@ -48,7 +48,7 @@ First, run mix new pub_sub --sup to generate a new project. Then add {:phoenix_p
       <guid>https://shaolang.github.io/posts/2021-03-05-gradle-in-tight-security-environments/</guid>
       <description>In tightly controlled, secured environments *cough, corporate, cough*, using Gradle requires a little bit more setup. The following works if the environment has an artifact repository such as Artifactory in place.
 In settings.gradle.kts, configure pluginManagement as follows:
-pluginManagement { repositories { maven { url = uri(&amp;#34;https://path.to/corporate/artifact/repository&amp;#34;) credentials { username = &amp;#34;approved-corporate-userid-to-access-repository&amp;#34; password = &amp;#34;password-of-the-approved-corporate-userid&amp;#34; } } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.</description>
+pluginManagement {  repositories {  maven {  url = uri(&amp;#34;https://path.to/corporate/artifact/repository&amp;#34;)  credentials {  username = &amp;#34;approved-corporate-userid-to-access-repository&amp;#34;  password = &amp;#34;password-of-the-approved-corporate-userid&amp;#34;  }  } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.</description>
     </item>
     
     <item>
@@ -70,7 +70,7 @@ Getting a simple React app running Let&amp;rsquo;s create the scaffold to kick-s
       
       <guid>https://shaolang.github.io/posts/2021-01-14-sqlite3-use-nth-value-in-first-record-of-selected-groups/</guid>
       <description>In a previous post where I used pandas to transform the following (with some amendments to the column names):
-id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
+id | book_id | bdate | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
     </item>
     
     <item>
@@ -100,7 +100,7 @@ In this chapter (of the book), it tackles the Back to the Checkout code kata: ca
       
       <guid>https://shaolang.github.io/posts/2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/</guid>
       <description>How do you transform the following data frame:
-| book_id | date | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
+ | book_id | date | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
     </item>
     
     <item>
@@ -111,7 +111,7 @@ In this chapter (of the book), it tackles the Back to the Checkout code kata: ca
       <guid>https://shaolang.github.io/posts/2020-05-23-dos-script-to-setup-postgresql/</guid>
       <description>Don&amp;rsquo;t ask &amp;ldquo;Why Windows?&amp;rdquo;
 Not being a database expert and needing to set up PostgreSQL database in a Windows machine to do simple development with minimal fuss, the following is a simplistic MSDOS script to automate that:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26  @ECHO OFF @BREAK ON @SETLOCAL SET PG_HOME=path_to_pg_home SET superuser=postgres IF NOT DEFINED PGDATA GOTO :MISSINGPGDATA IF EXIST %PGDATA% GOTO :DBEXISTS SET PGBIN=%PG_HOME%\bin ECHO Initialzing database with superuser name: %superuser% %PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% ^  --no-locale --encoding=UTF8 ^  --auth-local=trust --auth-host=trust  GOTO :EOF :MISSINGPGDATA ECHO Please set the environment variable PGDATA before running again.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26  @ECHO OFF @BREAK ON @SETLOCAL  SET PG_HOME=path_to_pg_home SET superuser=postgres  IF NOT DEFINED PGDATA GOTO :MISSINGPGDATA IF EXIST %PGDATA% GOTO :DBEXISTS  SET PGBIN=%PG_HOME%\bin ECHO Initialzing database with superuser name: %superuser%  %PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% ^  --no-locale --encoding=UTF8 ^  --auth-local=trust  --auth-host=trust  GOTO :EOF  :MISSINGPGDATA ECHO Please set the environment variable PGDATA before running again.</description>
     </item>
     
     <item>
@@ -152,7 +152,7 @@ Note that this solution works since pip 10.0, and yup, works at least within the
       
       <guid>https://shaolang.github.io/posts/2019-08-16-ranking-data-in-msexcel/</guid>
       <description>MSExcel, despite its bad name for data analysis, can still be a very good tool to reach out to for one-off analysis jobs, especially when the output needs to be interactive. After all, nothing comes close to the reactivity &amp;ndash; as in reactive programming &amp;ndash; simple MSExcel formulae provide that do not require hardcore development skills.1
-Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the customers&#39; YTD Trade Count and MTD Trade Count.</description>
+Getting our hands dirty Let&amp;rsquo;s say the requirement is to rank the customers&amp;rsquo; YTD Trade Count and MTD Trade Count.</description>
     </item>
     
     <item>
@@ -173,7 +173,7 @@ So, I reached out to Fred, got his approval, and started translating the code fr
       <guid>https://shaolang.github.io/posts/2019-06-24-sqlite-show-utc-timestamp-as-local-time/</guid>
       <description>A business unit asked me to compile some trading volume stats by trading hour. The good thing is that I have the following in SQLite database; the bad thing is the database stores the timestamp as follows:
 timestamp column is stored as a string1, so rather than doing timezone arithmetic, I used SQLite&amp;rsquo;s built-in date/time functions instead:
-WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- convert to unix epoch FROM trades), localized AS ( SELECT TIME([epoch], &#39;unixepoch&#39;, &#39;localtime&#39;) -- convert epoch to local time FROM dropped_offsets), SELECT SUBSTR([localtime], 1, 2) AS [trading_hour] -- extract hour FROM localized; The above employs common table expressions for clarity; the actual combined them as one instead.</description>
+WITH epochized AS ( SELECT STRFTIME(&amp;#39;%s&amp;#39;, [timestamp]) AS [epoch] -- convert to unix epoch FROM trades), localized AS ( SELECT TIME([epoch], &amp;#39;unixepoch&amp;#39;, &amp;#39;localtime&amp;#39;) -- convert epoch to local time FROM dropped_offsets), SELECT SUBSTR([localtime], 1, 2) AS [trading_hour] -- extract hour FROM localized; The above employs common table expressions for clarity; the actual combined them as one instead.</description>
     </item>
     
     <item>
@@ -183,7 +183,7 @@ WITH epochized AS ( SELECT STRFTIME(&#39;%s&#39;, [timestamp]) AS [epoch] -- con
       
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
       <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
-$ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
+$ mix test Compiling 1 file (.ex) Generated dna app  == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found  (elixir) expanding macro: Kernel.use/1  test/my_test.exs:2: MyTest (module)  (elixir) lib/code.</description>
     </item>
     
     <item>

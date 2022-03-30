@@ -15,7 +15,7 @@
       <guid>https://shaolang.github.io/posts/2021-11-23-python-distributions-with-cli-scripts/</guid>
       <description>Let&amp;rsquo;s create a &amp;ldquo;hello, world&amp;rdquo; distributable that creates a CLI executable, greet: first, some preparation:
 $ mkdir hello-world $ cd hello-world $ python -m venv hello-world # create a virtual environment, hello-world $ hello-world/Scripts/activate # activate the virtual environment $ mkdir -p src/hello/scripts $ touch src/hello/__init__.py Create the greet function in src/hello/__init__.py:
-1 2  def greet(name): print(f&amp;#39;Hello, {name}&amp;#39;)   Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
+1 2  def greet(name):  print(f&amp;#39;Hello, {name}&amp;#39;)   Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
     </item>
     
     <item>
@@ -25,7 +25,7 @@ $ mkdir hello-world $ cd hello-world $ python -m venv hello-world # create a vir
       
       <guid>https://shaolang.github.io/posts/2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/</guid>
       <description>How do you transform the following data frame:
-| book_id | date | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
+ | book_id | date | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
     </item>
     
     <item>

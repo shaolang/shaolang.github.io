@@ -3,10 +3,10 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.96.0" />
     
   <meta name='description' content='Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
-$ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.'>
+$ mix test Compiling 1 file (.ex) Generated dna app  == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found  (elixir) expanding macro: Kernel.use/1  test/my_test.exs:2: MyTest (module)  (elixir) lib/code.'>
 
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
@@ -42,36 +42,36 @@ $ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file
     <p>Creating custom <code>ExUnit.Case</code> is done simply by creating a module that
 <a href="https://hexdocs.pm/ex_unit/ExUnit.CaseTemplate.html#content"><code>use ExUnit.CaseTemplate</code></a>. However, doing just that is
 not enough: when I run <code>mix test</code>, the terminal shows the following:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mix test
-Compiling <span style="color:#ae81ff">1</span> file <span style="color:#f92672">(</span>.ex<span style="color:#f92672">)</span>
-Generated dna app
-
-<span style="color:#f92672">==</span> Compilation error in file test/my_test.exs <span style="color:#f92672">==</span>
-** <span style="color:#f92672">(</span>CompileError<span style="color:#f92672">)</span> test/my_test.exs:2: module MyCase is not loaded and could not be found
-    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> expanding macro: Kernel.use/1
-    test/my_test.exs:2: MyTest <span style="color:#f92672">(</span>module<span style="color:#f92672">)</span>
-    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/code.ex:767: Code.require_file/2
-    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/kernel/parallel_compiler.ex:209: anonymous fn/4 in Kernel.ParallelCompiler.spawn_workers/6
-</code></pre></div><p><em>(Yeah, I know, I admit: I&rsquo;m a noob).</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mix test
+</span></span><span style="display:flex;"><span>Compiling <span style="color:#ae81ff">1</span> file <span style="color:#f92672">(</span>.ex<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Generated dna app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> Compilation error in file test/my_test.exs <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>** <span style="color:#f92672">(</span>CompileError<span style="color:#f92672">)</span> test/my_test.exs:2: module MyCase is not loaded and could not be found
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> expanding macro: Kernel.use/1
+</span></span><span style="display:flex;"><span>    test/my_test.exs:2: MyTest <span style="color:#f92672">(</span>module<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/code.ex:767: Code.require_file/2
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>elixir<span style="color:#f92672">)</span> lib/kernel/parallel_compiler.ex:209: anonymous fn/4 in Kernel.ParallelCompiler.spawn_workers/6
+</span></span></code></pre></div><p><em>(Yeah, I know, I admit: I&rsquo;m a noob).</em></p>
 <p>The missing piece is configuring Mix. <code>mix test</code> is a task that <em>only</em> compiles
 source under <code>lib</code> directory before running tests; it does not compile sources
 in <code>test</code> directory. Because the custom case in <code>tests</code>
 is a module<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, Mix needs to know it has to include another directory
 when compiling tests:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-erlang" data-lang="erlang">defmodule My.MixProject do
-  use Mix.Project
-
-  def project do
-    [
-      app: :my,
-      version: <span style="color:#e6db74">&#34;0.1.0&#34;</span>,
-<span style="display:block;width:100%;background-color:#3c3d38">      elixirc_paths: elixirc_paths(Mix.env())
-</span>    ]
-  <span style="color:#66d9ef">end</span>
-
-<span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(:test), do: [<span style="color:#e6db74">&#34;lib&#34;</span>, <span style="color:#e6db74">&#34;test&#34;</span>]
-</span><span style="display:block;width:100%;background-color:#3c3d38">  defp elixirc_paths(_),     do: [<span style="color:#e6db74">&#34;lib&#34;</span>]
-</span><span style="color:#66d9ef">end</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-erlang" data-lang="erlang"><span style="display:flex;"><span>defmodule My.MixProject do
+</span></span><span style="display:flex;"><span>  use Mix.Project
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  def project do
+</span></span><span style="display:flex;"><span>    [
+</span></span><span style="display:flex;"><span>      app: :my,
+</span></span><span style="display:flex;"><span>      version: <span style="color:#e6db74">&#34;0.1.0&#34;</span>,
+</span></span><span style="display:flex; background-color:#3c3d38"><span>      elixirc_paths: elixirc_paths(Mix.env())
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  defp elixirc_paths(:test), do: [<span style="color:#e6db74">&#34;lib&#34;</span>, <span style="color:#e6db74">&#34;test&#34;</span>]
+</span></span><span style="display:flex; background-color:#3c3d38"><span>  defp elixirc_paths(_),     do: [<span style="color:#e6db74">&#34;lib&#34;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span></span></span></code></pre></div>
 <p><a href="https://hexdocs.pm/mix/Mix.Tasks.Compile.Elixir.html#module-configuration"><code>:elixirc_paths</code> defaults to <code>&quot;lib&quot;</code></a>, hence, the need
 to make changes similar to the highlighted lines to make custom cases work.</p>
 <p><em>Edit: Update post to reflect new understanding of how Mix works [2021-02-14]</em></p>
@@ -117,7 +117,7 @@ to make changes similar to the highlighted lines to make custom cases work.</p>
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.92.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.96.0</a></div>
       
     </footer>
   </body>

@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.96.0" />
     
   <meta name='description' content='I may be missing something but Neovim requires some additional configuration to make it work on Windows; the following are the things I&rsquo;ve done to make Neovim work on a Windows machine that also makes it co-exist with Vim.1 After downloading Neovim and unzipping that to somewhere, the first thing to do is to configure it through init.vim.
 init.vim aka Neovim&rsquo;s .vim/_vimrc Most online articles say init.vim should reside at ~/.'>
@@ -45,17 +45,17 @@ in Windows. Nope, in Windows, it should be <code>~/AppData/Local/nvim/init.vim</
 as an <a href="https://stackoverflow.com/a/45219657">answer</a> on Stack Overflow says.</p>
 <p>Add the following to <code>init.vim</code> to make Neovim reuse Vim&rsquo;s configurations,
 thus easing the transition from and making it co-exists with Vim:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-viml" data-lang="viml"><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span>/<span style="color:#a6e22e">after</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-viml" data-lang="viml"><span style="display:flex;"><span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span>/<span style="color:#a6e22e">after</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>The script above assumes Vim runtime files exist at <code>~/vimfiles</code>; amend that
 accordingly to your setup.</p>
@@ -71,17 +71,17 @@ bundles them in its distribution, it puts them at <code>Neovim/share/nvim/runtim
 and doesn&rsquo;t include it in the default <a href="https://medium.com/usevim/vim-101-runtimepath-83194d411b0a">runtimepath</a>. Instead of
 copying the contents in <code>runtime</code> over to <code>Neovim/bin</code>, add that to the
 <code>runtimepath</code> in <code>init.vim</code>:</p>
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="background-color:#3c3d38"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-viml" data-lang="viml"><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span><span style="color:#e6db74">/after,c:/</span><span style="color:#a6e22e">neovim</span><span style="color:#e6db74">/share/</span><span style="color:#a6e22e">nvim</span>/<span style="color:#a6e22e">runtime</span><span style="color:#960050;background-color:#1e0010">
-</span></span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-viml" data-lang="viml"><span style="display:flex; background-color:#3c3d38"><span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">runtimepath</span>+=~<span style="color:#e6db74">/vimfiles,~/</span><span style="color:#a6e22e">vimfiles</span><span style="color:#e6db74">/after,c:/</span><span style="color:#a6e22e">neovim</span><span style="color:#e6db74">/share/</span><span style="color:#a6e22e">nvim</span>/<span style="color:#a6e22e">runtime</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">set</span> <span style="color:#a6e22e">packpath</span>+=~/<span style="color:#a6e22e">vimfiles</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#a6e22e">source</span> ~/<span style="color:#a6e22e">_vimrc</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>Notice that Neovim&rsquo;s runtime directory is appended to the first line. Again,
 change that to point to the directory where you&rsquo;ve unzipped Neovim.</p>
@@ -129,7 +129,7 @@ non-issue, but I didn&rsquo;t try them.&#160;<a href="#fnref:1" class="footnote-
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.92.1</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.96.0</a></div>
       
     </footer>
   </body>
