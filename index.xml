@@ -15,7 +15,7 @@
       <guid>https://shaolang.github.io/posts/2021-11-23-python-distributions-with-cli-scripts/</guid>
       <description>Let&amp;rsquo;s create a &amp;ldquo;hello, world&amp;rdquo; distributable that creates a CLI executable, greet: first, some preparation:
 $ mkdir hello-world $ cd hello-world $ python -m venv hello-world # create a virtual environment, hello-world $ hello-world/Scripts/activate # activate the virtual environment $ mkdir -p src/hello/scripts $ touch src/hello/__init__.py Create the greet function in src/hello/__init__.py:
-1 2  def greet(name):  print(f&amp;#39;Hello, {name}&amp;#39;)   Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
+1 2 def greet(name): print(f&amp;#39;Hello, {name}&amp;#39;) Nothing earth-shattering for our purpose here. Next, create the CLI script that calls greet when an argument is given on the command line:</description>
     </item>
     
     <item>
@@ -26,7 +26,7 @@ $ mkdir hello-world $ cd hello-world $ python -m venv hello-world # create a vir
       <guid>https://shaolang.github.io/posts/2021-06-05-testing-elixir-without-starting-your-app/</guid>
       <description>By default, mix test starts the project&amp;rsquo;s applications as part of the task. While this usually is helpful, sometimes not starting your application is necessary, e.g., when your application&amp;rsquo;s supervisor starts up singletons that may interfere testing.
 Luckily, mix test supports the command line option --no-start to skip starting the applications after compilation. To make this the &amp;ldquo;default&amp;rdquo; behavior, create the test alias to &amp;ldquo;override&amp;rdquo; the original in mix.exs:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  defmodule Sample.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 defmodule Sample.</description>
     </item>
     
     <item>
@@ -37,7 +37,7 @@ Luckily, mix test supports the command line option --no-start to skip starting t
       <guid>https://shaolang.github.io/posts/2021-06-04-phoenix-pubsub-comms-across-nodes/</guid>
       <description>Phoenix PubSub makes cross-nodes publish-subscribe extremely simple: setting up one for single node is the same as setting up multiple. This post covers the steps in doing so.
 First, run mix new pub_sub --sup to generate a new project. Then add {:phoenix_pubsub, &amp;quot;~&amp;gt; 2.0&amp;quot;} as a dependency in mix.exs. Open lib/pub_sub/application.ex to add Phoenix PubSub to the supervision tree:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  defmodule PubSub.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 defmodule PubSub.</description>
     </item>
     
     <item>
@@ -48,7 +48,7 @@ First, run mix new pub_sub --sup to generate a new project. Then add {:phoenix_p
       <guid>https://shaolang.github.io/posts/2021-03-05-gradle-in-tight-security-environments/</guid>
       <description>In tightly controlled, secured environments *cough, corporate, cough*, using Gradle requires a little bit more setup. The following works if the environment has an artifact repository such as Artifactory in place.
 In settings.gradle.kts, configure pluginManagement as follows:
-pluginManagement {  repositories {  maven {  url = uri(&amp;#34;https://path.to/corporate/artifact/repository&amp;#34;)  credentials {  username = &amp;#34;approved-corporate-userid-to-access-repository&amp;#34;  password = &amp;#34;password-of-the-approved-corporate-userid&amp;#34;  }  } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.</description>
+pluginManagement { repositories { maven { url = uri(&amp;#34;https://path.to/corporate/artifact/repository&amp;#34;) credentials { username = &amp;#34;approved-corporate-userid-to-access-repository&amp;#34; password = &amp;#34;password-of-the-approved-corporate-userid&amp;#34; } } } The snippet above assumes the corporate artifact repository uses Maven layout in organizing the artifacts.</description>
     </item>
     
     <item>
@@ -59,7 +59,7 @@ pluginManagement {  repositories {  maven {  url = uri(&amp;#34;https://path.to/
       <guid>https://shaolang.github.io/posts/2021-02-14-storybook.js-with-shadow-cljs/</guid>
       <description>Storybook.JS is a very interesting development tool from JavaScript ecosystem1. This tutorial shows how we can use it with Shadow-CLJS. The code resides at storybook.js-with-shadow-cljs repo.
 Prerequisites The tutorial uses the following:
- Java version 11 Node.js version 14.15.4 Reagent version 1.0.0 Shadow-CLJS version 2.11.8 Storybook.JS version 6.1.17  Make sure the first two are installed prior the tutorial. The others will be installed along the way.
+Java version 11 Node.js version 14.15.4 Reagent version 1.0.0 Shadow-CLJS version 2.11.8 Storybook.JS version 6.1.17 Make sure the first two are installed prior the tutorial. The others will be installed along the way.
 Getting a simple React app running Let&amp;rsquo;s create the scaffold to kick-start:</description>
     </item>
     
@@ -70,7 +70,7 @@ Getting a simple React app running Let&amp;rsquo;s create the scaffold to kick-s
       
       <guid>https://shaolang.github.io/posts/2021-01-14-sqlite3-use-nth-value-in-first-record-of-selected-groups/</guid>
       <description>In a previous post where I used pandas to transform the following (with some amendments to the column names):
-id | book_id | bdate | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
+id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
     </item>
     
     <item>
@@ -100,7 +100,7 @@ In this chapter (of the book), it tackles the Back to the Checkout code kata: ca
       
       <guid>https://shaolang.github.io/posts/2020-06-13-pandas-use-nth-value-in-first-rec-of-selected-groups/</guid>
       <description>How do you transform the following data frame:
- | book_id | date | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
+| book_id | date | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to the following, i.</description>
     </item>
     
     <item>
@@ -111,7 +111,7 @@ In this chapter (of the book), it tackles the Back to the Checkout code kata: ca
       <guid>https://shaolang.github.io/posts/2020-05-23-dos-script-to-setup-postgresql/</guid>
       <description>Don&amp;rsquo;t ask &amp;ldquo;Why Windows?&amp;rdquo;
 Not being a database expert and needing to set up PostgreSQL database in a Windows machine to do simple development with minimal fuss, the following is a simplistic MSDOS script to automate that:
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26  @ECHO OFF @BREAK ON @SETLOCAL  SET PG_HOME=path_to_pg_home SET superuser=postgres  IF NOT DEFINED PGDATA GOTO :MISSINGPGDATA IF EXIST %PGDATA% GOTO :DBEXISTS  SET PGBIN=%PG_HOME%\bin ECHO Initialzing database with superuser name: %superuser%  %PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% ^  --no-locale --encoding=UTF8 ^  --auth-local=trust  --auth-host=trust  GOTO :EOF  :MISSINGPGDATA ECHO Please set the environment variable PGDATA before running again.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 @ECHO OFF @BREAK ON @SETLOCAL SET PG_HOME=path_to_pg_home SET superuser=postgres IF NOT DEFINED PGDATA GOTO :MISSINGPGDATA IF EXIST %PGDATA% GOTO :DBEXISTS SET PGBIN=%PG_HOME%\bin ECHO Initialzing database with superuser name: %superuser% %PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% ^ --no-locale --encoding=UTF8 ^ --auth-local=trust --auth-host=trust GOTO :EOF :MISSINGPGDATA ECHO Please set the environment variable PGDATA before running again.</description>
     </item>
     
     <item>
@@ -183,7 +183,7 @@ WITH epochized AS ( SELECT STRFTIME(&amp;#39;%s&amp;#39;, [timestamp]) AS [epoch
       
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
       <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
-$ mix test Compiling 1 file (.ex) Generated dna app  == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found  (elixir) expanding macro: Kernel.use/1  test/my_test.exs:2: MyTest (module)  (elixir) lib/code.</description>
+$ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
     </item>
     
     <item>
@@ -194,7 +194,7 @@ $ mix test Compiling 1 file (.ex) Generated dna app  == Compilation error in fil
       <guid>https://shaolang.github.io/posts/2018-07-13-python-app-distribution/</guid>
       <description>Probably it&amp;rsquo;s due to my inexperience in Python&amp;rsquo;s community/ecosystem, I find it amusing that Python community has no agreed standard in code organization. Yeah, The Hitchhiker&amp;rsquo;s Guide to Python! attempts to recommend some structure, but the popular pytest recommends something entirely different.
 By adopting pytest&amp;rsquo;s recommendation&amp;ndash;i.e., putting code in src directory&amp;ndash;I need to make the some changes, changes that are not obvious to a noob like me:
- As my code modules are no longer on PYTHONPATH, I need to install pytest-pythonpath and add src to in pytest.</description>
+As my code modules are no longer on PYTHONPATH, I need to install pytest-pythonpath and add src to in pytest.</description>
     </item>
     
     <item>
@@ -214,7 +214,7 @@ As the word goes, teaching is the best way to learn, hence this blog, even if th
       
       <guid>https://shaolang.github.io/links/</guid>
       <description>List of interesting/helpful/queer/etc links:
-Clojure  Clojure, Faster: optimizing Clojure when it matters Fast and Elegant Clojure On The Nature Of Clojure Protocols Practical Data Coercion with Prismatic/schema: especially on how to make multiple coercion matchers work together Taming Advanced Compilation Bugs in ClojureScript Projects  CSS  CSS Tips: CSS tips and tricks you won&amp;rsquo;t see in most of the tutorials Defensive CSS  Elixir  Avoiding GenServer bottlenecks Elixir: a few things about GenStage I wish I knew some time ago  Machine Learning/Artificial Intelligence  5 Deep Learning Activation Functions You Need to Know  Python  Profiling and Analyzing Performance of Python Programs pytz: The Fastest Footgun in the West: why dateutil is preferred over pytz Strict Python function parameters: using positional- and keyword-only parameters to make function usages uniform Testing and debugging Apache Airflow  Rust  A Survey of Rust GUI Libraries (as of 21 Aug 2020) Rust GUI: Introduction, a.</description>
+Clojure Clojure, Faster: optimizing Clojure when it matters Fast and Elegant Clojure On The Nature Of Clojure Protocols Practical Data Coercion with Prismatic/schema: especially on how to make multiple coercion matchers work together Taming Advanced Compilation Bugs in ClojureScript Projects CSS CSS Tips: CSS tips and tricks you won&amp;rsquo;t see in most of the tutorials Defensive CSS Elixir Avoiding GenServer bottlenecks Elixir: a few things about GenStage I wish I knew some time ago Machine Learning/Artificial Intelligence 5 Deep Learning Activation Functions You Need to Know Python Profiling and Analyzing Performance of Python Programs pytz: The Fastest Footgun in the West: why dateutil is preferred over pytz Strict Python function parameters: using positional- and keyword-only parameters to make function usages uniform Testing and debugging Apache Airflow Rust A Survey of Rust GUI Libraries (as of 21 Aug 2020) Rust GUI: Introduction, a.</description>
     </item>
     
   </channel>

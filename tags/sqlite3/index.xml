@@ -14,7 +14,7 @@
       
       <guid>https://shaolang.github.io/posts/2021-01-14-sqlite3-use-nth-value-in-first-record-of-selected-groups/</guid>
       <description>In a previous post where I used pandas to transform the following (with some amendments to the column names):
-id | book_id | bdate | is_borrowed  0 | abc | 2020-01-01 | True  1 | abc | 2020-02-02 | True  2 | abc | 2020-03-03 | True  3 | def | 2020-04-04 | False  4 | def | 2020-05-05 | False  5 | ghi | 2020-06-06 | True  6 | ghi | 2020-07-07 | True  7 | ghi | 2020-08-08 | True  8 | jkl | 2020-09-09 | False  9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
+id | book_id | bdate | is_borrowed 0 | abc | 2020-01-01 | True 1 | abc | 2020-02-02 | True 2 | abc | 2020-03-03 | True 3 | def | 2020-04-04 | False 4 | def | 2020-05-05 | False 5 | ghi | 2020-06-06 | True 6 | ghi | 2020-07-07 | True 7 | ghi | 2020-08-08 | True 8 | jkl | 2020-09-09 | False 9 | jkl | 2020-10-10 | False 10 | jkl | 2020-11-11 | False to:</description>
     </item>
     
     <item>
