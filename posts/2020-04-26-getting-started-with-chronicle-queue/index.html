@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <meta name="generator" content="Hugo 0.102.3" />
+    <meta name="generator" content="Hugo 0.110.0">
     
   <meta name='description' content='Chronicle Queue is low-latency, broker-less, durable message queue. Its closest cousin is probably 0MQ, except that 0MQ doesn&rsquo;t store the messages published and the open-source version of Chronicle Queue doesn&rsquo;t support cross-machine communication1. Chronicle Queue&rsquo;s biggest claim to fame is that it generates no garbage as it uses RandomAccessFiles as off-heap storage.
 Chronicle Queue is producer-centric, i.e., applications built on Chronicle Queue cannot tell the producer to slow down in putting messages onto the queue (no back-pressure mechanics).'>
@@ -154,7 +154,7 @@ the code demonstrating Chronicle Queue usage:</p>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ChronicleQueue
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> q: ChronicleQueue = ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/hello-world&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> q: ChronicleQueue = <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/hello-world&#34;</span>)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> appender: ExcerptAppender = q.acquireAppender()
@@ -243,7 +243,7 @@ library.</p>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    println(person.toString() <span style="color:#f92672">==</span> outputString)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> p = Marshallable.fromString&lt;Person&gt;(outputString)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> p = <span style="color:#a6e22e">Marshallable</span>.fromString&lt;Person&gt;(outputString)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    println(person <span style="color:#f92672">==</span> p)
 </span></span><span style="display:flex;"><span>    println(person.hashCode() <span style="color:#f92672">==</span> p.hashCode())
@@ -301,7 +301,7 @@ objects to and from Chronicle Queue<sup id="fnref:4"><a href="#fn:4" class="foot
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Food</span>(<span style="color:#66d9ef">var</span> name: String? = <span style="color:#66d9ef">null</span>): SelfDescribingMarshallable()
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/documents&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/documents&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        appender.writeDocument(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
@@ -406,14 +406,14 @@ focuses on this reifying of the given listener:</p>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> directory = <span style="color:#e6db74">&#34;./build/listener&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(directory).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(directory).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex; background-color:#3c3d38"><span>        <span style="color:#66d9ef">val</span> observable: PersonListener = q.acquireAppender()
 </span></span><span style="display:flex; background-color:#3c3d38"><span>              .methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
 </span></span><span style="display:flex;"><span>        observable.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
 </span></span><span style="display:flex;"><span>        observable.onPerson(Person(<span style="color:#e6db74">&#34;Elliot&#34;</span>, <span style="color:#ae81ff">4</span>))
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ChronicleReaderMain.main(arrayOf(<span style="color:#e6db74">&#34;-d&#34;</span>, directory))
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleReaderMain</span>.main(arrayOf(<span style="color:#e6db74">&#34;-d&#34;</span>, directory))
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
 </div>
 </div>
@@ -535,7 +535,7 @@ implemented listener:</p>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/listener2&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/listener2&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> writer: PersonListener = appender.methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
 </span></span><span style="display:flex;"><span>
@@ -631,7 +631,7 @@ the method signature; or simply put, <a href="https://en.wikipedia.org/wiki/Duck
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/duck&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/duck&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> writer = q.acquireAppender().methodWriter(PersonListener<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
 </span></span><span style="display:flex;"><span>        writer.onPerson(Person(<span style="color:#e6db74">&#34;Shaolang&#34;</span>, <span style="color:#ae81ff">3</span>))
 </span></span><span style="display:flex;"><span>
@@ -693,7 +693,7 @@ where it last stopped is done simply by naming the tailer:</p>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> net.openhft.chronicle.queue.ExcerptTailer
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">readQueue</span>(tailerName: String, times: Int) {
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex; background-color:#3c3d38"><span>        <span style="color:#66d9ef">val</span> tailer = q.createTailer(tailerName)       <span style="color:#75715e">// tailer name given
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (_n <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1.</span>.times) {
@@ -705,7 +705,7 @@ where it last stopped is done simply by naming the tailer:</p>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex;"><span>    ChronicleQueue.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ChronicleQueue</span>.single(<span style="color:#e6db74">&#34;./build/restartable&#34;</span>).use { q <span style="color:#f92672">-&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> appender = q.acquireAppender()
 </span></span><span style="display:flex;"><span>        appender.writeText(<span style="color:#e6db74">&#34;Test Message 1&#34;</span>)
 </span></span><span style="display:flex;"><span>        appender.writeText(<span style="color:#e6db74">&#34;Test Message 2&#34;</span>)
@@ -765,9 +765,9 @@ method anymore:</p>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> net.openhft.chronicle.impl.single.SingleChronicleQueueBuilder
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-</span></span><span style="display:flex; background-color:#3c3d38"><span>    <span style="color:#66d9ef">var</span> qbuilder: SingleChronicleQueueBuilder = ChronicleQueue.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
+</span></span><span style="display:flex; background-color:#3c3d38"><span>    <span style="color:#66d9ef">var</span> qbuilder: SingleChronicleQueueBuilder = <span style="color:#a6e22e">ChronicleQueue</span>.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex; background-color:#3c3d38"><span>    qbuilder.rollCycle(RollCycles.HOURLY)
+</span></span><span style="display:flex; background-color:#3c3d38"><span>    qbuilder.rollCycle(<span style="color:#a6e22e">RollCycles</span>.HOURLY)
 </span></span><span style="display:flex; background-color:#3c3d38"><span>    <span style="color:#66d9ef">val</span> q: ChronicleQueue = qbuilder.build()
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// code omitted for brevity
@@ -782,8 +782,8 @@ appender and tailer(s) must use the same roll cycle when accessing the same
 queue.</p>
 <p>As <code>SingleChronicleQueueBuilder</code> supports fluent interface, the code could
 also be simplified as follows:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">val</span> q: ChronicleQueue = ChronicleQueue.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
-</span></span><span style="display:flex;"><span>                                      .rollCycle(RollCycles.HOURLY)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">val</span> q: ChronicleQueue = <span style="color:#a6e22e">ChronicleQueue</span>.singleBuilder(<span style="color:#e6db74">&#34;./build/roll&#34;</span>)
+</span></span><span style="display:flex;"><span>                                      .rollCycle(<span style="color:#a6e22e">RollCycles</span>.HOURLY)
 </span></span><span style="display:flex;"><span>                                      .build()
 </span></span></code></pre></div><h2 id="whats-next">What&rsquo;s Next</h2>
 <p>This post covers Chronicle Queue terminology and basics. The following
@@ -856,7 +856,7 @@ any exceptions.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backl
           
         </nav>
         <div class='copyright'>&copy; Creative Commons Attribution-ShareAlike 4.0 International</div>
-        <div>Generated by <a href='https://gohugo.io'>Hugo 0.102.3</a></div>
+        <div>Generated by <a href='https://gohugo.io'>Hugo 0.110.0</a></div>
       
     </footer>
   </body>
