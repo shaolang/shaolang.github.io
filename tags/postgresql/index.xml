@@ -6,17 +6,16 @@
     <description>Recent content in postgresql on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 May 2020 20:14:32 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 23 May 2020 20:14:32 +0800</lastBuildDate>
+    <atom:link href="https://shaolang.github.io/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MSDOS Script to Set Up PostgreSQL</title>
       <link>https://shaolang.github.io/posts/2020-05-23-dos-script-to-setup-postgresql/</link>
       <pubDate>Sat, 23 May 2020 20:14:32 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2020-05-23-dos-script-to-setup-postgresql/</guid>
       <description>Don&amp;rsquo;t ask &amp;ldquo;Why Windows?&amp;rdquo;
 Not being a database expert and needing to set up PostgreSQL database in a Windows machine to do simple development with minimal fuss, the following is a simplistic MSDOS script to automate that:
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 @ECHO OFF @BREAK ON @SETLOCAL SET PG_HOME=path_to_pg_home SET superuser=postgres IF NOT DEFINED PGDATA GOTO :MISSINGPGDATA IF EXIST %PGDATA% GOTO :DBEXISTS SET PGBIN=%PG_HOME%\bin ECHO Initialzing database with superuser name: %superuser% %PGBIN%\initdb -D %PGDATA% --pwprompt --username=%superuser% ^ --no-locale --encoding=UTF8 ^ --auth-local=trust --auth-host=trust GOTO :EOF :MISSINGPGDATA ECHO Please set the environment variable PGDATA before running again.</description>
     </item>
-    
   </channel>
 </rss>

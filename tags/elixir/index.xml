@@ -6,38 +6,33 @@
     <description>Recent content in elixir on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Jun 2021 00:08:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Jun 2021 00:08:00 +0800</lastBuildDate>
+    <atom:link href="https://shaolang.github.io/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Testing Elixir Without Starting Your App</title>
       <link>https://shaolang.github.io/posts/2021-06-05-testing-elixir-without-starting-your-app/</link>
       <pubDate>Sun, 06 Jun 2021 00:08:00 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2021-06-05-testing-elixir-without-starting-your-app/</guid>
       <description>By default, mix test starts the project&amp;rsquo;s applications as part of the task. While this usually is helpful, sometimes not starting your application is necessary, e.g., when your application&amp;rsquo;s supervisor starts up singletons that may interfere testing.
 Luckily, mix test supports the command line option --no-start to skip starting the applications after compilation. To make this the &amp;ldquo;default&amp;rdquo; behavior, create the test alias to &amp;ldquo;override&amp;rdquo; the original in mix.exs:
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 defmodule Sample.</description>
     </item>
-    
     <item>
       <title>Phoenix Pubsub Comms Across Nodes</title>
       <link>https://shaolang.github.io/posts/2021-06-04-phoenix-pubsub-comms-across-nodes/</link>
       <pubDate>Fri, 04 Jun 2021 22:21:36 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2021-06-04-phoenix-pubsub-comms-across-nodes/</guid>
       <description>Phoenix PubSub makes cross-nodes publish-subscribe extremely simple: setting up one for single node is the same as setting up multiple. This post covers the steps in doing so.
 First, run mix new pub_sub --sup to generate a new project. Then add {:phoenix_pubsub, &amp;quot;~&amp;gt; 2.0&amp;quot;} as a dependency in mix.exs. Open lib/pub_sub/application.ex to add Phoenix PubSub to the supervision tree:
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 defmodule PubSub.</description>
     </item>
-    
     <item>
       <title>Custom ExUnit.CaseTemplate</title>
       <link>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</link>
       <pubDate>Thu, 09 Aug 2018 08:57:56 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2018-08-09-custom-exunit-casetemplate/</guid>
       <description>Creating custom ExUnit.Case is done simply by creating a module that use ExUnit.CaseTemplate. However, doing just that is not enough: when I run mix test, the terminal shows the following:
 $ mix test Compiling 1 file (.ex) Generated dna app == Compilation error in file test/my_test.exs == ** (CompileError) test/my_test.exs:2: module MyCase is not loaded and could not be found (elixir) expanding macro: Kernel.use/1 test/my_test.exs:2: MyTest (module) (elixir) lib/code.ex:767: Code.require_file/2 (elixir) lib/kernel/parallel_compiler.</description>
     </item>
-    
   </channel>
 </rss>

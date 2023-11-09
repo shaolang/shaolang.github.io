@@ -6,16 +6,15 @@
     <description>Recent content in chronicle queue on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 26 Apr 2020 16:30:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/chronicle-queue/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 Apr 2020 16:30:00 +0800</lastBuildDate>
+    <atom:link href="https://shaolang.github.io/tags/chronicle-queue/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Getting Started With Chronicle Queue</title>
       <link>https://shaolang.github.io/posts/2020-04-26-getting-started-with-chronicle-queue/</link>
       <pubDate>Sun, 26 Apr 2020 16:30:00 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2020-04-26-getting-started-with-chronicle-queue/</guid>
       <description>Chronicle Queue is low-latency, broker-less, durable message queue. Its closest cousin is probably 0MQ, except that 0MQ doesn&amp;rsquo;t store the messages published and the open-source version of Chronicle Queue doesn&amp;rsquo;t support cross-machine communication1. Chronicle Queue&amp;rsquo;s biggest claim to fame is that it generates no garbage as it uses RandomAccessFiles as off-heap storage.
 Chronicle Queue is producer-centric, i.e., applications built on Chronicle Queue cannot tell the producer to slow down in putting messages onto the queue (no back-pressure mechanics).</description>
     </item>
-    
   </channel>
 </rss>

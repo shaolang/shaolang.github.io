@@ -6,38 +6,33 @@
     <description>Recent content in clojure on Bit by bit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Feb 2021 08:45:00 +0800</lastBuildDate><atom:link href="https://shaolang.github.io/tags/clojure/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Feb 2021 08:45:00 +0800</lastBuildDate>
+    <atom:link href="https://shaolang.github.io/tags/clojure/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Storybook.JS with Shadow-CLJS</title>
       <link>https://shaolang.github.io/posts/2021-02-14-storybook.js-with-shadow-cljs/</link>
       <pubDate>Sun, 14 Feb 2021 08:45:00 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2021-02-14-storybook.js-with-shadow-cljs/</guid>
       <description>Storybook.JS is a very interesting development tool from JavaScript ecosystem1. This tutorial shows how we can use it with Shadow-CLJS. The code resides at storybook.js-with-shadow-cljs repo.
 Prerequisites The tutorial uses the following:
 Java version 11 Node.js version 14.15.4 Reagent version 1.0.0 Shadow-CLJS version 2.11.8 Storybook.JS version 6.1.17 Make sure the first two are installed prior the tutorial. The others will be installed along the way.
 Getting a simple React app running Let&amp;rsquo;s create the scaffold to kick-start:</description>
     </item>
-    
     <item>
       <title>Property-Based Testing: From Erlang/Elixir to Clojure Part 2</title>
       <link>https://shaolang.github.io/posts/2020-07-10-property-based-testing-from-elixir-to-clojure-part2/</link>
       <pubDate>Fri, 10 Jul 2020 22:00:00 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2020-07-10-property-based-testing-from-elixir-to-clojure-part2/</guid>
       <description>In the previous post that covered chapter 5 of Property-Based Testing with PropEr, Erlang, and Elixir, I ported most of the code from the book with very few modifications. Code in this post that covers chapter 6: Properties-Driven Development are not straight ports. All the code done [so far] are hosted at https://github.com/shaolang/pbtic I&amp;rsquo;m using test.check as the property-based testing tool in Clojure.
 In this chapter (of the book), it tackles the Back to the Checkout code kata: calculate the total price of the items scanned at the checkout and handle specials correctly.</description>
     </item>
-    
     <item>
       <title>Property-Based Testing: From Erlang/Elixir to Clojure</title>
       <link>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</link>
       <pubDate>Mon, 12 Aug 2019 00:00:00 +0800</pubDate>
-      
       <guid>https://shaolang.github.io/posts/2019-08-10-property-based-testing-from-elixir-to-clojure/</guid>
       <description>Reading Property-Based Testing with PropEr, Erlang, and Elixir and following along the examples helped me in learning this exciting testing methodology; but it also left me wondering: have I really absorbed and internalized just by following along?
 So, I reached out to Fred, got his approval, and started translating the code from Erlang/Elixir to Clojure with test.check. All the code done [so far] are hosted at https://github.com/shaolang/pbtic I&amp;rsquo;m using test.check as the property-based testing tool in Clojure.</description>
     </item>
-    
   </channel>
 </rss>
