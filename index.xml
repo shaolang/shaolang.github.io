@@ -14,7 +14,7 @@
       <pubDate>Thu, 09 Nov 2023 11:22:33 +0800</pubDate>
       <guid>https://shaolang.github.io/posts/2023-11-09-pyspark-on-windows/</guid>
       <description>Setting PySpark up on Windows1 for local runs is relatively easy&amp;hellip; when you know the supplementary steps and hidden requirements necessary to make it work.
-As one of the dependencies is winutils2, the Spark version that can run on Windows depends on the maintainer&amp;rsquo;s release of winutils.exe. For example, as of 10 Nov 2023, because the latest winutils version is 3.3.5, Windows users can only use Spark 3.3.x, i.e., Spark&amp;rsquo;s MAJOR.</description>
+As one of the dependencies is winutils2, the Spark version that can run on Windows depends on the maintainer&amp;rsquo;s release of winutils.exe and hadoop.dll. For example, as of 10 Nov 2023, because the latest winutils version is 3.3.5, Windows users can only use Spark 3.3.x, i.</description>
     </item>
     <item>
       <title>Python Distributions With CLI Scripts</title>

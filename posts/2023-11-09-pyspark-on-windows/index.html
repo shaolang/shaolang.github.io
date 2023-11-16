@@ -6,7 +6,7 @@
     <meta name="generator" content="Hugo 0.120.4">
     
   <meta name='description' content='Setting PySpark up on Windows1 for local runs is relatively easy&hellip; when you know the supplementary steps and hidden requirements necessary to make it work.
-As one of the dependencies is winutils2, the Spark version that can run on Windows depends on the maintainer&rsquo;s release of winutils.exe. For example, as of 10 Nov 2023, because the latest winutils version is 3.3.5, Windows users can only use Spark 3.3.x, i.e., Spark&rsquo;s MAJOR.'>
+As one of the dependencies is winutils2, the Spark version that can run on Windows depends on the maintainer&rsquo;s release of winutils.exe and hadoop.dll. For example, as of 10 Nov 2023, because the latest winutils version is 3.3.5, Windows users can only use Spark 3.3.x, i.'>
 
     <title>Bit by bit</title>
     <link rel='stylesheet' href='/css/styles.css'>
@@ -37,15 +37,16 @@ As one of the dependencies is winutils2, the Spark version that can run on Windo
 when you know the supplementary steps and hidden requirements necessary
 to make it work.</p>
 <p>As one of the dependencies is <a href="https://github.com/cdarlint/winutils">winutils</a><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, the Spark version that
-can run on Windows depends on the maintainer&rsquo;s release of <code>winutils.exe</code>.
+can run on Windows depends on the maintainer&rsquo;s release of <code>winutils.exe</code>
+and <code>hadoop.dll</code>.
 For example, as of 10 Nov 2023, because the latest winutils version is 3.3.5,
 Windows users can only use Spark 3.3.x, i.e., Spark&rsquo;s MAJOR.MINOR version
 must match winutils&rsquo; MAJOOR.MINOR version.</p>
 <p>&lsquo;Nuff said, the steps to setting up PySpark on Windows are as follows:</p>
 <ol>
-<li>Download winutils.exe from winutils repo.</li>
+<li>Download <code>winutils.exe</code> and <code>hadoop.dll</code> from winutils repo.</li>
 <li>Download Spark that matches winutils&rsquo; (MAJOR.MINOR) version.</li>
-<li>Unzip Spark and copy winutils to Spark&rsquo;s <code>bin</code> directory.</li>
+<li>Unzip Spark and copy <code>winutils.exe</code> and <code>hadoop.dll</code> to Spark&rsquo;s <code>bin</code> directory.</li>
 <li>Set the environment variables <code>SPARK_HOME</code> and <code>HADOOP_HOME</code> to that Spark
 directory.</li>
 <li>Download and unzip <a href="https://openjdk.org">Java Development Kit</a> (JDK).</li>
